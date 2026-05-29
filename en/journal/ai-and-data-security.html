@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI and data: is your information actually safe? — ORBE IA</title>
+<meta name="description" content="Where your data goes when you use AI, and how to stay in control while automating.">
+<link rel="canonical" href="https://orbe-ia.com/en/journal/ai-and-data-security.html">
+<link rel="alternate" hreflang="fr" href="https://orbe-ia.com/journal/ia-et-securite-des-donnees.html">
+<link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/journal/ai-and-data-security.html">
+<link rel="alternate" hreflang="x-default" href="https://orbe-ia.com/journal/ia-et-securite-des-donnees.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI and data: is your information actually safe? — ORBE IA">
+<meta property="og:description" content="Where your data goes when you use AI, and how to stay in control while automating.">
+<meta property="og:image" content="https://orbe-ia.com/assets/showcase-1.png">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://orbe-ia.com/en/journal/ai-and-data-security.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f6f1e7'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23c8841f' stroke-width='1.4' opacity='.6'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23c8841f'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"Article","headline":"AI and data: is your information actually safe?","description":"Where your data goes when you use AI, and how to stay in control while automating.","datePublished":"2026-04-30","inLanguage":"en","author":{"@type":"Organization","name":"ORBE IA"},"publisher":{"@type":"Organization","name":"ORBE IA"},"mainEntityOfPage":"https://orbe-ia.com/en/journal/ai-and-data-security.html"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Journal","item":"https://orbe-ia.com/en/journal/"},{"@type":"ListItem","position":2,"name":"AI and data: is your information actually safe?","item":"https://orbe-ia.com/en/journal/ai-and-data-security.html"}]}]</script>
+<style>
+:root{
+  --bg:#f6f1e7;--bg2:#efe8d8;--ink:#1c1810;--ink-soft:#6b6253;--ink-dim:#9c9384;
+  --gold:#c8841f;--gold-deep:#a86a12;--line:rgba(28,24,16,.12);
+  --serif:'Schibsted Grotesk',system-ui,sans-serif;--sans:'Outfit',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;line-height:1.75;-webkit-font-smoothing:antialiased}
+::selection{background:var(--gold);color:#fff}
+img{display:block;max-width:100%}
+body::before{content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply}
+.topbar{display:flex;justify-content:space-between;align-items:center;max-width:760px;margin:0 auto;padding:28px 24px}
+.back{font-size:.82rem;letter-spacing:.04em;color:var(--ink-soft);text-decoration:none;transition:.3s}
+.back:hover{color:var(--gold-deep)}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{font-family:var(--serif);font-size:1.1rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+.logo .ia{font-style:italic;color:var(--gold)}
+.lang{display:flex;gap:7px;font-size:.76rem;letter-spacing:.08em}
+.lang a{color:var(--ink-dim);text-decoration:none}
+.lang a.on{color:var(--gold-deep);font-weight:600}
+.lang span{color:var(--ink-dim);opacity:.5}
+/* Article */
+article{max-width:720px;margin:0 auto;padding:32px 24px 40px}
+.meta{display:flex;gap:16px;align-items:center;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:22px}
+.meta .date{color:var(--gold-deep);font-weight:600}
+.meta .cat{color:var(--ink-dim)}
+article h1{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;letter-spacing:-.03em;margin-bottom:36px}
+article h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.4rem,3vw,1.9rem);letter-spacing:-.02em;margin:44px 0 14px}
+article p{color:#2a261d;font-size:1.08rem;margin-bottom:22px}
+article a{color:var(--gold-deep);text-decoration:underline;text-underline-offset:3px}
+article blockquote{border-left:2px solid var(--gold);padding-left:22px;margin:30px 0;font-family:var(--serif);font-size:1.25rem;font-weight:500;color:var(--ink)}
+article ul,article ol{margin:0 0 22px 22px}
+article li{font-size:1.08rem;margin-bottom:8px;color:#2a261d}
+article strong{font-weight:600;color:var(--ink)}
+hr{border:none;border-top:1px solid var(--line);margin:48px 0}
+/* Encart « ORBE IA sait le faire » */
+.wedo{max-width:720px;margin:8px auto 0;padding:0 24px}
+.wedo-box{border:1px solid var(--line);border-radius:14px;padding:32px;background:linear-gradient(160deg,rgba(200,132,31,.07),transparent)}
+.wedo-box h3{font-family:var(--serif);font-weight:600;font-size:1.5rem;letter-spacing:-.02em;margin-bottom:12px}
+.wedo-box p{color:var(--ink-soft);font-size:1.02rem;margin-bottom:22px}
+.wedo-cta{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--bg);padding:15px 30px;border-radius:46px;text-decoration:none;font-size:.95rem;transition:.4s}
+.wedo-cta:hover{background:var(--gold-deep);transform:translateY(-2px)}
+/* À lire aussi */
+.also{max-width:720px;margin:48px auto 0;padding:0 24px}
+.also h4{font-size:.74rem;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-dim);margin-bottom:16px}
+.also a{display:block;font-family:var(--serif);font-size:1.2rem;font-weight:500;letter-spacing:-.01em;color:var(--ink);text-decoration:none;padding:10px 0;border-top:1px solid var(--line);transition:.3s}
+.also a:hover{color:var(--gold-deep)}
+/* Footer */
+.foot{max-width:760px;margin:56px auto 0;padding:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--ink-dim)}
+.foot a{color:var(--ink-soft);text-decoration:none}
+.foot a:hover{color:var(--gold-deep)}
+/* Index */
+.j-head{max-width:760px;margin:0 auto;padding:24px 24px 8px}
+.j-head .eyebrow{font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:16px;display:inline-flex;align-items:center;gap:11px}
+.j-head .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(200,132,31,.15)}
+.j-head h1{font-family:var(--serif);font-weight:700;font-size:clamp(2.4rem,6vw,4rem);line-height:1.02;letter-spacing:-.03em;margin-bottom:16px}
+.j-head h1 em{font-style:normal;color:var(--gold-deep)}
+.j-head p{color:var(--ink-soft);font-size:1.1rem;max-width:46ch}
+.list{max-width:760px;margin:24px auto 0;padding:0 24px}
+.entry{display:grid;grid-template-columns:1fr auto;gap:8px 24px;align-items:baseline;padding:24px 0;border-top:1px solid var(--line);text-decoration:none;color:inherit;transition:padding-left .35s}
+.list .entry:last-child{border-bottom:1px solid var(--line)}
+.entry:hover{padding-left:8px}
+.entry .cat{grid-column:1;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600}
+.entry h2{grid-column:1;font-family:var(--serif);font-weight:600;font-size:clamp(1.25rem,2.6vw,1.7rem);line-height:1.15;letter-spacing:-.02em;transition:color .3s}
+.entry:hover h2{color:var(--gold-deep)}
+.entry .ex{grid-column:1;color:var(--ink-soft);font-size:.98rem;margin-top:4px;max-width:60ch}
+.entry .date{grid-column:2;grid-row:1/3;font-size:.8rem;color:var(--ink-dim);white-space:nowrap;text-align:right}
+@media(max-width:640px){.entry{grid-template-columns:1fr}.entry .date{grid-column:1;grid-row:auto;text-align:left}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a href="index.html" class="back">← Journal</a>
+  <div class="brand">
+    <div class="lang"><a href="/journal/ia-et-securite-des-donnees.html">FR</a><span>/</span><a href="/en/journal/ai-and-data-security.html" class="on">EN</a></div>
+    <a href="/" class="logo">ORBE <span class="ia">IA</span></a>
+  </div>
+</header>
+<article>
+  <div class="meta"><span class="date">30 Apr 2026</span><span class="cat">Stakes</span></div>
+  <h1>AI and data: is your information actually safe?</h1>
+  <p>As soon as AI comes up, a legitimate worry returns: "where does my data go?". For a company handling client information, confidential documents or financial data, the question is not secondary. Here's what to understand in order to automate with peace of mind.</p>
+  <h2>Understand your data's journey</h2>
+  <p>When you use an AI tool, your data is transmitted to a system to be processed. So the first question to ask is simple: who receives this data, where is it processed, and what becomes of it afterwards? Is it kept, reused to train other models, or processed then erased? The answers vary enormously from one tool to another.</p>
+  <h2>The principle of minimisation</h2>
+  <p>The best protection is to transmit only what's strictly necessary. A well-designed automation gives access only to the data it needs to function, and nothing more. Limiting access means limiting risk. This principle, simple to state, makes a real difference in practice.</p>
+  <h2>Choose suitable tools and hosting</h2>
+  <p>Not all tools are equal when it comes to confidentiality. Some offer clear contractual guarantees, European hosting, commitments not to reuse data. For sensitive information, these criteria should guide the choice as much as the features. Security is decided upstream, not after the incident.</p>
+  <h2>Keep control and traceability</h2>
+  <p>Automating doesn't mean losing control. A well-built system lets you know who has access to what, what was done, and to cut an access at any time. This traceability is essential: it lets you react quickly if there's a problem and prove your seriousness in case of an audit.</p>
+  <h2>Regulatory compliance</h2>
+  <p>Processing personal data is governed by law. Respecting that regulation — consent, purpose, retention period, right to erasure — is an integral part of a responsible automation project. It's not a constraint added afterwards, but a design input.</p>
+  <h2>Security and automation don't conflict</h2>
+  <p>People sometimes pit peace of mind against modernity, as if you had to choose. That's false. An automation designed for security from the start is both efficient and safe. The key is to treat data protection as a starting point, not a last-minute thought.</p>
+  <h2>A simple reflex to adopt</h2>
+  <p>Before entrusting data to a tool, ask yourself a question: would you be comfortable if this information ended up elsewhere? For trivial data, the risk is low. For sensitive data — client information, financial data, confidential documents — caution is warranted, and the choice of tool becomes decisive. This sorting reflex, applied systematically, avoids most problems.</p>
+  <h2>The case of sensitive data</h2>
+  <p>Not all automations handle the same type of data. An invoice follow-up uses little critical information; an analysis of client files handles a lot. For the latter, you favour solutions offering strong guarantees: controlled hosting, confidentiality commitments, no reuse of data. The sensitivity of the data dictates the level of requirement.</p>
+  <h2>Anticipate rather than repair</h2>
+  <p>Security costs far less when thought through at design time than when you have to repair after an incident. Building in good practices from the start — limited access, choice of serious tools, traceability — is a matter of simple discipline. It's the absence of this discipline, not AI itself, that creates most breaches.</p>
+  <h2>Reconciling efficiency and peace of mind</h2>
+  <p>The essential message is that you don't have to choose between automating and protecting your data. The two go together as soon as security is part of the initial brief. A well-designed automation is both a time-saver and a controlled setup. It's this dual requirement — efficiency and security — that distinguishes a serious project from a risky patch job.</p>
+  <h2>A healthy worry</h2>
+  <p>Asking where your data goes isn't paranoia, it's responsibility. This vigilance is even a good reflex, because it leads to informed choices rather than charging in blindly. The question shouldn't lead you to give up AI, but to adopt it with discernment. Well framed, it points toward the right tools, the right practices, and an automation you can keep trusting.</p>
+  <h2>Security, a design matter</h2>
+  <p>The essential takeaway is that data security isn't added afterwards: it's designed in from the start. An automation built for confidentiality — access restricted to the strictly necessary, tools chosen for their guarantees, data processed then not kept beyond the useful, traceability of operations — protects without sacrificing any efficiency. Conversely, an automation patched together without this care creates avoidable breaches. The difference lies not in AI itself, but in the rigour of its implementation.</p>
+</article>
+<section class="wedo"><div class="wedo-box">
+  <h3>ORBE IA can build this</h3>
+  <p>Deploying AI and automation methodically, respecting your data and with the right safeguards, is how ORBE IA works. We build bespoke solutions that are serious and under control.</p>
+  <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="wedo-cta">Automate my business ↗</a>
+</div></section>
+<section class="also"><h4>Read next</h4><a href="essential-ai-tools-2026.html">The essential AI tools in 2026 for small teams</a><a href="automate-without-coding.html">Automating your business without coding: it&#x27;s possible</a></section>
+<footer class="foot">
+  <span>© 2026 ORBE IA — agence sur mesure</span>
+  <a href="mailto:contact@orbe-ia.com">contact@orbe-ia.com</a>
+</footer>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journal — ORBE IA</title>
+<meta name="description" content="Ideas, methods and signposts on AI, automation and the tools that save time.">
+<link rel="canonical" href="https://orbe-ia.com/en/journal/">
+<link rel="alternate" hreflang="fr" href="https://orbe-ia.com/journal/">
+<link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/journal/">
+<link rel="alternate" hreflang="x-default" href="https://orbe-ia.com/journal/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Journal — ORBE IA">
+<meta property="og:description" content="Ideas, methods and signposts on AI, automation and the tools that save time.">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://orbe-ia.com/en/journal/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f6f1e7'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23c8841f' stroke-width='1.4' opacity='.6'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23c8841f'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f1e7;--bg2:#efe8d8;--ink:#1c1810;--ink-soft:#6b6253;--ink-dim:#9c9384;
+  --gold:#c8841f;--gold-deep:#a86a12;--line:rgba(28,24,16,.12);
+  --serif:'Schibsted Grotesk',system-ui,sans-serif;--sans:'Outfit',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;line-height:1.75;-webkit-font-smoothing:antialiased}
+::selection{background:var(--gold);color:#fff}
+img{display:block;max-width:100%}
+body::before{content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply}
+.topbar{display:flex;justify-content:space-between;align-items:center;max-width:760px;margin:0 auto;padding:28px 24px}
+.back{font-size:.82rem;letter-spacing:.04em;color:var(--ink-soft);text-decoration:none;transition:.3s}
+.back:hover{color:var(--gold-deep)}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{font-family:var(--serif);font-size:1.1rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+.logo .ia{font-style:italic;color:var(--gold)}
+.lang{display:flex;gap:7px;font-size:.76rem;letter-spacing:.08em}
+.lang a{color:var(--ink-dim);text-decoration:none}
+.lang a.on{color:var(--gold-deep);font-weight:600}
+.lang span{color:var(--ink-dim);opacity:.5}
+/* Article */
+article{max-width:720px;margin:0 auto;padding:32px 24px 40px}
+.meta{display:flex;gap:16px;align-items:center;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:22px}
+.meta .date{color:var(--gold-deep);font-weight:600}
+.meta .cat{color:var(--ink-dim)}
+article h1{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;letter-spacing:-.03em;margin-bottom:36px}
+article h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.4rem,3vw,1.9rem);letter-spacing:-.02em;margin:44px 0 14px}
+article p{color:#2a261d;font-size:1.08rem;margin-bottom:22px}
+article a{color:var(--gold-deep);text-decoration:underline;text-underline-offset:3px}
+article blockquote{border-left:2px solid var(--gold);padding-left:22px;margin:30px 0;font-family:var(--serif);font-size:1.25rem;font-weight:500;color:var(--ink)}
+article ul,article ol{margin:0 0 22px 22px}
+article li{font-size:1.08rem;margin-bottom:8px;color:#2a261d}
+article strong{font-weight:600;color:var(--ink)}
+hr{border:none;border-top:1px solid var(--line);margin:48px 0}
+/* Encart « ORBE IA sait le faire » */
+.wedo{max-width:720px;margin:8px auto 0;padding:0 24px}
+.wedo-box{border:1px solid var(--line);border-radius:14px;padding:32px;background:linear-gradient(160deg,rgba(200,132,31,.07),transparent)}
+.wedo-box h3{font-family:var(--serif);font-weight:600;font-size:1.5rem;letter-spacing:-.02em;margin-bottom:12px}
+.wedo-box p{color:var(--ink-soft);font-size:1.02rem;margin-bottom:22px}
+.wedo-cta{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--bg);padding:15px 30px;border-radius:46px;text-decoration:none;font-size:.95rem;transition:.4s}
+.wedo-cta:hover{background:var(--gold-deep);transform:translateY(-2px)}
+/* À lire aussi */
+.also{max-width:720px;margin:48px auto 0;padding:0 24px}
+.also h4{font-size:.74rem;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-dim);margin-bottom:16px}
+.also a{display:block;font-family:var(--serif);font-size:1.2rem;font-weight:500;letter-spacing:-.01em;color:var(--ink);text-decoration:none;padding:10px 0;border-top:1px solid var(--line);transition:.3s}
+.also a:hover{color:var(--gold-deep)}
+/* Footer */
+.foot{max-width:760px;margin:56px auto 0;padding:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--ink-dim)}
+.foot a{color:var(--ink-soft);text-decoration:none}
+.foot a:hover{color:var(--gold-deep)}
+/* Index */
+.j-head{max-width:760px;margin:0 auto;padding:24px 24px 8px}
+.j-head .eyebrow{font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:16px;display:inline-flex;align-items:center;gap:11px}
+.j-head .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(200,132,31,.15)}
+.j-head h1{font-family:var(--serif);font-weight:700;font-size:clamp(2.4rem,6vw,4rem);line-height:1.02;letter-spacing:-.03em;margin-bottom:16px}
+.j-head h1 em{font-style:normal;color:var(--gold-deep)}
+.j-head p{color:var(--ink-soft);font-size:1.1rem;max-width:46ch}
+.list{max-width:760px;margin:24px auto 0;padding:0 24px}
+.entry{display:grid;grid-template-columns:1fr auto;gap:8px 24px;align-items:baseline;padding:24px 0;border-top:1px solid var(--line);text-decoration:none;color:inherit;transition:padding-left .35s}
+.list .entry:last-child{border-bottom:1px solid var(--line)}
+.entry:hover{padding-left:8px}
+.entry .cat{grid-column:1;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600}
+.entry h2{grid-column:1;font-family:var(--serif);font-weight:600;font-size:clamp(1.25rem,2.6vw,1.7rem);line-height:1.15;letter-spacing:-.02em;transition:color .3s}
+.entry:hover h2{color:var(--gold-deep)}
+.entry .ex{grid-column:1;color:var(--ink-soft);font-size:.98rem;margin-top:4px;max-width:60ch}
+.entry .date{grid-column:2;grid-row:1/3;font-size:.8rem;color:var(--ink-dim);white-space:nowrap;text-align:right}
+@media(max-width:640px){.entry{grid-template-columns:1fr}.entry .date{grid-column:1;grid-row:auto;text-align:left}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a href="/" class="back">← Home</a>
+  <div class="brand">
+    <div class="lang"><a href="/journal/">FR</a><span>/</span><a href="/en/journal/" class="on">EN</a></div>
+    <a href="/" class="logo">ORBE <span class="ia">IA</span></a>
+  </div>
+</header>
+<div class="j-head">
+  <div class="eyebrow">The journal</div>
+  <h1>What we learn, <em>we share.</em></h1>
+  <p>Ideas, methods and signposts on AI, automation and the tools that save time.</p>
+</div>
+<div class="list">
+    <a class="entry" href="5-tasks-to-automate-this-week.html">
+      <span class="cat">Automation</span>
+      <h2>5 tasks a freelancer can automate this week</h2>
+      <span class="ex">Follow-ups, invoices, bookings: five concrete automations you can set up fast to win back hours every week.</span>
+      <span class="date">20 May 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="ai-for-small-business-where-to-start.html">
+      <span class="cat">AI</span>
+      <h2>AI for a small business: where to start without missteps</h2>
+      <span class="ex">A pragmatic guide to spotting the first useful AI use cases in a small company — no huge budget, no jargon.</span>
+      <span class="date">18 May 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="ai-agents-explained-simply.html">
+      <span class="cat">AI Agents</span>
+      <h2>AI agents explained simply (and what they change)</h2>
+      <span class="ex">What an AI agent is, how it differs from a chatbot, and which tasks it can genuinely take off your plate.</span>
+      <span class="date">15 May 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="automated-client-follow-ups.html">
+      <span class="cat">Automation</span>
+      <h2>Never forget a client follow-up again with automation</h2>
+      <span class="ex">Unanswered quotes, late invoices: how to automate follow-ups so you get paid faster, without thinking about it.</span>
+      <span class="date">12 May 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="website-that-converts.html">
+      <span class="cat">Websites</span>
+      <h2>Why your website doesn&#x27;t convert (and how to fix it)</h2>
+      <span class="ex">A pretty site isn&#x27;t enough. The concrete principles that turn visitors into real enquiries.</span>
+      <span class="date">9 May 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="chatbot-vs-ai-agent.html">
+      <span class="cat">AI Agents</span>
+      <h2>Chatbot or AI agent: which one for your business?</h2>
+      <span class="ex">They don&#x27;t do the same job. How to pick the right tool for your actual need.</span>
+      <span class="date">6 May 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="ai-ethics-in-business.html">
+      <span class="cat">Stakes</span>
+      <h2>AI in business: the ethical stakes you can&#x27;t ignore</h2>
+      <span class="ex">Bias, transparency, accountability: what a company should understand before deploying AI.</span>
+      <span class="date">3 May 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="ai-and-data-security.html">
+      <span class="cat">Stakes</span>
+      <h2>AI and data: is your information actually safe?</h2>
+      <span class="ex">Where your data goes when you use AI, and how to stay in control while automating.</span>
+      <span class="date">30 Apr 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="essential-ai-tools-2026.html">
+      <span class="cat">Tools</span>
+      <h2>The essential AI tools in 2026 for small teams</h2>
+      <span class="ex">A roundup of tools that genuinely save time, sorted by use case rather than hype.</span>
+      <span class="date">27 Apr 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="automate-without-coding.html">
+      <span class="cat">Automation</span>
+      <h2>Automating your business without coding: it&#x27;s possible</h2>
+      <span class="ex">The no-code and AI-assisted approaches that let you automate without technical skills.</span>
+      <span class="date">24 Apr 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="automation-roi.html">
+      <span class="cat">Automation</span>
+      <h2>What a repetitive task really costs you (and what automation returns)</h2>
+      <span class="ex">A simple method to price the time you lose and estimate the ROI of an automation.</span>
+      <span class="date">21 Apr 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="custom-business-app.html">
+      <span class="cat">Applications</span>
+      <h2>When do you need a custom business application?</h2>
+      <span class="ex">Overloaded spreadsheets, tools that don&#x27;t talk to each other: the signs it&#x27;s time for a dedicated app.</span>
+      <span class="date">18 Apr 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="internal-platform-vs-scattered-tools.html">
+      <span class="cat">Platforms</span>
+      <h2>Centralising your tools: why an internal platform changes everything</h2>
+      <span class="ex">When your data and processes are scattered, a bespoke platform becomes a real productivity lever.</span>
+      <span class="date">15 Apr 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="ai-for-customer-relationships.html">
+      <span class="cat">AI</span>
+      <h2>AI for customer relationships (without dehumanising them)</h2>
+      <span class="ex">How AI can improve responsiveness and follow-up while keeping the relationship authentic.</span>
+      <span class="date">12 Apr 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="automate-repetitive-emails.html">
+      <span class="cat">Automation</span>
+      <h2>Stop rewriting the same emails: AI-assisted automation</h2>
+      <span class="ex">Templated replies, quotes, confirmations: how AI drafts and sends for you, in your tone.</span>
+      <span class="date">9 Apr 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="ai-for-admin-and-accounting.html">
+      <span class="cat">Automation</span>
+      <h2>Invoicing, paperwork, data entry: hand admin to AI</h2>
+      <span class="ex">The repetitive administrative tasks you can make reliable and automate to free up time.</span>
+      <span class="date">6 Apr 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="ai-myths-debunked.html">
+      <span class="cat">Stakes</span>
+      <h2>7 myths about AI in business</h2>
+      <span class="ex">&quot;Too expensive&quot;, &quot;it&#x27;ll replace my team&quot;, &quot;only for giants&quot;: let&#x27;s separate fact from fiction.</span>
+      <span class="date">3 Apr 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="seo-and-ai-content-that-pays.html">
+      <span class="cat">Websites</span>
+      <h2>SEO and AI: creating content that actually brings clients</h2>
+      <span class="ex">How to use AI to feed your search ranking without falling into generic, useless content.</span>
+      <span class="date">31 Mar 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="automated-appointment-booking.html">
+      <span class="cat">Automation</span>
+      <h2>Automated booking: fewer back-and-forths, more clients</h2>
+      <span class="ex">How to remove the endless emails to find a slot and smooth out your calendar.</span>
+      <span class="date">28 Mar 2026<br>4 min read</span>
+    </a>
+    <a class="entry" href="ai-and-future-of-work-small-business.html">
+      <span class="cat">Stakes</span>
+      <h2>AI and the future of work: where do small businesses fit?</h2>
+      <span class="ex">Far from the predicted great replacement, how small structures can benefit from AI at their scale.</span>
+      <span class="date">25 Mar 2026<br>5 min read</span>
+    </a>
+</div>
+<footer class="foot">
+  <span>© 2026 ORBE IA — agence sur mesure</span>
+  <a href="mailto:contact@orbe-ia.com">contact@orbe-ia.com</a>
+</footer>
+</body>
+</html>

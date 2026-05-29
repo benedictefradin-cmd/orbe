@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What a repetitive task really costs you (and what automation returns) — ORBE IA</title>
+<meta name="description" content="A simple method to price the time you lose and estimate the ROI of an automation.">
+<link rel="canonical" href="https://orbe-ia.com/en/journal/automation-roi.html">
+<link rel="alternate" hreflang="fr" href="https://orbe-ia.com/journal/calculer-le-roi-de-l-automatisation.html">
+<link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/journal/automation-roi.html">
+<link rel="alternate" hreflang="x-default" href="https://orbe-ia.com/journal/calculer-le-roi-de-l-automatisation.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What a repetitive task really costs you (and what automation returns) — ORBE IA">
+<meta property="og:description" content="A simple method to price the time you lose and estimate the ROI of an automation.">
+<meta property="og:image" content="https://orbe-ia.com/assets/showcase-1.png">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://orbe-ia.com/en/journal/automation-roi.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f6f1e7'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23c8841f' stroke-width='1.4' opacity='.6'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23c8841f'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"Article","headline":"What a repetitive task really costs you (and what automation returns)","description":"A simple method to price the time you lose and estimate the ROI of an automation.","datePublished":"2026-04-21","inLanguage":"en","author":{"@type":"Organization","name":"ORBE IA"},"publisher":{"@type":"Organization","name":"ORBE IA"},"mainEntityOfPage":"https://orbe-ia.com/en/journal/automation-roi.html"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Journal","item":"https://orbe-ia.com/en/journal/"},{"@type":"ListItem","position":2,"name":"What a repetitive task really costs you (and what automation returns)","item":"https://orbe-ia.com/en/journal/automation-roi.html"}]}]</script>
+<style>
+:root{
+  --bg:#f6f1e7;--bg2:#efe8d8;--ink:#1c1810;--ink-soft:#6b6253;--ink-dim:#9c9384;
+  --gold:#c8841f;--gold-deep:#a86a12;--line:rgba(28,24,16,.12);
+  --serif:'Schibsted Grotesk',system-ui,sans-serif;--sans:'Outfit',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;line-height:1.75;-webkit-font-smoothing:antialiased}
+::selection{background:var(--gold);color:#fff}
+img{display:block;max-width:100%}
+body::before{content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply}
+.topbar{display:flex;justify-content:space-between;align-items:center;max-width:760px;margin:0 auto;padding:28px 24px}
+.back{font-size:.82rem;letter-spacing:.04em;color:var(--ink-soft);text-decoration:none;transition:.3s}
+.back:hover{color:var(--gold-deep)}
+.brand{display:flex;align-items:center;gap:16px}
+.logo{font-family:var(--serif);font-size:1.1rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+.logo .ia{font-style:italic;color:var(--gold)}
+.lang{display:flex;gap:7px;font-size:.76rem;letter-spacing:.08em}
+.lang a{color:var(--ink-dim);text-decoration:none}
+.lang a.on{color:var(--gold-deep);font-weight:600}
+.lang span{color:var(--ink-dim);opacity:.5}
+/* Article */
+article{max-width:720px;margin:0 auto;padding:32px 24px 40px}
+.meta{display:flex;gap:16px;align-items:center;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:22px}
+.meta .date{color:var(--gold-deep);font-weight:600}
+.meta .cat{color:var(--ink-dim)}
+article h1{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;letter-spacing:-.03em;margin-bottom:36px}
+article h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.4rem,3vw,1.9rem);letter-spacing:-.02em;margin:44px 0 14px}
+article p{color:#2a261d;font-size:1.08rem;margin-bottom:22px}
+article a{color:var(--gold-deep);text-decoration:underline;text-underline-offset:3px}
+article blockquote{border-left:2px solid var(--gold);padding-left:22px;margin:30px 0;font-family:var(--serif);font-size:1.25rem;font-weight:500;color:var(--ink)}
+article ul,article ol{margin:0 0 22px 22px}
+article li{font-size:1.08rem;margin-bottom:8px;color:#2a261d}
+article strong{font-weight:600;color:var(--ink)}
+hr{border:none;border-top:1px solid var(--line);margin:48px 0}
+/* Encart « ORBE IA sait le faire » */
+.wedo{max-width:720px;margin:8px auto 0;padding:0 24px}
+.wedo-box{border:1px solid var(--line);border-radius:14px;padding:32px;background:linear-gradient(160deg,rgba(200,132,31,.07),transparent)}
+.wedo-box h3{font-family:var(--serif);font-weight:600;font-size:1.5rem;letter-spacing:-.02em;margin-bottom:12px}
+.wedo-box p{color:var(--ink-soft);font-size:1.02rem;margin-bottom:22px}
+.wedo-cta{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--bg);padding:15px 30px;border-radius:46px;text-decoration:none;font-size:.95rem;transition:.4s}
+.wedo-cta:hover{background:var(--gold-deep);transform:translateY(-2px)}
+/* À lire aussi */
+.also{max-width:720px;margin:48px auto 0;padding:0 24px}
+.also h4{font-size:.74rem;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-dim);margin-bottom:16px}
+.also a{display:block;font-family:var(--serif);font-size:1.2rem;font-weight:500;letter-spacing:-.01em;color:var(--ink);text-decoration:none;padding:10px 0;border-top:1px solid var(--line);transition:.3s}
+.also a:hover{color:var(--gold-deep)}
+/* Footer */
+.foot{max-width:760px;margin:56px auto 0;padding:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--ink-dim)}
+.foot a{color:var(--ink-soft);text-decoration:none}
+.foot a:hover{color:var(--gold-deep)}
+/* Index */
+.j-head{max-width:760px;margin:0 auto;padding:24px 24px 8px}
+.j-head .eyebrow{font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:16px;display:inline-flex;align-items:center;gap:11px}
+.j-head .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(200,132,31,.15)}
+.j-head h1{font-family:var(--serif);font-weight:700;font-size:clamp(2.4rem,6vw,4rem);line-height:1.02;letter-spacing:-.03em;margin-bottom:16px}
+.j-head h1 em{font-style:normal;color:var(--gold-deep)}
+.j-head p{color:var(--ink-soft);font-size:1.1rem;max-width:46ch}
+.list{max-width:760px;margin:24px auto 0;padding:0 24px}
+.entry{display:grid;grid-template-columns:1fr auto;gap:8px 24px;align-items:baseline;padding:24px 0;border-top:1px solid var(--line);text-decoration:none;color:inherit;transition:padding-left .35s}
+.list .entry:last-child{border-bottom:1px solid var(--line)}
+.entry:hover{padding-left:8px}
+.entry .cat{grid-column:1;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600}
+.entry h2{grid-column:1;font-family:var(--serif);font-weight:600;font-size:clamp(1.25rem,2.6vw,1.7rem);line-height:1.15;letter-spacing:-.02em;transition:color .3s}
+.entry:hover h2{color:var(--gold-deep)}
+.entry .ex{grid-column:1;color:var(--ink-soft);font-size:.98rem;margin-top:4px;max-width:60ch}
+.entry .date{grid-column:2;grid-row:1/3;font-size:.8rem;color:var(--ink-dim);white-space:nowrap;text-align:right}
+@media(max-width:640px){.entry{grid-template-columns:1fr}.entry .date{grid-column:1;grid-row:auto;text-align:left}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a href="index.html" class="back">← Journal</a>
+  <div class="brand">
+    <div class="lang"><a href="/journal/calculer-le-roi-de-l-automatisation.html">FR</a><span>/</span><a href="/en/journal/automation-roi.html" class="on">EN</a></div>
+    <a href="/" class="logo">ORBE <span class="ia">IA</span></a>
+  </div>
+</header>
+<article>
+  <div class="meta"><span class="date">21 Apr 2026</span><span class="cat">Automation</span></div>
+  <h1>What a repetitive task really costs you (and what automation returns)</h1>
+  <p>Before automating, a legitimate question arises: is it worth it? To answer without getting lost in hunches, there's a simple method to price the real cost of a repetitive task and estimate what automating it returns.</p>
+  <h2>Step 1: measure the real time</h2>
+  <p>Take a repetitive task and honestly estimate the time it takes you, including everything: not just doing it, but also thinking about it, getting back to it, fixing errors. We almost always underestimate this time, because it's fragmented. Then multiply by frequency: a ten-minute task repeated every day adds up to nearly forty hours a year.</p>
+  <h2>Step 2: value that time</h2>
+  <p>How much is an hour of your time worth? For a freelancer, it's the rate you could charge, or the time you could spend growing your business. For a company, it's the loaded cost of an employee. Applying this value to the hours identified, the hidden cost of the task suddenly becomes very concrete.</p>
+  <h2>Step 3: factor in the cost of errors</h2>
+  <p>Repetitive tasks done by hand generate errors: a forgotten invoice, a mis-copied figure, an unchased client. Each has a cost, sometimes far higher than the time spent. A reliable automation removes much of these errors, and that gain must enter the calculation.</p>
+  <h2>Step 4: compare to the investment</h2>
+  <p>Set this annual cost against the investment needed to automate: the setup, then a generally low running cost. The ratio is often striking. Many automations pay for themselves within months, after which they keep producing gains with no extra effort.</p>
+  <h2>Beyond the numbers</h2>
+  <p>Return on investment isn't limited to time and money. There's also the reduced mental load, the calm of knowing nothing slips through, and the chance to devote yourself to what really matters. These benefits aren't easily quantified, but they're often the most precious.</p>
+  <h2>The right question</h2>
+  <p>Rather than "how much does an automation cost?", ask yourself "how much does not having it cost me?". This reversal of perspective sheds light on the decision and reveals, most often, that waiting is the real expense.</p>
+  <h2>A detailed calculation</h2>
+  <p>Let's take a worked example. Suppose a data-entry task that takes twenty minutes per working day. Over a year, that's about eighty hours. If you value the hour at a modest amount, you quickly reach several thousand euros of time swallowed up — not counting errors. Against this, an automation whose setup is counted in a few days and whose running cost is low pays for itself within months, then becomes a net gain. Put this way, the calculation leaves little room for doubt.</p>
+  <h2>The cost of the status quo</h2>
+  <p>We often reason about the cost of acting, rarely about that of doing nothing. Yet every month spent without automating a costly task is that cost still running. The status quo isn't free: it has a price, it's just invisible because spread out. Making this price visible is giving yourself the means to decide clearly.</p>
+  <h2>The gains that are hard to quantify</h2>
+  <p>Beyond time and money, some benefits escape calculation but weigh heavily. The disappearance of the mental load tied to tasks you fear forgetting. The calm of knowing follow-ups go out, invoices are tracked, nothing falls through the cracks. And the freed time you can devote to growing your business rather than maintaining it. These gains appear in no spreadsheet, but they transform daily life.</p>
+  <h2>Decide with method</h2>
+  <p>The right decision rests not on enthusiasm for technology, but on an honest comparison between the cost of a task and that of automating it. This simple method — measure, value, compare — can be run on each candidate for automation. It lets you prioritise: start with the tasks with the best gain/effort ratio, then extend. That's how you build, piece by piece, an organisation that works for you.</p>
+  <h2>Beyond the hunch</h2>
+  <p>"I feel like I'm wasting time": this hunch is right, but it isn't enough to decide on. To act clear-headedly, you have to turn the impression into figures. How much time, how often, for what value? This quantification, simple to do, changes everything: it reveals the real scale of the hidden cost of repetitive tasks and gives a solid basis to decide what to automate first.</p>
+  <h2>A reproducible method</h2>
+  <p>The value of this approach is that it applies to any candidate task. Measure the time, value it, add the cost of errors, compare to the investment: this grid can be run on each process in your business. It lets you not only justify an automation, but rank them against each other, and so start with those that return the most for the least effort. It's this rational prioritisation that avoids scatter and maximises the return.</p>
+</article>
+<section class="wedo"><div class="wedo-box">
+  <h3>ORBE IA can build this</h3>
+  <p>At ORBE IA, this is exactly what we do: we identify your repetitive tasks and automate them cleanly, end to end. You get your hours back, without thinking about it.</p>
+  <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="wedo-cta">Automate my business ↗</a>
+</div></section>
+<section class="also"><h4>Read next</h4><a href="custom-business-app.html">When do you need a custom business application?</a><a href="internal-platform-vs-scattered-tools.html">Centralising your tools: why an internal platform changes everything</a></section>
+<footer class="foot">
+  <span>© 2026 ORBE IA — agence sur mesure</span>
+  <a href="mailto:contact@orbe-ia.com">contact@orbe-ia.com</a>
+</footer>
+</body>
+</html>

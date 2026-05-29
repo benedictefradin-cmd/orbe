@@ -75,6 +75,21 @@ nav.scrolled{background:rgba(246,241,231,.85);backdrop-filter:blur(12px);box-sha
 .nav-link:hover{color:var(--gold-deep)}
 @media(max-width:680px){nav{padding:16px 22px}nav.scrolled{padding:12px 22px}.nav-cta{padding:10px 16px;font-size:.72rem}.nav-right{gap:14px}.nav-link{font-size:.72rem}}
 
+/* ---------- Sélecteur de langue (Google Traduction) ---------- */
+.lang-switch{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;letter-spacing:.1em;font-weight:500}
+.lang-switch button{background:none;border:0;padding:0;cursor:pointer;font:inherit;letter-spacing:inherit;color:var(--ink-dim);transition:color .35s}
+.lang-switch button:hover{color:var(--gold-deep)}
+.lang-switch button.on{color:var(--gold-deep);font-weight:600}
+.lang-switch .sep{color:var(--ink-dim);opacity:.5}
+@media(max-width:680px){.lang-switch{font-size:.72rem}}
+/* Neutralisation du bandeau et des artefacts Google Traduction */
+#google_translate_element{display:none!important}
+.goog-te-banner-frame,.goog-te-banner-frame.skiptranslate{display:none!important}
+.goog-te-gadget{height:0!important;overflow:hidden!important}
+body{top:0!important}
+.goog-tooltip,#goog-gt-tt,.goog-te-balloon-frame{display:none!important}
+.goog-text-highlight{background:none!important;box-shadow:none!important}
+
 section{position:relative;z-index:2}
 .wrap{max-width:1140px;margin:0 auto;padding:0 40px}
 @media(max-width:680px){.wrap{padding:0 22px}}
@@ -279,12 +294,18 @@ section{position:relative;z-index:2}
 </div>
 
 <nav id="nav">
-  <div class="logo">ORBE <span class="ia">IA</span></div>
+  <div class="logo notranslate" translate="no">ORBE <span class="ia">IA</span></div>
   <div class="nav-right">
+    <div class="lang-switch notranslate" translate="no" role="group" aria-label="Choix de la langue / Language">
+      <button type="button" data-lang="fr" class="on" aria-label="Français">FR</button>
+      <span class="sep" aria-hidden="true">/</span>
+      <button type="button" data-lang="en" aria-label="English">EN</button>
+    </div>
     <a href="#journal" class="nav-link">Journal</a>
     <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="nav-cta">J'automatise mon activité ↗</a>
   </div>
 </nav>
+<div id="google_translate_element" aria-hidden="true"></div>
 
 <!-- HERO -->
 <section class="hero">
@@ -359,8 +380,8 @@ section{position:relative;z-index:2}
   <div class="showcase-sticky">
     <div class="bg" style="background-image:url('assets/workflow.jpg')"></div>
     <div class="caption">
-      <h2 class="fade">Du temps rendu, <em>vraiment.</em></h2>
-      <p class="fade">Les heures gagnées reviennent à ce qui compte pour votre activité.</p>
+      <h2 class="fade">Du temps <em>retrouvé.</em></h2>
+      <p class="fade">Place à ce qui fait vraiment avancer votre entreprise.</p>
     </div>
   </div>
 </section>
@@ -438,19 +459,19 @@ section{position:relative;z-index:2}
     <h2 class="title fade">Ce qu'on apprend, <em>on le partage.</em></h2>
     <p class="sub fade">Des repères concrets pour gagner du temps, sans jargon.</p>
     <div class="journal-list">
-      <a href="journal/cinq-taches-a-arreter.html" class="journal-item fade">
-        <div class="journal-meta"><span class="date">12 Mai 2026</span><span class="cat">Automatisation</span></div>
-        <h3>Cinq tâches que vous pourriez arrêter de faire à la main</h3>
+      <a href="journal/5-taches-a-automatiser-cette-semaine.html" class="journal-item fade">
+        <div class="journal-meta"><span class="date">20 Mai 2026</span><span class="cat">Automatisation</span></div>
+        <h3>5 tâches qu'un indépendant peut automatiser dès cette semaine</h3>
         <div class="arr">↗</div>
       </a>
-      <a href="journal/site-ou-application.html" class="journal-item fade">
-        <div class="journal-meta"><span class="date">28 Avr 2026</span><span class="cat">Site &amp; app</span></div>
-        <h3>Site vitrine ou application : comment choisir</h3>
+      <a href="journal/ia-pour-tpe-par-ou-commencer.html" class="journal-item fade">
+        <div class="journal-meta"><span class="date">18 Mai 2026</span><span class="cat">IA</span></div>
+        <h3>L'IA pour une TPE : par où commencer sans se tromper</h3>
         <div class="arr">↗</div>
       </a>
-      <a href="journal/automatisation-semaine-type.html" class="journal-item fade">
-        <div class="journal-meta"><span class="date">15 Avr 2026</span><span class="cat">Méthode</span></div>
-        <h3>Ce qu'une automatisation change vraiment dans une semaine type</h3>
+      <a href="journal/agents-ia-expliques-simplement.html" class="journal-item fade">
+        <div class="journal-meta"><span class="date">15 Mai 2026</span><span class="cat">Agents IA</span></div>
+        <h3>Les agents IA expliqués simplement (et ce qu'ils changent)</h3>
         <div class="arr">↗</div>
       </a>
     </div>
@@ -592,6 +613,26 @@ document.querySelectorAll('.faq-q').forEach(q=>{
     else{item.classList.add('open');a.style.maxHeight=a.scrollHeight+'px';}
   });
 });
+
+// --- Sélecteur de langue piloté par Google Traduction ---
+(function(){
+  var host=location.hostname, exp='expires=Thu, 01 Jan 1970 00:00:00 UTC';
+  function current(){var m=document.cookie.match(/googtrans=([^;]+)/);if(!m)return 'fr';var p=decodeURIComponent(m[1]).split('/');return p[2]||'fr';}
+  function apply(lang){
+    var domains=['path=/','path=/; domain='+host,'path=/; domain=.'+host];
+    if(lang==='fr'){domains.forEach(function(d){document.cookie='googtrans=; '+exp+'; '+d;});}
+    else{var v='/fr/'+lang;domains.forEach(function(d){document.cookie='googtrans='+v+'; '+d;});}
+    location.reload();
+  }
+  var btns=document.querySelectorAll('.lang-switch button');
+  function paint(){var c=current();btns.forEach(function(b){b.classList.toggle('on',b.dataset.lang===c);});}
+  btns.forEach(function(b){b.addEventListener('click',function(){if(b.dataset.lang!==current())apply(b.dataset.lang);});});
+  paint();
+})();
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'fr',includedLanguages:'en,fr',autoDisplay:false},'google_translate_element');
+}
 </script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
