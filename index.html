@@ -70,7 +70,10 @@ nav.scrolled{background:rgba(246,241,231,.85);backdrop-filter:blur(12px);box-sha
 .logo .ia{font-style:italic;color:var(--gold)}
 .nav-cta{font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:var(--bg);padding:12px 24px;border-radius:40px;text-decoration:none;transition:.35s;font-weight:400}
 .nav-cta:hover{background:var(--gold-deep)}
-@media(max-width:680px){nav{padding:16px 22px}nav.scrolled{padding:12px 22px}.nav-cta{padding:10px 16px;font-size:.72rem}}
+.nav-right{display:flex;align-items:center;gap:24px}
+.nav-link{font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none;font-weight:500;transition:.35s}
+.nav-link:hover{color:var(--gold-deep)}
+@media(max-width:680px){nav{padding:16px 22px}nav.scrolled{padding:12px 22px}.nav-cta{padding:10px 16px;font-size:.72rem}.nav-right{gap:14px}.nav-link{font-size:.72rem}}
 
 section{position:relative;z-index:2}
 .wrap{max-width:1140px;margin:0 auto;padding:0 40px}
@@ -130,10 +133,10 @@ section{position:relative;z-index:2}
 @media(max-width:680px){.showcase .caption{padding:32px 28px}}
 @media(max-width:680px){.showcase{height:165vh}.showcase-sticky{height:100svh}}
 
-/* ---------- MANIFESTE (pinned) ---------- */
-.manifesto{min-height:130vh;position:relative}
-.manifesto .sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center}
-.manifesto h2{font-family:var(--serif);font-weight:700;font-size:clamp(2.2rem,6vw,5.2rem);line-height:1.04;letter-spacing:-.03em;max-width:15ch;will-change:transform,opacity}
+/* ---------- MANIFESTE ---------- */
+.manifesto{position:relative;padding:16vh 0}
+.manifesto .sticky{display:flex;align-items:center}
+.manifesto h2{font-family:var(--serif);font-weight:700;font-size:clamp(1.9rem,4.4vw,3.4rem);line-height:1.14;letter-spacing:-.02em;max-width:24ch}
 .manifesto h2 strong{font-weight:800;color:var(--gold-deep);font-style:normal}
 
 /* ---------- Réassurance ---------- */
@@ -256,7 +259,10 @@ section{position:relative;z-index:2}
 
 <nav id="nav">
   <div class="logo">ORBE <span class="ia">IA</span></div>
-  <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="nav-cta">J'automatise mon activité ↗</a>
+  <div class="nav-right">
+    <a href="#journal" class="nav-link">Journal</a>
+    <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="nav-cta">J'automatise mon activité ↗</a>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -504,30 +510,20 @@ const nav=document.getElementById('nav');
 // parallaxe du témoignage + zoom des showcases
 const parallaxEls=[...document.querySelectorAll('.quote [data-parallax]')];
 const showcases=[...document.querySelectorAll('.showcase')];
-const mani=document.querySelector('.manifesto');
-const maniH2=mani.querySelector('h2');
 const railProg=document.getElementById('railProg');
 const rail=document.getElementById('rail');
 const sat=document.getElementById('sat');
 const len=rail.getTotalLength();
 railProg.style.strokeDasharray=len;railProg.style.strokeDashoffset=len;
 
-let maniTop=0,maniRange=1,docMax=1;
+let docMax=1;
 function measure(){
-  maniTop=mani.offsetTop;
-  maniRange=Math.max(mani.offsetHeight-window.innerHeight,1);
   docMax=Math.max(document.documentElement.scrollHeight-window.innerHeight,1);
 }
 let ticking=false;
 function render(){
   const y=window.scrollY||window.pageYOffset;
   nav.classList.toggle('scrolled',y>60);
-
-  // manifeste crossfade
-  const prog=Math.min(Math.max((y-maniTop)/maniRange,0),1);
-  if(prog>0.04&&prog<0.96)maniH2.classList.add('in');
-  maniH2.style.transform='scale('+(0.94+prog*0.06).toFixed(4)+')';
-  maniH2.style.opacity=(prog<0.5?0.4+prog:1.5-prog).toFixed(3);
 
   // parallaxe image du témoignage
   parallaxEls.forEach(el=>{
