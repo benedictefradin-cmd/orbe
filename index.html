@@ -295,7 +295,7 @@ section{position:relative;z-index:2}
   .nav-right{gap:13px}
   .nav-cta{padding:9px 14px;font-size:.66rem;letter-spacing:.06em;white-space:nowrap}
 
-  /* HERO — plus aéré, lisible, boutons pleine largeur */
+  /* HERO : plus aéré, lisible, boutons pleine largeur */
   .hero{min-height:auto;padding:118px 0 48px}
   .hero h1{font-size:clamp(2.5rem,11vw,3.4rem);line-height:1.02;margin-bottom:20px}
   .hero p.lede{font-size:1.06rem;max-width:100%;margin-bottom:28px}
@@ -304,7 +304,7 @@ section{position:relative;z-index:2}
   .hero-meta{flex-direction:column;gap:11px;padding-top:20px}
   .hero-meta span{font-size:.86rem}
 
-  /* SHOWCASE — sections plein écran moins étirées, texte calibré */
+  /* SHOWCASE : sections plein écran moins étirées, texte calibré */
   .showcase{height:150vh}
   .showcase-sticky{height:100svh}
   .showcase .caption{padding:30px 24px}
@@ -313,25 +313,33 @@ section{position:relative;z-index:2}
   .showcase.flat .caption h2{font-size:clamp(1.7rem,7.5vw,2.3rem)}
   .showcase.flat .caption p{font-size:.98rem}
 
-  /* MANIFESTE — moins de vide vertical sur mobile */
+  /* MANIFESTE : moins de vide vertical sur mobile */
   .manifesto{padding:88px 0}
   .manifesto h2{font-size:clamp(1.7rem,6.4vw,2.3rem);line-height:1.2;max-width:none}
 
-  /* OFFRES — la formule mise en avant passe en premier */
+  /* CONSTAT : les 4 cartes en grille 2×2 (plus aéré qu'une longue colonne) */
+  .cards4{grid-template-columns:repeat(2,1fr);border-radius:14px}
+  .cards4 .card{padding:24px 16px 22px;display:flex;flex-direction:column}
+  .cards4 .card::before{top:16px;right:15px}
+  .cards4 .card::after{top:20px}
+  .cards4 .card .k{font-size:1.1rem;padding-top:14px;margin-bottom:9px;line-height:1.2}
+  .cards4 .card p{font-size:.9rem;line-height:1.45}
+
+  /* OFFRES : la formule mise en avant passe en premier */
   .tier.featured{order:-1}
   .tier{padding:28px 24px}
   .tiers-cta .btn{width:100%;justify-content:center}
   .tiers-cta span{width:100%;text-align:center}
 
-  /* QUI SOMMES-NOUS — citation resserrée */
+  /* QUI SOMMES-NOUS : citation resserrée */
   .about-quote{font-size:clamp(1.25rem,5.4vw,1.5rem);padding-left:20px;margin:26px 0}
   .about-cta{margin-top:28px}
 
-  /* FAQ — meilleures zones de tap, lecture confortable */
+  /* FAQ : meilleures zones de tap, lecture confortable */
   .faq-q{padding:20px 0;gap:14px}
   .faq-a p{font-size:.98rem;max-width:none}
 
-  /* CONTACT — bouton pleine largeur */
+  /* CONTACT : bouton pleine largeur */
   .endcap .top{padding-bottom:44px}
   .endcap h2{margin-bottom:16px}
   .endcap .act{align-items:stretch}
@@ -348,7 +356,10 @@ section{position:relative;z-index:2}
   .hero h1{font-size:clamp(2.3rem,11.5vw,3rem)}
   .hero p.lede{font-size:1.02rem}
   .reassure .item h4{font-size:1.12rem}
-  .cards4 .card{padding:24px 22px}
+  /* cartes 2×2 : padding resserré pour les très petits écrans */
+  .cards4 .card{padding:20px 13px 18px}
+  .cards4 .card .k{font-size:1.02rem}
+  .cards4 .card p{font-size:.86rem}
   .lever{grid-template-columns:38px 1fr;gap:12px}
   .lever .idx{font-size:.88rem}
 }
@@ -487,7 +498,7 @@ section{position:relative;z-index:2}
       </div>
       <div class="tier fade">
         <div class="tag"></div><div class="step">03</div><h3>Sur mesure</h3><div class="price">Sur devis</div>
-        <p>Applications et plateformes : plusieurs briques connectées entre elles — automatisations, outils internes, intégrations. Un accompagnement dans la durée.</p>
+        <p>Applications et plateformes : plusieurs briques connectées entre elles : automatisations, outils internes, intégrations. Un accompagnement dans la durée.</p>
       </div>
     </div>
     <div class="tiers-cta fade">
@@ -514,7 +525,7 @@ section{position:relative;z-index:2}
     </div>
     <div class="about-body">
       <p class="sub fade">Je me suis mis à l'intelligence artificielle il y a cinq ans, bien avant qu'elle devienne une mode. Pas pour surfer sur la vague : pour bâtir des outils qui servent vraiment, au quotidien.</p>
-      <p class="sub fade">J'ai conçu et fait tourner des projets très différents. Et chaque jour, l'IA épaule mes clients comme elle gère une partie de mon entreprise. Je ne vends pas de la théorie — je transmets ce que je pratique.</p>
+      <p class="sub fade">J'ai conçu et fait tourner des projets très différents. Et chaque jour, l'IA épaule mes clients comme elle gère une partie de mon entreprise. Je ne vends pas de la théorie, je transmets ce que je pratique.</p>
       <blockquote class="about-quote fade">Ces outils ne devraient pas rester réservés aux grosses structures. <em>L'IA reste un outil au service des gens, jamais l'inverse.</em></blockquote>
       <p class="sub fade">Je les rends accessibles à ceux que les grandes agences ignorent ou intimident, à un prix calé sur leurs moyens.</p>
       <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="about-cta fade">Parlons de ce qu'elle peut changer chez vous<span class="ar">↗</span></a>
@@ -557,9 +568,9 @@ section{position:relative;z-index:2}
     <div class="faq">
       <div class="faq-item fade"><button class="faq-q">Concrètement, qu'est-ce que vous pouvez automatiser ?<span class="plus">+</span></button><div class="faq-a"><p>Tout ce qui revient et suit une logique : relances de devis et de factures, réponses aux mails récurrents, saisie de données d'un outil à l'autre, suivis, exports, notifications. On part de votre semaine type pour repérer ce qui se prête le mieux à l'automatisation.</p></div></div>
       <div class="faq-item fade"><button class="faq-q">Vous faites des sites, mais aussi des applications ?<span class="plus">+</span></button><div class="faq-a"><p>Oui. Du site vitrine à la landing page, jusqu'à l'application métier et l'espace client. Le point commun : c'est relié à vos automatisations pour que chaque demande soit traitée, sans rien laisser filer.</p></div></div>
-      <div class="faq-item fade"><button class="faq-q">Une plateforme sur mesure, c'est pour qui ?<span class="plus">+</span></button><div class="faq-a"><p>Pour les activités qui jonglent avec plusieurs outils qui ne communiquent pas. On bâtit un socle — tableaux de bord, outils internes, intégrations — qui centralise vos données et grandit avec vous.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">Une plateforme sur mesure, c'est pour qui ?<span class="plus">+</span></button><div class="faq-a"><p>Pour les activités qui jonglent avec plusieurs outils qui ne communiquent pas. On bâtit un socle (tableaux de bord, outils internes, intégrations) qui centralise vos données et grandit avec vous.</p></div></div>
       <div class="faq-item fade"><button class="faq-q">Faut-il être à l'aise avec la technique ?<span class="plus">+</span></button><div class="faq-a"><p>Non, c'est tout l'intérêt. Vous gardez un seul interlocuteur, on traduit votre besoin en solution, et vous recevez quelque chose qui fonctionne. Pas de jargon, pas de paramétrage à votre charge.</p></div></div>
-      <div class="faq-item fade"><button class="faq-q">Comment se passe le premier échange ?<span class="plus">+</span></button><div class="faq-a"><p>30 minutes, sans engagement, en visio. On regarde votre fonctionnement, on identifie ce qui pèse, et vous repartez avec des pistes concrètes — que vous décidiez de travailler avec nous ou non.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">Comment se passe le premier échange ?<span class="plus">+</span></button><div class="faq-a"><p>30 minutes, sans engagement, en visio. On regarde votre fonctionnement, on identifie ce qui pèse, et vous repartez avec des pistes concrètes, que vous décidiez de travailler avec nous ou non.</p></div></div>
     </div>
   </div>
 </section>
@@ -570,7 +581,7 @@ section{position:relative;z-index:2}
     <div class="top">
       <div>
         <h2 class="fade">On en <em>parle ?</em></h2>
-        <p class="lead fade">30 minutes, sans engagement. On regarde ensemble, concrètement, ce que vous pourriez déléguer ou construire — et le temps que cela représente.</p>
+        <p class="lead fade">30 minutes, sans engagement. On regarde ensemble, concrètement, ce que vous pourriez déléguer ou construire, et le temps que cela représente.</p>
       </div>
       <div class="act">
         <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-gold fade">Je libère mon temps ↗</a>
@@ -579,7 +590,7 @@ section{position:relative;z-index:2}
     </div>
     <div class="bar">
       <span class="logo-f">ORBE <span class="ia">IA</span></span>
-      <span>Le répétitif, en orbite — © 2026 · <a href="mentions-legales.html">Mentions légales</a></span>
+      <span>Le répétitif, en orbite · © 2026 · <a href="mentions-legales.html">Mentions légales</a></span>
     </div>
   </div>
 </section>
