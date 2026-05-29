@@ -14,7 +14,7 @@
 <meta name="theme-color" content="#0d0c08">
 <meta property="og:image" content="https://orbe-ia.com/og-image.png">
 <meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:height" content="1200">
 <meta property="og:image:alt" content="ORBE — le répétitif, en orbite">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ORBE — Studio d'automatisation IA">
@@ -31,7 +31,6 @@
   "description": "Studio d'automatisation IA et de création de sites web pour indépendants et TPE. On automatise les tâches répétitives et on conçoit le site qui travaille pour vous.",
   "url": "https://orbe-ia.com",
   "email": "contact@orbe-ia.com",
-  "telephone": "+33655811520",
   "areaServed": "FR",
   "availableLanguage": "fr",
   "priceRange": "€€"
@@ -98,12 +97,6 @@ em,.it{font-style:italic;font-family:'Instrument Serif',serif}
 .btn-l:hover{box-shadow:inset 0 0 0 1.5px var(--gold);color:var(--gold-bright);transform:translateY(-3px)}
 .arrow{transition:transform .4s cubic-bezier(.2,.7,.2,1);font-size:1.05em}
 .btn:hover .arrow{transform:translate(4px,-4px)}
-.btn .wa{width:18px;height:18px;flex-shrink:0}
-.btn-wa{background:#25d366;color:#06311c}
-.btn-wa::after{content:"";position:absolute;inset:0;background:#42e07f;opacity:0;transition:opacity .4s;z-index:0}
-.btn-wa:hover::after{opacity:.4}
-.btn-wa:hover{transform:translateY(-3px);box-shadow:0 22px 46px -16px rgba(37,211,102,.6)}
-.btn-wa>*{position:relative;z-index:1}
 
 .cursor{position:fixed;top:0;left:0;width:34px;height:34px;border:1.5px solid var(--gold);border-radius:50%;pointer-events:none;z-index:300;transform:translate(-50%,-50%);transition:width .3s,height .3s,background .3s,border-color .3s,opacity .3s;opacity:0}
 .dot-cursor{position:fixed;top:0;left:0;width:5px;height:5px;border-radius:50%;background:var(--gold-bright);pointer-events:none;z-index:301;transform:translate(-50%,-50%);opacity:0;transition:opacity .3s}
@@ -306,7 +299,7 @@ section{padding:120px 0;position:relative}
 @media(max-width:880px){.steps{grid-template-columns:1fr 1fr;gap:38px}}
 @media(max-width:480px){.steps{grid-template-columns:1fr}}
 
-.quote{text-align:center;max-width:24ch;margin:0 auto;position:relative}
+.quote{text-align:center;max-width:760px;margin:0 auto;position:relative}
 .quote .qm{font-family:'Instrument Serif';font-size:130px;line-height:.4;color:var(--gold);display:block;height:60px;opacity:.55}
 .quote h3{font-style:italic;font-size:clamp(28px,4.2vw,52px);letter-spacing:-.01em;max-width:none;line-height:1.14;color:var(--ink)}
 .quote h3 .hl{color:var(--gold)}
@@ -348,9 +341,9 @@ footer{border-top:1px solid var(--line-2);padding:54px 0;position:relative;z-ind
 .foot .lk a{font-size:14px;font-weight:500;transition:color .3s;color:var(--ink-2)}
 .foot .lk a:hover{color:var(--gold)}
 
-.float-cta{position:fixed;right:24px;bottom:24px;z-index:96;display:inline-flex;align-items:center;gap:10px;background:#25d366;color:#06311c;font-weight:600;font-size:14px;padding:14px 20px;border-radius:60px;box-shadow:0 18px 40px -14px rgba(37,211,102,.6);transition:transform .4s cubic-bezier(.2,.7,.2,1),box-shadow .4s;transform:translateY(140%)}
+.float-cta{position:fixed;right:24px;bottom:24px;z-index:96;display:inline-flex;align-items:center;gap:10px;background:linear-gradient(180deg,var(--gold-bright),var(--gold) 55%,var(--amber));color:#241405;font-weight:600;font-size:14px;padding:14px 20px;border-radius:60px;box-shadow:0 18px 40px -14px rgba(217,149,79,.6);transition:transform .4s cubic-bezier(.2,.7,.2,1),box-shadow .4s;transform:translateY(140%)}
 .float-cta.show{transform:translateY(0)}
-.float-cta:hover{transform:translateY(-4px);box-shadow:0 24px 50px -14px rgba(37,211,102,.75)}
+.float-cta:hover{transform:translateY(-4px);box-shadow:0 24px 50px -14px rgba(217,149,79,.8)}
 .float-cta .wa{width:19px;height:19px}
 @media(max-width:640px){.float-cta{left:14px;right:14px;justify-content:center}}
 
@@ -378,7 +371,7 @@ footer{border-top:1px solid var(--line-2);padding:54px 0;position:relative;z-ind
     <a href="#services" class="txt">Ce qu'on fait</a>
     <a href="#offres" class="txt">Offres</a>
     <a href="#faq" class="txt">FAQ</a>
-    <a href="#contact" class="btn btn-p magnetic"><span>Prendre RDV</span></a>
+    <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-p magnetic"><span>Prendre RDV</span></a>
   </div>
 </div></nav>
 
@@ -392,7 +385,7 @@ footer{border-top:1px solid var(--line-2);padding:54px 0;position:relative;z-ind
       </h1>
       <p class="hero-p rv d1">Les tâches qui reviennent chaque semaine, on les met en orbite&#8239;: l'IA s'en charge, en silence. Et on conçoit le site qui travaille pour vous, jour et nuit. Vous récupérez vos heures pour ce qui compte vraiment.</p>
       <div class="hero-cta rv d2">
-        <a href="#contact" class="btn btn-p magnetic"><span>Réserver un échange gratuit</span><span class="arrow">&#8599;</span></a>
+        <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-p magnetic"><span>Réserver un échange gratuit</span><span class="arrow">&#8599;</span></a>
         <a href="#services" class="btn btn-l magnetic">Voir ce qu'on fait</a>
       </div>
       <div class="trust rv d3">
@@ -550,7 +543,7 @@ footer{border-top:1px solid var(--line-2);padding:54px 0;position:relative;z-ind
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>On repère ce qui pèse pour peu de valeur</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Vous repartez avec des pistes concrètes</li>
         </ul>
-        <div class="ftr"><a href="#contact" class="btn btn-l magnetic" style="justify-content:center;width:100%">Prendre rendez-vous</a></div>
+        <div class="ftr"><a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-l magnetic" style="justify-content:center;width:100%">Prendre rendez-vous</a></div>
       </div>
       <div class="card c2 rv d1">
         <span class="tag">Le plus demandé</span>
@@ -563,7 +556,7 @@ footer{border-top:1px solid var(--line-2);padding:54px 0;position:relative;z-ind
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Ou un site vitrine soigné, pensé pour convertir</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Mis au point avec vous, prêt en quelques jours</li>
         </ul>
-        <div class="ftr"><a href="#contact" class="btn btn-p magnetic" style="justify-content:center;width:100%">Démarrer un projet <span class="arrow">&#8599;</span></a></div>
+        <div class="ftr"><a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-p magnetic" style="justify-content:center;width:100%">Démarrer un projet <span class="arrow">&#8599;</span></a></div>
       </div>
       <div class="card c3 rv d2">
         <div class="corb"></div>
@@ -575,7 +568,7 @@ footer{border-top:1px solid var(--line-2);padding:54px 0;position:relative;z-ind
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Outils internes, tableaux de bord, intégrations</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Accompagnement dans la durée</li>
         </ul>
-        <div class="ftr"><a href="#contact" class="btn btn-l magnetic" style="justify-content:center;width:100%">En parler</a></div>
+        <div class="ftr"><a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-l magnetic" style="justify-content:center;width:100%">En parler</a></div>
       </div>
     </div>
   </div>
@@ -641,11 +634,10 @@ footer{border-top:1px solid var(--line-2);padding:54px 0;position:relative;z-ind
   <div class="wrap">
     <h2 class="rv">On en parle<em>?</em></h2>
     <p class="rv d1">30 minutes, sans engagement. On regarde ensemble, concrètement, ce que vous pourriez mettre en orbite — et le temps que ça représente.</p>
-    <a href="https://wa.me/33655811520?text=Bonjour%2C%20je%20souhaite%20r%C3%A9server%20mon%20premier%20%C3%A9change%20gratuit." target="_blank" rel="noopener" class="btn btn-wa magnetic rv d2">
-      <svg class="wa" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.02h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.21 8.21 0 0 1-1.26-4.37c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.4-8.24 8.4Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.8-.79.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.65.31-.22.25-.85.84-.85 2.04 0 1.2.88 2.37 1 2.53.12.16 1.73 2.64 4.19 3.7.58.25 1.04.4 1.4.51.59.19 1.12.16 1.54.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.22-.17-.47-.29Z"/></svg>
-      <span>Réserver sur WhatsApp</span>
+    <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-p magnetic rv d2">
+      <span>Réserver un créneau</span><span class="arrow">&#8599;</span>
     </a>
-    <p class="micro rv d2"><a href="mailto:contact@orbe-ia.com">contact@orbe-ia.com</a> &nbsp;·&nbsp; <a href="https://wa.me/33655811520" target="_blank" rel="noopener">WhatsApp&#8239;: +33&#8239;6&#8239;55&#8239;81&#8239;15&#8239;20</a></p>
+    <p class="micro rv d2"><a href="mailto:contact@orbe-ia.com">contact@orbe-ia.com</a></p>
   </div>
 </section>
 </main>
@@ -661,8 +653,7 @@ footer{border-top:1px solid var(--line-2);padding:54px 0;position:relative;z-ind
   </div>
 </footer>
 
-<a class="float-cta" id="floatCta" href="https://wa.me/33655811520?text=Bonjour%2C%20je%20souhaite%20r%C3%A9server%20mon%20premier%20%C3%A9change%20gratuit." target="_blank" rel="noopener">
-  <svg class="wa" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.02h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.21 8.21 0 0 1-1.26-4.37c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.4-8.24 8.4Z"/></svg>
+<a class="float-cta" id="floatCta" href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener">
   Premier échange offert
 </a>
 
