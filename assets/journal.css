@@ -42,7 +42,7 @@ body{
   opacity:0;animation:fade 1s .05s forwards}
 .brand{display:flex;align-items:baseline;gap:.85rem}
 .logo{display:block;line-height:0;text-decoration:none}
-.logo img{display:block;height:clamp(1.9rem,2.6vw,2.4rem);width:auto}
+.logo img{display:block;height:clamp(2.5rem,3.4vw,3.2rem);width:auto}
 .tag{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-faint);padding-left:.85rem;border-left:1px solid var(--line)}
 nav{display:flex;align-items:center;gap:clamp(1.2rem,3vw,2.2rem)}
 .navlink{font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;transition:color .4s;position:relative}
