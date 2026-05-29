@@ -181,10 +181,11 @@ section{position:relative;z-index:2}
 /* ---------- Qui sommes-nous ---------- */
 .about-grid{display:grid;grid-template-columns:0.82fr 1fr;gap:64px;align-items:start}
 .about-aside{position:sticky;top:120px}
-.about-aside .title{margin-bottom:30px;max-width:14ch}
-.about-facts{list-style:none;border-top:1px solid var(--line)}
-.about-facts li{padding:18px 0;border-bottom:1px solid var(--line);color:var(--ink-soft);font-size:.96rem;line-height:1.45;display:flex;flex-direction:column;gap:4px}
-.about-facts .fk{font-family:var(--serif);font-weight:700;color:var(--gold-deep);font-size:1.06rem;letter-spacing:-.01em}
+.about-aside .title{margin-bottom:34px;max-width:14ch}
+.about-domains-label{display:block;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-dim);font-weight:600;margin-bottom:16px}
+.about-tags{display:flex;flex-wrap:wrap;gap:10px}
+.about-tags span{font-family:var(--serif);font-size:.94rem;font-weight:600;letter-spacing:-.01em;color:var(--ink);padding:9px 17px;border:1px solid var(--line);border-radius:40px;background:var(--bg)}
+.about-tags span::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin-right:9px;vertical-align:middle}
 .about-body{padding-top:6px}
 .about-body .sub{max-width:54ch;margin-bottom:22px}
 .about-body .sub:last-of-type{margin-bottom:0}
@@ -231,6 +232,8 @@ section{position:relative;z-index:2}
 .journal-item:hover h3{color:var(--gold-deep)}
 .journal-item .arr{font-family:var(--serif);font-size:1.3rem;color:var(--gold-deep);opacity:0;transform:translateX(-8px);transition:.45s cubic-bezier(.16,1,.3,1);justify-self:end}
 .journal-item:hover .arr{opacity:1;transform:translateX(0)}
+.journal-all{display:inline-flex;align-items:center;gap:8px;margin-top:36px;font-family:var(--serif);font-weight:600;font-size:1.02rem;letter-spacing:-.01em;color:var(--gold-deep);text-decoration:none;border-bottom:1px solid transparent;transition:.3s}
+.journal-all:hover{border-bottom-color:var(--gold-deep);transform:translateX(3px)}
 @media(max-width:680px){.journal-item{grid-template-columns:1fr 32px;gap:14px;padding:22px 0}.journal-meta{flex-direction:row;gap:12px;grid-column:1/-1;margin-bottom:-4px}.journal-item h3{grid-column:1}.journal-item .arr{display:none}}
 
 .faq-item{border-bottom:1px solid var(--line)}
@@ -409,15 +412,18 @@ section{position:relative;z-index:2}
     <div class="about-aside">
       <div class="eyebrow fade">Qui sommes-nous</div>
       <h2 class="title fade">L'IA, je la pratique <em>avant de la proposer.</em></h2>
-      <ul class="about-facts fade">
-        <li><span class="fk">Cinq ans</span> à concevoir et faire tourner des outils d'IA — bien avant la mode.</li>
-        <li><span class="fk">Au quotidien</span> l'IA gère une partie de ma propre entreprise.</li>
-        <li><span class="fk">Dès 1 500 €</span> un prix calé sur vos moyens, pas sur ceux des grandes agences.</li>
-      </ul>
+      <div class="about-domains fade">
+        <span class="about-domains-label">Ce que j'ai conçu</span>
+        <div class="about-tags">
+          <span>Communication interne</span>
+          <span>Jeux</span>
+          <span>Applications métier</span>
+        </div>
+      </div>
     </div>
     <div class="about-body">
       <p class="sub fade">Je me suis mis à l'intelligence artificielle il y a cinq ans, bien avant qu'elle devienne une mode. Pas pour surfer sur la vague : pour bâtir des outils qui servent vraiment, au quotidien.</p>
-      <p class="sub fade">Communication interne, jeux, applications métier : j'ai conçu et fait tourner des projets très différents. Et chaque jour, l'IA épaule mes clients comme elle gère une partie de mon entreprise. Je ne vends pas de la théorie — je transmets ce que je pratique.</p>
+      <p class="sub fade">J'ai conçu et fait tourner des projets très différents. Et chaque jour, l'IA épaule mes clients comme elle gère une partie de mon entreprise. Je ne vends pas de la théorie — je transmets ce que je pratique.</p>
       <blockquote class="about-quote fade">Ces outils ne devraient pas rester réservés aux grosses structures. <em>L'IA reste un outil au service des gens, jamais l'inverse.</em></blockquote>
       <p class="sub fade">Je les rends accessibles à ceux que les grandes agences ignorent ou intimident, à un prix calé sur leurs moyens.</p>
       <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="about-cta fade">Parlons de ce qu'elle peut changer chez vous<span class="ar">↗</span></a>
@@ -447,17 +453,8 @@ section{position:relative;z-index:2}
         <h3>Ce qu'une automatisation change vraiment dans une semaine type</h3>
         <div class="arr">↗</div>
       </a>
-      <a href="journal/outils-qui-ne-se-parlent-plus.html" class="journal-item fade">
-        <div class="journal-meta"><span class="date">02 Avr 2026</span><span class="cat">Plateforme</span></div>
-        <h3>Quand vos outils ne se parlent plus : les signes qui ne trompent pas</h3>
-        <div class="arr">↗</div>
-      </a>
-      <a href="journal/choisir-ce-qui-merite.html" class="journal-item fade">
-        <div class="journal-meta"><span class="date">20 Mars 2026</span><span class="cat">Coulisses</span></div>
-        <h3>Comment on choisit ce qui mérite d'être automatisé</h3>
-        <div class="arr">↗</div>
-      </a>
     </div>
+    <a href="journal/" class="journal-all fade">Voir tous les articles ↗</a>
   </div>
 </section>
 
