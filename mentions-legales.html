@@ -44,6 +44,20 @@ body::before{
 .back:hover{color:var(--gold-deep)}
 .logo{font-family:var(--serif);font-size:1.1rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
 .logo .ia{font-style:italic;color:var(--gold)}
+.brand{display:flex;align-items:center;gap:18px}
+
+/* Sélecteur de langue (Google Traduction) */
+.lang-switch{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;letter-spacing:.08em;font-weight:500}
+.lang-switch button{background:none;border:0;padding:0;cursor:pointer;font:inherit;letter-spacing:inherit;color:var(--ink-dim);transition:color .35s}
+.lang-switch button:hover{color:var(--gold-deep)}
+.lang-switch button.on{color:var(--gold-deep);font-weight:600}
+.lang-switch .sep{color:var(--ink-dim);opacity:.5}
+#google_translate_element{display:none!important}
+.goog-te-banner-frame,.goog-te-banner-frame.skiptranslate{display:none!important}
+.goog-te-gadget{height:0!important;overflow:hidden!important}
+body{top:0!important}
+.goog-tooltip,#goog-gt-tt,.goog-te-balloon-frame{display:none!important}
+.goog-text-highlight{background:none!important;box-shadow:none!important}
 
 /* Corps en colonne étroite */
 article{max-width:720px;margin:0 auto;padding:32px 24px 96px}
@@ -71,8 +85,16 @@ hr{border:none;border-top:1px solid var(--line);margin:48px 0}
 
 <header class="topbar">
   <a href="index.html" class="back">← Accueil</a>
-  <a href="index.html" class="logo">ORBE <span class="ia">IA</span></a>
+  <div class="brand">
+    <div class="lang-switch notranslate" translate="no" role="group" aria-label="Choix de la langue / Language">
+      <button type="button" data-lang="fr" class="on" aria-label="Français">FR</button>
+      <span class="sep" aria-hidden="true">/</span>
+      <button type="button" data-lang="en" aria-label="English">EN</button>
+    </div>
+    <a href="index.html" class="logo notranslate" translate="no">ORBE <span class="ia">IA</span></a>
+  </div>
 </header>
+<div id="google_translate_element" aria-hidden="true"></div>
 
 <article>
   <div class="eyebrow">Informations légales</div>
@@ -124,5 +146,25 @@ hr{border:none;border-top:1px solid var(--line);margin:48px 0}
   <a href="index.html" class="foot-back">← Retour à l'accueil</a>
 </footer>
 
+<script>
+(function(){
+  var host=location.hostname, exp='expires=Thu, 01 Jan 1970 00:00:00 UTC';
+  function current(){var m=document.cookie.match(/googtrans=([^;]+)/);if(!m)return 'fr';var p=decodeURIComponent(m[1]).split('/');return p[2]||'fr';}
+  function apply(lang){
+    var domains=['path=/','path=/; domain='+host,'path=/; domain=.'+host];
+    if(lang==='fr'){domains.forEach(function(d){document.cookie='googtrans=; '+exp+'; '+d;});}
+    else{var v='/fr/'+lang;domains.forEach(function(d){document.cookie='googtrans='+v+'; '+d;});}
+    location.reload();
+  }
+  var btns=document.querySelectorAll('.lang-switch button');
+  function paint(){var c=current();btns.forEach(function(b){b.classList.toggle('on',b.dataset.lang===c);});}
+  btns.forEach(function(b){b.addEventListener('click',function(){if(b.dataset.lang!==current())apply(b.dataset.lang);});});
+  paint();
+})();
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'fr',includedLanguages:'en,fr',autoDisplay:false},'google_translate_element');
+}
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
