@@ -75,6 +75,18 @@ hr{border:none;border-top:1px solid var(--line);margin:48px 0}
 .foot-cta:hover{background:var(--gold-deep);transform:translateY(-2px)}
 .foot-back{display:block;margin-top:28px;font-size:.85rem;color:var(--ink-soft);text-decoration:none}
 .foot-back:hover{color:var(--gold-deep)}
+
+/* Mobile : marges resserrées, lecture confortable */
+@media(max-width:560px){
+  .topbar{padding:20px 18px}
+  .brand{gap:12px}
+  article{padding:26px 18px 72px}
+  article h1{font-size:clamp(1.8rem,8.5vw,2.5rem);margin-bottom:28px}
+  article h2{font-size:clamp(1.3rem,6vw,1.65rem);margin:34px 0 12px}
+  article p,article li{font-size:1.02rem}
+  article blockquote{font-size:1.12rem;padding-left:18px;margin:24px 0}
+  .foot{padding:0 18px}
+}
 </style>
 </head>
 <body>
