@@ -127,6 +127,9 @@ section{position:relative;z-index:2}
 .showcase .caption h2{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,5.5vw,4.4rem);line-height:1.04;letter-spacing:-.03em;text-shadow:0 2px 30px rgba(0,0,0,.45)}
 .showcase .caption h2 em{font-style:normal;color:var(--gold-soft)}
 .showcase .caption p{margin-top:20px;font-size:1.12rem;color:rgba(255,255,255,.92);max-width:50ch;margin-left:auto;margin-right:auto;text-shadow:0 1px 16px rgba(0,0,0,.45)}
+/* 2e showcase : texte moins gros, sans zoom */
+.showcase.flat .caption h2{font-size:clamp(1.6rem,3.6vw,2.9rem)}
+.showcase.flat .caption p{font-size:1rem}
 @media(max-width:680px){.showcase .caption{padding:32px 28px}}
 @media(max-width:680px){.showcase{height:165vh}.showcase-sticky{height:100svh}}
 
@@ -332,7 +335,7 @@ section{position:relative;z-index:2}
 </section>
 
 <!-- SHOWCASE 2 -->
-<section class="showcase">
+<section class="showcase flat">
   <div class="showcase-sticky">
     <div class="bg" style="background-image:url('assets/workflow.jpg')"></div>
     <div class="caption">
@@ -536,7 +539,8 @@ function render(){
     const bg=sec.querySelector('.bg');
     const cap=sec.querySelector('.caption');
     if(bg)bg.style.transform='scale('+(1.05+sp*0.22).toFixed(4)+')';
-    if(cap)cap.style.transform='scale('+(0.82+sp*0.46).toFixed(4)+')';
+    // .flat : pas de zoom sur le texte (2e showcase), il reste à taille fixe
+    if(cap)cap.style.transform=sec.classList.contains('flat')?'none':'scale('+(0.82+sp*0.46).toFixed(4)+')';
   });
 
   // orbite
