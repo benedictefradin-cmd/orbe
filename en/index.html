@@ -79,8 +79,8 @@
     padding-bottom:clamp(.9rem,2vh,1.3rem);border-bottom:1px solid var(--line);
     opacity:0;animation:fade 1.2s .05s forwards}
   .brand{display:flex;align-items:baseline;gap:.85rem}
-  .logo{font-family:var(--display);font-size:clamp(1.4rem,2.6vw,1.8rem);letter-spacing:.02em;color:var(--ink);text-decoration:none}
-  .logo i{font-style:italic;color:var(--gold)}
+  .logo{display:block;line-height:0;text-decoration:none}
+  .logo img{display:block;height:clamp(2rem,4.4vh,2.6rem);width:auto}
   .tag{font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-faint);padding-left:.85rem;border-left:1px solid var(--line)}
   nav{display:flex;align-items:center;gap:clamp(1.4rem,3vw,2.6rem)}
   .journal{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;transition:color .4s;position:relative}
@@ -139,7 +139,6 @@
   @media (max-width:780px){
     header{padding-bottom:.9rem}
     .tag{display:none}
-    .logo{font-size:1.5rem}
     nav{gap:1.3rem}
     main{justify-content:flex-start;gap:clamp(1.6rem,5vh,3rem);padding-top:clamp(1.6rem,5vh,3rem)}
     h1{font-size:clamp(2.9rem,13vw,4.6rem);max-width:none;flex:0 0 auto}
@@ -229,7 +228,7 @@
 <div class="wrap">
   <header>
     <div class="brand">
-      <a class="logo" href="/en/">Orbe <i>IA</i></a>
+      <a class="logo" href="/en/"><img src="/assets/logo-orbe.png" alt="Orbe IA" width="640" height="230"></a>
       <span class="tag fr">Studio sur mesure</span><span class="tag en">Bespoke studio</span>
     </div>
     <nav>
