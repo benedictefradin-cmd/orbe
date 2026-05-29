@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://orbe-ia.com/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://orbe-ia.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://orbe-ia.com/"/>
+  </url>
+  <url>
+    <loc>https://orbe-ia.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://orbe-ia.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://orbe-ia.com/"/>
+  </url>
+  <url>
+    <loc>https://orbe-ia.com/journal/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://orbe-ia.com/journal/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/journal/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://orbe-ia.com/journal/"/>
+  </url>
+  <url>
+    <loc>https://orbe-ia.com/en/journal/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://orbe-ia.com/journal/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/journal/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://orbe-ia.com/journal/"/>
+  </url>
+  <url>
+    <loc>https://orbe-ia.com/journal/5-taches-a-automatiser-cette-semaine.html</loc>
+    <lastmod>2026-05-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://orbe-ia.com/journal/5-taches-a-automatiser-cette-semaine.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/journal/5-tasks-to-automate-this-week.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://orbe-ia.com/journal/5-taches-a-automatiser-cette-semaine.html"/>
+  </url>
+  <url>
+    <loc>https://orbe-ia.com/journal/agents-ia-expliques-simplement.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://orbe-ia.com/journal/agents-ia-expliques-simplement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/journal/ai-agents-explained-simply.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://orbe-ia.com/journal/agents-ia-expliques-simplement.html"/>
+  </url>
+  <url>
+    <loc>https://orbe-ia.com/en/journal/5-tasks-to-automate-this-week.html</loc>
+    <lastmod>2026-05-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://orbe-ia.com/journal/5-taches-a-automatiser-cette-semaine.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/journal/5-tasks-to-automate-this-week.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://orbe-ia.com/journal/5-taches-a-automatiser-cette-semaine.html"/>
+  </url>
+  <url>
+    <loc>https://orbe-ia.com/en/journal/ai-agents-explained-simply.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://orbe-ia.com/journal/agents-ia-expliques-simplement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/journal/ai-agents-explained-simply.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://orbe-ia.com/journal/agents-ia-expliques-simplement.html"/>
+  </url>
+</urlset>
