@@ -38,498 +38,285 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Calendly (assets officiels, chargés une seule fois) -->
+<link rel="stylesheet" href="https://assets.calendly.com/assets/external/widget.css">
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 <style>
 :root{
   --bg:#faf7f0;
   --bg-2:#f4efe4;
   --card:#ffffff;
-  --dark:#1d1a15;
+  --card-h:#fffdf8;
   --ink:#1c1a16;
   --ink-2:#3a352d;
   --ink-soft:#6c6557;
   --ink-faint:#9b9384;
-  --cream:#faf7f0;
-  --cream-soft:#cfc7b6;
   --accent:#e8542a;
   --accent-d:#c8431f;
   --accent-soft:rgba(232,84,42,.10);
-  --accent-line:rgba(232,84,42,.28);
   --line:#e3dccd;
   --line-2:#ece5d7;
-  --maxw:1100px;
-  --radius:18px;
-  --shadow-s:0 20px 44px -28px rgba(60,45,25,.20);
+  --shadow-s:0 20px 44px -28px rgba(60,45,25,.22);
+  --maxw:1000px;
+  --readw:620px;
+  --radius:16px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:92px}
-body{font-family:'Archivo',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.62;overflow-x:hidden;-webkit-font-smoothing:antialiased;font-weight:400}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;position:relative;z-index:2}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{font-family:'Archivo',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;font-weight:400}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;position:relative}
 a{color:inherit;text-decoration:none}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+h1,h2,h3,.serif{font-family:'Fraunces','Georgia',serif;font-weight:500;line-height:1.05;letter-spacing:-.012em;color:var(--ink)}
+em{font-style:italic;color:var(--accent);font-weight:500}
+
 .skip{position:absolute;left:14px;top:-60px;z-index:400;background:var(--accent);color:#fff;padding:12px 18px;border-radius:8px;font-weight:600;font-size:14px;transition:top .25s}
 .skip:focus{top:14px}
 
-h1,h2,h3,h4,.serif{font-family:'Fraunces','Georgia',serif;font-weight:500;line-height:1.05;letter-spacing:-.012em;color:var(--ink)}
-em,.it{font-style:italic;font-family:'Fraunces',serif;color:var(--accent);font-weight:500}
-
-.btn{display:inline-flex;align-items:center;gap:10px;font-family:'Archivo',sans-serif;font-weight:600;font-size:15px;cursor:pointer;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,background .3s,color .3s;border:none;padding:15px 28px;border-radius:999px;position:relative;letter-spacing:-.005em;white-space:nowrap}
-.btn-p{background:var(--accent);color:#fff;box-shadow:0 12px 28px -16px rgba(232,84,42,.7)}
-.btn-p:hover{background:var(--accent-d);transform:translateY(-2px);box-shadow:0 18px 34px -16px rgba(232,84,42,.7)}
-.btn-l{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
-.btn-l:hover{box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--accent);transform:translateY(-2px)}
+/* BUTTONS — un seul primaire + un ghost */
+.btn{display:inline-flex;align-items:center;gap:9px;font-family:'Archivo',sans-serif;font-weight:600;font-size:15px;cursor:pointer;transition:transform .35s cubic-bezier(.2,.7,.2,1),background .3s,box-shadow .3s,color .3s;border:none;padding:14px 26px;border-radius:999px;white-space:nowrap;letter-spacing:-.005em}
+.btn-p{background:var(--accent);color:#fff;box-shadow:0 14px 30px -16px rgba(232,84,42,.8)}
+.btn-p:hover{background:var(--accent-d);transform:translateY(-2px)}
+.ghost{font-size:15px;font-weight:500;color:var(--ink-2);padding:14px 4px;position:relative;background:none;border:none;cursor:pointer;font-family:'Archivo',sans-serif}
+.ghost::after{content:"";position:absolute;left:4px;right:4px;bottom:9px;height:1.5px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .35s}
+.ghost:hover{color:var(--accent)}
+.ghost:hover::after{transform:scaleX(1)}
 .arrow{transition:transform .35s cubic-bezier(.2,.7,.2,1);font-size:1.05em}
 .btn:hover .arrow{transform:translate(3px,-3px)}
 
-.rv{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+/* REVEAL */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
 .rv.in{opacity:1;transform:none}
-.d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}
-
-#progress{position:fixed;top:0;left:0;height:2px;width:0;z-index:200;background:var(--accent)}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:.4s}
-.ni{max-width:var(--maxw);margin:0 auto;padding:22px 32px;display:flex;align-items:center;justify-content:space-between}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .4s,border-color .4s,backdrop-filter .4s}
 nav.sc{background:rgba(250,247,240,.8);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border-bottom:1px solid var(--line)}
+.ni{max-width:var(--maxw);margin:0 auto;padding:18px 32px;display:flex;align-items:center;justify-content:space-between;transition:padding .35s}
 nav.sc .ni{padding:13px 32px}
-.brand{display:flex;align-items:center;gap:11px;font-family:'Fraunces',serif;font-weight:500;font-size:25px;letter-spacing:0;color:var(--ink)}
-.brand .mk{width:23px;height:23px;position:relative;flex-shrink:0}
-.brand .mk .core{position:absolute;top:50%;left:50%;width:8px;height:8px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%)}
-.brand .mk .rg{position:absolute;inset:0;border:1.4px solid var(--accent-line);border-radius:50%}
-.brand .mk .rg.b{inset:4px;border-style:dashed;opacity:.6}
-.brand .mk .sat{position:absolute;top:-1px;left:50%;width:5px;height:5px;border-radius:50%;background:var(--accent);transform-origin:1px 12.5px}
-.brand sub{font-family:'Archivo',sans-serif;font-size:.36em;letter-spacing:.18em;font-weight:600;color:var(--accent);align-self:flex-end;margin-bottom:.6em;margin-left:-.2em}
-.nav-links{display:flex;gap:28px;align-items:center}
-.nav-links a.txt{font-size:15px;font-weight:500;position:relative;color:var(--ink-2)}
-.nav-links a.txt::after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:1.5px;background:var(--accent);transition:width .35s}
-.nav-links a.txt:hover{color:var(--ink)}
-.nav-links a.txt:hover::after{width:100%}
-.burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:44px;height:44px;background:none;border:none;cursor:pointer;padding:10px}
-.burger span{display:block;height:2px;width:100%;background:var(--ink);border-radius:2px;transition:.35s}
-nav.open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-nav.open .burger span:nth-child(2){opacity:0}
-nav.open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-@media(max-width:820px){
-  .burger{display:flex}
-  .nav-links{position:fixed;top:66px;left:0;right:0;flex-direction:column;align-items:stretch;gap:6px;background:var(--bg);border-bottom:1px solid var(--line);padding:18px 24px 26px;transform:translateY(-14px);opacity:0;pointer-events:none;transition:transform .3s,opacity .3s;box-shadow:var(--shadow-s)}
-  nav.open .nav-links{transform:none;opacity:1;pointer-events:auto}
-  .nav-links a.txt{font-size:17px;padding:12px 4px;border-bottom:1px solid var(--line-2)}
-  .nav-links a.txt::after{display:none}
-  .nav-links .btn{margin-top:12px;justify-content:center}
-}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:500;font-size:23px;color:var(--ink)}
+.brand .mk{width:20px;height:20px;position:relative;flex-shrink:0}
+.brand .mk .rg{position:absolute;inset:0;border:1.3px solid rgba(232,84,42,.45);border-radius:50%}
+.brand .mk .core{position:absolute;top:50%;left:50%;width:7px;height:7px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);box-shadow:0 0 8px rgba(232,84,42,.6)}
+.brand .mk .sat{position:absolute;top:-1px;left:50%;width:4.5px;height:4.5px;border-radius:50%;background:var(--accent-d);transform-origin:1px 11px;animation:spin 9s linear infinite}
+.brand sub{font-family:'Archivo',sans-serif;font-size:.36em;letter-spacing:.18em;font-weight:600;color:var(--accent);align-self:flex-end;margin-bottom:.55em;margin-left:-.15em}
+.nav-r{display:flex;gap:8px;align-items:center}
+.nav-r .txt{font-size:15px;font-weight:500;color:var(--ink-2);padding:14px 12px;position:relative}
+.nav-r .txt::after{content:"";position:absolute;left:12px;bottom:9px;width:0;height:1.5px;background:var(--accent);transition:width .35s}
+.nav-r .txt:hover{color:var(--ink)}
+.nav-r .txt:hover::after{width:calc(100% - 24px)}
 
-/* HERO */
-header{padding:172px 0 116px;position:relative;overflow:hidden}
-.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
-.kicker{display:inline-flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--ink-soft);margin-bottom:28px;background:var(--card);padding:9px 16px;border-radius:60px;border:1px solid var(--line)}
-.kicker .gl{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);animation:pulse 2.6s ease-in-out infinite}
+/* ===== PREMIER ÉCRAN : header + hero + 2 blocs, tient en 100vh ≥1024px ===== */
+.first{min-height:100svh;display:flex;align-items:center;padding:clamp(84px,12vh,116px) 0 clamp(30px,5vh,54px)}
+.first .wrap{width:100%}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(34px,5vw,72px);align-items:center}
+.kicker{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;color:var(--ink-soft);margin-bottom:clamp(18px,2.6vh,26px)}
+.kicker .gl{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);animation:pulse 2.6s ease-in-out infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 4px var(--accent-soft)}50%{box-shadow:0 0 0 9px transparent}}
-header h1{font-size:clamp(46px,7vw,86px);letter-spacing:-.022em;margin-bottom:24px;line-height:.98;font-weight:500}
-.line{display:block;overflow:hidden;padding:.04em 0}
-.line i{display:block;font-style:normal;transform:translateY(112%);transition:transform 1s cubic-bezier(.16,1,.3,1)}
-.loaded .line i{transform:translateY(0)}
-.line:nth-child(2) i{transition-delay:.09s}
-header h1 .em{font-style:italic;color:var(--accent);font-weight:500}
-.hero-p{font-size:clamp(17px,1.4vw,19px);color:var(--ink-soft);max-width:42ch;margin:0 0 32px;line-height:1.6}
-.hero-cta{display:flex;gap:13px;flex-wrap:wrap;align-items:center}
-.hero-cta .ghost{font-size:15px;font-weight:500;color:var(--ink-2);padding:15px 6px;position:relative}
-.hero-cta .ghost::after{content:"";position:absolute;left:6px;right:6px;bottom:10px;height:1.5px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .35s}
-.hero-cta .ghost:hover{color:var(--accent)}
-.hero-cta .ghost:hover::after{transform:scaleX(1)}
+.hero h1{font-size:clamp(34px,5.2vw,62px);letter-spacing:-.022em;line-height:1;margin-bottom:clamp(16px,2.4vh,24px)}
+.hero h1 em{display:block}
+.hero-p{font-size:clamp(16px,1.3vw,18.5px);color:var(--ink-soft);max-width:40ch;margin-bottom:clamp(22px,3.2vh,32px);line-height:1.55}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 
-.orbit{position:relative;width:100%;aspect-ratio:1;max-width:440px;margin-left:auto;justify-self:end;will-change:transform}
-.orbit .ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1.5px solid var(--line);transform:translate(-50%,-50%)}
-.orbit .ring.dash{border-style:dashed;border-color:var(--accent-line)}
-.orbit .r1{width:30%;height:30%}
-.orbit .r2{width:56%;height:56%}
-.orbit .r3{width:80%;height:80%}
+/* ORBITE */
+.orbit-wrap{display:flex;justify-content:center}
+.orbit{position:relative;width:100%;max-width:min(360px,30vw,42vh);aspect-ratio:1;will-change:transform}
+.orbit .ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1.4px solid var(--line);transform:translate(-50%,-50%)}
+.orbit .ring.dash{border-style:dashed;border-color:rgba(232,84,42,.30)}
+.orbit .r2{width:46%;height:46%}
+.orbit .r3{width:74%;height:74%}
 .orbit .r4{width:100%;height:100%}
-.orbit .sun{position:absolute;top:50%;left:50%;width:30%;height:30%;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 36% 30%,#ff7a52,var(--accent) 60%,var(--accent-d) 110%);box-shadow:0 18px 50px -12px rgba(232,84,42,.45);display:grid;place-items:center;z-index:3}
-.orbit .sun::after{content:"";position:absolute;inset:-16%;border-radius:50%;border:1px solid var(--accent-line);animation:halo 4.5s ease-in-out infinite}
-@keyframes halo{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.16);opacity:0}}
-.orbit .sun .lbl{font-family:'Archivo',sans-serif;font-size:10px;letter-spacing:.16em;color:#fff;text-transform:uppercase;text-align:center;line-height:1.45;font-weight:700}
+.orbit .core{position:absolute;top:50%;left:50%;width:24%;height:24%;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 36% 30%,#ff8a64,var(--accent) 60%,var(--accent-d) 115%);box-shadow:0 16px 44px -10px rgba(232,84,42,.55);z-index:3}
+.orbit .core::after{content:"";position:absolute;inset:-18%;border-radius:50%;border:1px solid rgba(232,84,42,.30);animation:halo 4.6s ease-in-out infinite}
+@keyframes halo{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.18);opacity:0}}
 .sat-orbit{position:absolute;top:50%;left:50%;border-radius:50%;transform:translate(-50%,-50%);z-index:1}
-.sat-orbit .sat{position:absolute;top:-5px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px rgba(232,84,42,.5)}
-.so-a{width:56%;height:56%;animation:spin 19s linear infinite}
-.so-b{width:80%;height:80%;animation:spin 31s linear infinite reverse}
-.so-c{width:100%;height:100%;animation:spin 47s linear infinite;animation-delay:-12s}
-.so-a .sat{opacity:1}.so-b .sat{opacity:.8}.so-c .sat{opacity:.6}
+.sat-orbit .sat{position:absolute;top:-5px;left:50%;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px rgba(232,84,42,.6)}
+.so-a{width:46%;height:46%;animation:spin 22s linear infinite}
+.so-b{width:74%;height:74%;animation:spin 34s linear infinite reverse}
+.so-c{width:100%;height:100%;animation:spin 48s linear infinite;animation-delay:-14s}
+.so-b .sat{opacity:.85}.so-c .sat{width:7px;height:7px;opacity:.6}
 @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
-.chip{position:absolute;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:60px;padding:8px 15px 8px 11px;font-size:12px;font-weight:600;white-space:nowrap;box-shadow:var(--shadow-s);color:var(--ink-2);z-index:4;animation:floaty 6.5s ease-in-out infinite}
-.chip .d{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--accent)}
-.chip.k1{top:9%;left:-8%;animation-delay:-.4s}
-.chip.k2{top:43%;right:-12%;animation-delay:-2.6s}
-.chip.k3{bottom:11%;left:0;animation-delay:-4.4s}
-@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
-@keyframes spinM{to{transform:rotate(360deg)}}
-.brand .mk .rg.b{animation:spinM 9s linear infinite}
-.brand .mk .sat{animation:spinM 4.5s linear infinite}
 
-@media(max-width:960px){
-  .hero-grid{grid-template-columns:1fr;gap:56px}
-  .orbit{max-width:340px;margin:0 auto;justify-self:center}
-  header{padding:140px 0 64px}
+/* CE QU'ON FAIT — 2 blocs compacts dans le même écran */
+.services{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.4vw,20px);margin-top:clamp(24px,4vh,48px)}
+.scard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(20px,2.6vh,30px) clamp(22px,2.6vw,32px);transition:transform .4s cubic-bezier(.2,.7,.2,1),border-color .4s,background .4s}
+.scard:hover{transform:translateY(-4px);border-color:rgba(232,84,42,.32);background:var(--card-h);box-shadow:var(--shadow-s)}
+.scard .tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600;display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.scard .tag::before{content:"";width:22px;height:1.5px;background:var(--accent)}
+.scard h3{font-size:clamp(19px,2vw,23px);margin-bottom:8px}
+.scard p{color:var(--ink-soft);font-size:14.5px;line-height:1.55;max-width:38ch}
+
+/* ===== SOUS LE PREMIER ÉCRAN ===== */
+.contact{padding:clamp(72px,12vh,128px) 0 clamp(56px,9vh,96px)}
+.contact .wrap{max-width:var(--readw)}
+.eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:26px;height:1.5px;background:var(--accent)}
+.contact h2{font-size:clamp(30px,4.4vw,46px);letter-spacing:-.018em}
+.contact .sub{color:var(--ink-soft);font-size:17px;margin-top:14px}
+.cal{margin:36px 0 26px;min-width:320px;height:clamp(660px,84vh,940px);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--bg)}
+.contact-alt{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:15px;color:var(--ink-soft)}
+.contact-alt a{color:var(--ink-2);font-weight:500;border-bottom:1px solid var(--line);transition:color .3s,border-color .3s}
+.contact-alt a:hover{color:var(--accent);border-color:var(--accent)}
+.contact-alt .sep{color:var(--ink-faint)}
+
+footer{border-top:1px solid var(--line);padding:36px 0}
+.foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.foot .fb{font-family:'Fraunces',serif;font-size:16px;color:var(--ink-2)}
+.foot p{color:var(--ink-faint);font-size:13px}
+.foot a{color:var(--ink-faint);transition:color .3s}
+.foot a:hover{color:var(--accent)}
+
+/* ===== MOBILE / TABLETTE (<1024px) : scroll naturel ===== */
+@media(max-width:1023px){
+  .first{min-height:auto;padding:104px 0 56px;align-items:start}
+  .hero{grid-template-columns:1fr;gap:clamp(30px,6vw,48px)}
+  .orbit-wrap{order:-1}
+  .orbit{max-width:min(280px,62vw)}
+  .services{margin-top:40px}
 }
-
-/* MARQUEE — single discrete line */
-.tape{background:var(--bg-2);color:var(--ink-soft);padding:13px 0;overflow:hidden;white-space:nowrap;position:relative;z-index:3;border-block:1px solid var(--line)}
-.tape::before,.tape::after{content:"";position:absolute;top:0;bottom:0;width:90px;z-index:2;pointer-events:none}
-.tape::before{left:0;background:linear-gradient(90deg,var(--bg-2),transparent)}
-.tape::after{right:0;background:linear-gradient(270deg,var(--bg-2),transparent)}
-.tape-tk{display:inline-flex;animation:roll 38s linear infinite}
-.tape-tk span{display:inline-flex;gap:18px;align-items:center;padding-right:18px;font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
-.tape .st{color:var(--accent)}
-@keyframes roll{to{transform:translateX(-50%)}}
-
-/* SECTIONS */
-section{padding:120px 0;position:relative}
-.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:26px;display:flex;align-items:center;gap:13px}
-.eyebrow::before{content:"";width:28px;height:1.5px;background:var(--accent)}
-.eyebrow.ctr{justify-content:center}
-.big{font-size:clamp(30px,4.2vw,50px);max-width:16ch;letter-spacing:-.016em;line-height:1.08;font-weight:500}
-.lead{color:var(--ink-soft);font-size:18px;max-width:40ch;margin-top:22px;line-height:1.6}
-
-/* SOLUTION (problème fusionné) */
-.repeat{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-.repeat span{font-size:13.5px;font-weight:500;background:var(--card);border:1px solid var(--line);padding:9px 16px;border-radius:60px;color:var(--ink-2);display:inline-flex;align-items:center;gap:9px}
-.repeat span .d{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0}
-.levers{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:64px}
-.lcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:42px 40px;transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s,border-color .45s;display:flex;flex-direction:column}
-.lcard:hover{transform:translateY(-5px);box-shadow:var(--shadow-s);border-color:var(--accent-line)}
-.lcard .num{font-size:12px;color:var(--accent);letter-spacing:.06em;font-weight:600;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:10px}
-.lcard .num svg{width:18px;height:18px}
-.lcard h3{font-size:clamp(24px,2.6vw,30px);margin-bottom:12px;letter-spacing:-.012em}
-.lcard p{color:var(--ink-soft);font-size:15.5px;max-width:38ch;line-height:1.6;margin-bottom:24px}
-.lcard .ex{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
-.lcard .ex span{font-size:12px;font-weight:500;background:var(--bg-2);border:1px solid var(--line);padding:7px 13px;border-radius:60px;color:var(--ink-2);transition:border-color .3s}
-.lcard:hover .ex span{border-color:var(--accent-line)}
-@media(max-width:820px){.levers{grid-template-columns:1fr;gap:18px;margin-top:48px}}
-
-/* OFFRES */
-.deal{text-align:center;margin-bottom:62px}
-.deal h2{font-size:clamp(30px,4vw,46px);letter-spacing:-.016em;font-weight:500}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
-.card{background:var(--card);border-radius:var(--radius);padding:44px 36px;position:relative;overflow:hidden;transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s,border-color .45s;display:flex;flex-direction:column;border:1px solid var(--line)}
-.card:hover{transform:translateY(-6px);box-shadow:var(--shadow-s);border-color:var(--accent-line)}
-.card .step{font-size:12px;color:var(--accent);font-weight:600;text-transform:uppercase;margin-bottom:16px;position:relative;z-index:1;letter-spacing:.05em}
-.card h3{font-size:28px;margin-bottom:8px;position:relative;z-index:1;letter-spacing:-.012em}
-.card .price{font-family:'Fraunces',serif;font-weight:500;font-size:46px;line-height:1;margin:12px 0 4px;position:relative;z-index:1;color:var(--ink)}
-.card .price small{font-size:14px;font-style:italic;color:var(--ink-soft);display:block;margin-top:11px;font-family:'Fraunces',serif}
-.card ul{list-style:none;margin:22px 0 28px;display:flex;flex-direction:column;gap:12px;flex:1;position:relative;z-index:1}
-.card ul li{font-size:14.5px;color:var(--ink-soft);display:flex;gap:12px;align-items:flex-start;line-height:1.45}
-.card ul li svg{width:17px;height:17px;color:var(--accent);flex-shrink:0;margin-top:1px}
-.card .ftr{position:relative;z-index:1}
-.card.c2{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow-s);transform:translateY(-10px)}
-.card.c2::before{content:"";position:absolute;inset:0;background:var(--accent-soft);z-index:0;pointer-events:none}
-.card.c2:hover{transform:translateY(-16px)}
-.card.c2 .price,.card.c2 h3{color:var(--accent-d)}
-.card .tag{position:absolute;top:20px;right:20px;z-index:2;background:var(--accent);color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:60px;box-shadow:0 8px 20px -10px rgba(232,84,42,.6)}
-@media(max-width:880px){.cards{grid-template-columns:1fr;max-width:420px;margin-inline:auto}.card.c2{transform:none}.card.c2:hover{transform:translateY(-6px)}}
-
-/* METHODE — bande horizontale légère */
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-top:8px}
-.stp{position:relative;padding-top:26px;border-top:1.5px solid var(--line);transition:border-color .5s}
-.stp.in{border-color:var(--accent-line)}
-.stp .ix{font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--accent);margin-bottom:14px}
-.stp h4{font-family:'Fraunces',serif;font-weight:500;font-size:21px;margin-bottom:7px;letter-spacing:-.012em}
-.stp p{font-size:14px;color:var(--ink-soft);line-height:1.5}
-@media(max-width:820px){.steps{grid-template-columns:1fr 1fr;gap:30px}}
-@media(max-width:480px){.steps{grid-template-columns:1fr;gap:24px}}
-
-/* FAQ */
-.faq{max-width:760px;margin:48px auto 0}
-.fitem{border-bottom:1px solid var(--line)}
-.fitem:first-child{border-top:1px solid var(--line)}
-.fq{width:100%;list-style:none;cursor:pointer;padding:28px 4px;display:flex;justify-content:space-between;align-items:center;gap:24px;font-family:'Fraunces',serif;font-weight:500;font-size:clamp(19px,2.2vw,23px);color:var(--ink);transition:color .3s}
-.fq::-webkit-details-marker{display:none}
-.fq:hover{color:var(--accent)}
-.fq .pm{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;transition:.4s cubic-bezier(.2,.7,.2,1);position:relative}
-.fq .pm::before,.fq .pm::after{content:"";position:absolute;background:var(--ink);border-radius:2px;transition:.4s}
-.fq .pm::before{width:12px;height:1.6px}
-.fq .pm::after{width:1.6px;height:12px}
-.fitem[open] .fq .pm{background:var(--accent);border-color:var(--accent);transform:rotate(135deg)}
-.fitem[open] .fq .pm::before,.fitem[open] .fq .pm::after{background:#fff}
-.fa p{padding:0 4px 26px;color:var(--ink-soft);font-size:15.5px;max-width:62ch;line-height:1.6}
-.fitem[open] .fa{animation:faOpen .4s ease}
-@keyframes faOpen{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-
-/* CTA — dark contrast block */
-.cta{position:relative;overflow:hidden;padding:120px 0}
-.cta-inner{background:var(--dark);border-radius:28px;text-align:center;padding:88px 40px 92px;position:relative;overflow:hidden}
-.cta .glow{position:absolute;top:0;left:50%;width:620px;height:620px;border-radius:50%;transform:translate(-50%,-46%);background:radial-gradient(circle,rgba(232,84,42,.32),transparent 62%);z-index:0;pointer-events:none;filter:blur(10px)}
-.cta-ring{position:absolute;top:50%;left:50%;border:1.5px solid rgba(250,247,240,.12);border-radius:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none}
-.cta-ring.a{width:460px;height:460px}
-.cta-ring.b{width:700px;height:700px;border-style:dashed;border-color:rgba(232,84,42,.22)}
-.cta .ctc{position:relative;z-index:2}
-.cta h2{font-size:clamp(38px,6vw,72px);letter-spacing:-.024em;margin-bottom:22px;line-height:1;color:var(--cream)}
-.cta h2 em{color:#ff7a52}
-.cta p{color:var(--cream-soft);max-width:42ch;margin:0 auto 34px;font-size:17px;line-height:1.6}
-.cta .micro{margin-top:24px;font-size:13px;color:var(--cream-soft);letter-spacing:.01em;font-weight:500}
-.cta .micro a{border-bottom:1px solid rgba(250,247,240,.25);transition:border-color .3s,color .3s}
-.cta .micro a:hover{border-color:var(--accent);color:#ff7a52}
-@media(max-width:640px){.cta-inner{padding:64px 24px 72px;border-radius:20px}}
-
-footer{border-top:1px solid var(--line);padding:48px 0;position:relative;z-index:2}
-.foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
-.foot p{color:var(--ink-faint);font-size:13px;letter-spacing:.01em}
-.foot .lk{display:flex;gap:22px;flex-wrap:wrap}
-.foot .lk a{font-size:14px;font-weight:500;transition:color .3s;color:var(--ink-2)}
-.foot .lk a:hover{color:var(--accent)}
-
-/* STICKY MOBILE CTA */
-.float-cta{display:none}
 @media(max-width:640px){
-  .float-cta{display:inline-flex;position:fixed;left:14px;right:14px;bottom:14px;z-index:96;align-items:center;justify-content:center;gap:10px;background:var(--accent);color:#fff;font-weight:600;font-size:15px;padding:15px 20px;border-radius:999px;box-shadow:0 16px 36px -14px rgba(232,84,42,.6);transform:translateY(140%);transition:transform .4s cubic-bezier(.2,.7,.2,1)}
-  .float-cta.show{transform:translateY(0)}
-  .float-cta .x{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:24px;height:24px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.18);font-size:15px;line-height:1}
+  .wrap{padding:0 22px}
+  .ni{padding:16px 22px}
+  nav.sc .ni{padding:12px 22px}
+  .nav-r .txt{padding:14px 8px}
+  .nav-r .txt::after{display:none}
+  .services{grid-template-columns:1fr;gap:14px}
+  .hero-cta{width:100%}
+  .hero-cta .btn{flex:1;justify-content:center}
 }
 
-@media(max-width:880px){section{padding:88px 0}.wrap{padding:0 22px}.ni{padding:18px 22px}.cta{padding:88px 0}}
 @media(prefers-reduced-motion:reduce){
   *{scroll-behavior:auto!important}
-  .rv,.line i{transition:none!important;transform:none!important;opacity:1!important}
-  .sat-orbit,.chip,.orbit .sun::after,.tape-tk,.brand .mk .rg.b,.brand .mk .sat,.kicker .gl{animation:none!important}
+  .rv{transition:none!important;transform:none!important;opacity:1!important}
+  .sat-orbit,.orbit .core::after,.brand .mk .sat,.kicker .gl{animation:none!important}
 }
 </style>
 </head>
 <body>
 
-<a href="#content" class="skip">Aller au contenu</a>
+<a href="#services" class="skip">Aller au contenu</a>
 
 <nav id="nav"><div class="ni">
   <a href="#top" class="brand" aria-label="ORBE — accueil">
-    <span class="mk" aria-hidden="true"><span class="rg"></span><span class="rg b"></span><span class="core"></span><span class="sat"></span></span>
+    <span class="mk" aria-hidden="true"><span class="rg"></span><span class="core"></span><span class="sat"></span></span>
     ORBE<sub>IA</sub>
   </a>
-  <div class="nav-links" id="navLinks">
-    <a href="#services" class="txt">Solutions</a>
-    <a href="#offres" class="txt">Offres</a>
-    <a href="#faq" class="txt">FAQ</a>
-    <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-p"><span>Prendre RDV</span></a>
+  <div class="nav-r">
+    <a href="#services" class="txt">Ce qu'on fait</a>
+    <button type="button" class="btn btn-p" data-cal><span>Prendre RDV</span></button>
   </div>
-  <button class="burger" id="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div></nav>
 
-<header id="top">
-  <div class="wrap hero-grid">
-    <div>
-      <div class="kicker rv"><span class="gl"></span>Automatisation IA &amp; sites web · indépendants &amp; TPE</div>
-      <h1>
-        <span class="line"><i><span class="em">Le répétitif,</span></i></span>
-        <span class="line"><i>en orbite.</i></span>
-      </h1>
-      <p class="hero-p rv d1">L'IA prend en charge les tâches qui reviennent, et votre site travaille pour vous — pendant que vous récupérez vos heures pour l'essentiel.</p>
-      <div class="hero-cta rv d2">
-        <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-p"><span>Réserver un échange gratuit</span><span class="arrow">&#8599;</span></a>
-        <a href="#services" class="ghost">Voir ce qu'on fait</a>
+<!-- PREMIER ÉCRAN : hero + 2 blocs (tient en 100vh sur desktop) -->
+<section class="first" id="top">
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-txt">
+        <div class="kicker rv"><span class="gl"></span>Automatisation IA · sites, outils &amp; applications · indépendants &amp; TPE</div>
+        <h1 class="rv d1">Le répétitif,<em>en orbite.</em></h1>
+        <p class="hero-p rv d1">On automatise les tâches qui reviennent chaque semaine et on conçoit les sites, outils et applications qui travaillent pour vous. Pour les indépendants et les TPE.</p>
+        <div class="hero-cta rv d2">
+          <button type="button" class="btn btn-p" data-cal><span>Réserver un échange gratuit</span><span class="arrow">&#8599;</span></button>
+          <a href="#services" class="ghost">Ce qu'on fait</a>
+        </div>
+      </div>
+      <div class="orbit-wrap rv d2">
+        <div class="orbit" aria-hidden="true">
+          <span class="ring r4 dash"></span>
+          <span class="ring r3"></span>
+          <span class="ring r2 dash"></span>
+          <span class="sat-orbit so-a"><span class="sat"></span></span>
+          <span class="sat-orbit so-b"><span class="sat"></span></span>
+          <span class="sat-orbit so-c"><span class="sat"></span></span>
+          <span class="core"></span>
+        </div>
       </div>
     </div>
-    <div class="orbit rv d2" id="orbit" aria-hidden="true">
-      <span class="ring r1"></span>
-      <span class="ring r2 dash"></span>
-      <span class="ring r3"></span>
-      <span class="ring r4 dash"></span>
-      <span class="sat-orbit so-a"><span class="sat"></span></span>
-      <span class="sat-orbit so-b"><span class="sat"></span></span>
-      <span class="sat-orbit so-c"><span class="sat"></span></span>
-      <span class="sun"><span class="lbl">ORBE<br>IA</span></span>
-      <span class="chip k1"><span class="d"></span>Relances</span>
-      <span class="chip k2"><span class="d"></span>Mails types</span>
-      <span class="chip k3"><span class="d"></span>Facturation</span>
-    </div>
-  </div>
-</header>
 
-<main id="content">
-<div class="tape">
-  <div class="tape-tk">
-    <span>Du temps retrouvé<span class="st">&#9670;</span>Moins de répétitif<span class="st">&#9670;</span>Plus rien qui passe à la trappe<span class="st">&#9670;</span>Un site qui travaille pour vous<span class="st">&#9670;</span>L'esprit plus léger<span class="st">&#9670;</span></span>
-    <span>Du temps retrouvé<span class="st">&#9670;</span>Moins de répétitif<span class="st">&#9670;</span>Plus rien qui passe à la trappe<span class="st">&#9670;</span>Un site qui travaille pour vous<span class="st">&#9670;</span>L'esprit plus léger<span class="st">&#9670;</span></span>
-  </div>
-</div>
-
-<section id="services">
-  <div class="wrap">
-    <div class="eyebrow rv">Le constat &amp; la réponse</div>
-    <h2 class="big rv">Ce qui se répète <em>peut se déléguer.</em></h2>
-    <p class="lead rv d1">Chaque semaine, des heures partent dans des gestes mécaniques. On repère lesquels, on les met en orbite — et ce temps vous revient.</p>
-    <div class="repeat rv d1">
-      <span><span class="d"></span>Relances de devis &amp; factures</span>
-      <span><span class="d"></span>Mails répétitifs</span>
-      <span><span class="d"></span>Double saisie d'un outil à l'autre</span>
-    </div>
-    <div class="levers">
-      <div class="lcard rv">
-        <span class="num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>01 / Automatisation</span>
+    <div class="services" id="services">
+      <article class="scard rv d1">
+        <span class="tag">Automatisation</span>
         <h3>On enlève le répétitif</h3>
-        <p>On confie à l'IA les tâches qui reviennent — relances, réponses, suivis. Elles tournent toutes seules, sans erreur d'inattention.</p>
-        <div class="ex"><span>Relances automatiques</span><span>Réponses assistées</span><span>Synchro d'outils</span></div>
-      </div>
-      <div class="lcard rv d1">
-        <span class="num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M2 8h20M8 21h8M12 17v4"/></svg>02 / Sites web</span>
+        <p>On confie à l'IA les relances, mails et saisies qui reviennent. Elles tournent toutes seules.</p>
+      </article>
+      <article class="scard rv d1">
+        <span class="tag">Sites web</span>
         <h3>On crée le site qui convertit</h3>
-        <p>Un site clair, rapide et soigné, pensé pour transformer les visiteurs en prises de contact — et relié à vos automatisations.</p>
-        <div class="ex"><span>Site vitrine</span><span>Prise de RDV intégrée</span><span>Formulaires connectés</span></div>
-      </div>
+        <p>Un site clair et rapide, pensé pour transformer les visiteurs en contacts.</p>
+      </article>
+      <article class="scard rv d2">
+        <span class="tag">Outils &amp; applications</span>
+        <h3>On bâtit sur mesure</h3>
+        <p>L'outil ou la petite application qui colle à votre métier — pensé autour de votre façon de travailler.</p>
+      </article>
     </div>
   </div>
 </section>
 
-<section id="offres">
+<!-- RDV (sous le premier écran) -->
+<section class="contact" id="contact">
   <div class="wrap">
-    <div class="deal rv"><div class="eyebrow ctr">Les offres</div><h2>Simple. <em>Trois étapes.</em></h2></div>
-    <div class="cards">
-      <div class="card c1 rv">
-        <span class="step">01 — On se rencontre</span>
-        <h3>Premier échange</h3>
-        <div class="price">Gratuit<small>30 min, sans engagement</small></div>
-        <ul>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>On passe en revue votre semaine type</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Vous repartez avec des pistes concrètes</li>
-        </ul>
-        <div class="ftr"><a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-l" style="justify-content:center;width:100%">Prendre rendez-vous</a></div>
-      </div>
-      <div class="card c2 rv d1">
-        <span class="tag">Le plus demandé</span>
-        <span class="step">02 — On s'en charge</span>
-        <h3>Une tâche, ou un site</h3>
-        <div class="price">dès 1&#8239;500&euro;<small>tarif annoncé avant de commencer</small></div>
-        <ul>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Une tâche automatisée de bout en bout</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Ou un site vitrine pensé pour convertir</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Prêt en quelques jours</li>
-        </ul>
-        <div class="ftr"><a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-p" style="justify-content:center;width:100%">Démarrer un projet <span class="arrow">&#8599;</span></a></div>
-      </div>
-      <div class="card c3 rv d2">
-        <span class="step">03 — On va plus loin</span>
-        <h3>Sur mesure</h3>
-        <div class="price">Sur devis<small>on en discute ensemble</small></div>
-        <ul>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Plusieurs automatismes connectés</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Accompagnement dans la durée</li>
-        </ul>
-        <div class="ftr"><a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-l" style="justify-content:center;width:100%">En parler</a></div>
-      </div>
-    </div>
+    <p class="eyebrow rv">Prendre rendez-vous</p>
+    <h2 class="rv">On en parle&#8239;?</h2>
+    <p class="sub rv d1">30 minutes, sans engagement.</p>
+    <div id="calendly-inline" class="cal rv d1"></div>
+    <p class="contact-alt rv">
+      <a href="mailto:contact@orbe-ia.com">contact@orbe-ia.com</a>
+      <span class="sep">·</span>
+      <a href="https://wa.me/33655811520?text=Bonjour%2C%20je%20souhaite%20r%C3%A9server%20mon%20premier%20%C3%A9change%20gratuit." target="_blank" rel="noopener">WhatsApp</a>
+    </p>
   </div>
 </section>
-
-<section id="methode">
-  <div class="wrap">
-    <div class="eyebrow rv">Comment ça se passe</div>
-    <h2 class="big rv" style="margin-bottom:56px">Du premier échange <em>au temps retrouvé.</em></h2>
-    <div class="steps" id="steps">
-      <div class="stp rv"><div class="ix">01</div><h4>On échange</h4><p>30 minutes pour comprendre votre quotidien et là où ça coince.</p></div>
-      <div class="stp rv d1"><div class="ix">02</div><h4>On chiffre</h4><p>Un tarif clair, fixé avant de commencer. À vous de décider.</p></div>
-      <div class="stp rv d2"><div class="ix">03</div><h4>On réalise</h4><p>On construit, on teste avec vous, on ajuste jusqu'au bon résultat.</p></div>
-      <div class="stp rv d3"><div class="ix">04</div><h4>Vous reprenez la main</h4><p>Le temps revient, semaine après semaine, sans y penser.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="faq">
-  <div class="wrap">
-    <div class="eyebrow ctr rv">Les questions qu'on nous pose</div>
-    <h2 class="big rv" style="margin:0 auto 10px;text-align:center;max-width:none">Vous vous demandez<em>…</em></h2>
-    <div class="faq">
-      <details class="fitem rv">
-        <summary class="fq">Je ne suis pas à l'aise avec la technique, est-ce un problème&#8239;? <span class="pm" aria-hidden="true"></span></summary>
-        <div class="fa"><p>Pas du tout, et c'est voulu. Vous n'avez rien à installer ni à paramétrer. La partie technique reste de notre côté&#8239;; du vôtre, vous constatez seulement le temps gagné.</p></div>
-      </details>
-      <details class="fitem rv">
-        <summary class="fq">En combien de temps est-ce opérationnel&#8239;? <span class="pm" aria-hidden="true"></span></summary>
-        <div class="fa"><p>Pour une tâche simple, quelques jours après le premier échange. Un site vitrine se livre généralement en une à deux semaines. Un délai ferme vous est donné dès le devis.</p></div>
-      </details>
-      <details class="fitem rv">
-        <summary class="fq">Pourquoi un tarif annoncé dès le départ&#8239;? <span class="pm" aria-hidden="true"></span></summary>
-        <div class="fa"><p>Parce qu'un devis flou ne sert personne. Le tarif est fixé avant de commencer&#8239;: pas de temps facturé qui s'accumule, pas de mauvaise surprise à la livraison.</p></div>
-      </details>
-    </div>
-  </div>
-</section>
-
-<section class="cta" id="contact">
-  <div class="wrap">
-    <div class="cta-inner">
-      <div class="glow"></div>
-      <span class="cta-ring a"></span><span class="cta-ring b"></span>
-      <div class="ctc">
-        <h2 class="rv">On en parle<em>?</em></h2>
-        <p class="rv d1">30 minutes, sans engagement, pour regarder concrètement ce que vous pourriez mettre en orbite.</p>
-        <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-p rv d2">
-          <span>Réserver un créneau</span><span class="arrow">&#8599;</span>
-        </a>
-        <p class="micro rv d2"><a href="mailto:contact@orbe-ia.com">contact@orbe-ia.com</a></p>
-      </div>
-    </div>
-  </div>
-</section>
-</main>
 
 <footer>
   <div class="wrap foot">
-    <a href="#top" class="brand">
-      <span class="mk" aria-hidden="true"><span class="rg"></span><span class="rg b"></span><span class="core"></span><span class="sat"></span></span>
-      ORBE<sub>IA</sub>
-    </a>
-    <div class="lk"><a href="#services">Solutions</a><a href="#offres">Offres</a><a href="#methode">Méthode</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></div>
-    <p>&copy; 2026 ORBE — Le répétitif, en orbite.</p>
+    <span class="fb">ORBE — Le répétitif en orbite.</span>
+    <div class="lk"><p>&copy; 2026 ORBE · <a href="mailto:contact@orbe-ia.com">contact@orbe-ia.com</a></p></div>
   </div>
 </footer>
-
-<a class="float-cta" id="floatCta" href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener">
-  Premier échange offert
-  <button class="x" id="floatX" type="button" aria-label="Fermer">&times;</button>
-</a>
-
-<div id="progress"></div>
 
 <script>
 (function(){
   'use strict';
-  addEventListener('load',function(){document.body.classList.add('loaded')});
-  setTimeout(function(){document.body.classList.add('loaded')},400);
 
-  var nav=document.getElementById('nav'),prog=document.getElementById('progress'),floatCta=document.getElementById('floatCta'),floatHidden=false;
-  function sc(){
-    var s=scrollY,h=document.documentElement.scrollHeight-innerHeight;
-    nav.classList.toggle('sc',s>40);
-    prog.style.width=(h>0?s/h*100:0)+'%';
-    if(floatCta&&!floatHidden)floatCta.classList.toggle('show',s>700);
+  /* ===== Lien Calendly ===== */
+  var CALENDLY_URL = "https://calendly.com/contact-orbe-ia/30min"; // REMPLACER par le vrai lien Calendly
+  // Couleurs du widget alignées sur le thème clair du site
+  var CALENDLY_STYLED = CALENDLY_URL +
+    "?hide_gdpr_banner=1&background_color=faf7f0&text_color=1c1a16&primary_color=e8542a";
+
+  /* Popup (header + hero) */
+  function openCal(){
+    if(window.Calendly){ Calendly.initPopupWidget({url:CALENDLY_STYLED}); }
+    else { window.open(CALENDLY_URL,'_blank','noopener'); }
   }
-  addEventListener('scroll',sc,{passive:true});sc();
+  document.querySelectorAll('[data-cal]').forEach(function(b){
+    b.addEventListener('click',function(e){e.preventDefault();openCal();});
+  });
 
-  /* dismiss sticky CTA */
-  var floatX=document.getElementById('floatX');
-  if(floatX){floatX.addEventListener('click',function(e){e.preventDefault();floatHidden=true;floatCta.classList.remove('show');});}
-
-  /* burger menu */
-  var burger=document.getElementById('burger'),navLinks=document.getElementById('navLinks');
-  if(burger){
-    burger.addEventListener('click',function(){
-      var open=nav.classList.toggle('open');
-      burger.setAttribute('aria-expanded',open?'true':'false');
-    });
-    navLinks.querySelectorAll('a').forEach(function(a){
-      a.addEventListener('click',function(){
-        nav.classList.remove('open');
-        burger.setAttribute('aria-expanded','false');
-      });
-    });
+  /* Embed inline (#contact) */
+  function initInline(tries){
+    var el=document.getElementById('calendly-inline');
+    if(!el)return;
+    if(window.Calendly){ Calendly.initInlineWidget({url:CALENDLY_STYLED,parentElement:el}); }
+    else if((tries||0)<40){ setTimeout(function(){initInline((tries||0)+1);},250); }
   }
+  initInline(0);
 
-  /* reveal on scroll */
-  var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:.14});
-  document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+  /* Nav translucide au scroll */
+  var nav=document.getElementById('nav');
+  function sc(){ nav.classList.toggle('sc',scrollY>30); }
+  addEventListener('scroll',sc,{passive:true}); sc();
 
-  /* subtle hero parallax */
-  var orbit=document.getElementById('orbit'),reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
-  if(orbit && !reduce && matchMedia('(hover:hover) and (pointer:fine)').matches){
-    addEventListener('mousemove',function(e){
-      var px=(e.clientX/innerWidth-.5),py=(e.clientY/innerHeight-.5);
-      orbit.style.transform='translate('+px*-16+'px,'+py*-16+'px)';
-    });
+  /* Fade-in au scroll (respecte prefers-reduced-motion via CSS) */
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(en){
+      en.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } });
+    },{threshold:.14});
+    document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+  } else {
+    document.querySelectorAll('.rv').forEach(function(el){el.classList.add('in');});
   }
 })();
 </script>
