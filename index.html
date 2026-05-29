@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORBE — Studio d'automatisation IA · Le répétitif en orbite</title>
+<meta name="description" content="ORBE automatise les tâches qui se répètent dans votre activité et conçoit des sites web qui travaillent pour vous. Indépendants et TPE : récupérez du temps pour l'essentiel.">
+<meta property="og:title" content="ORBE — Studio d'automatisation IA">
+<meta property="og:description" content="On automatise le répétitif et on conçoit le site qui travaille pour vous. Indépendants et TPE.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://orbe-ia.com">
+<meta property="og:locale" content="fr_FR">
+<meta name="theme-color" content="#15130d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* warm paper / ink */
+  --paper:#f3eee3;
+  --paper-2:#ece5d6;
+  --paper-3:#e4dac6;
+  --ink:#15130d;
+  --ink-2:#2a2720;
+  --ink-soft:#5b574c;
+  --ink-faint:#928d7e;
+  /* accents (oklch — same L & C, varied hue) */
+  --olive:oklch(0.55 0.085 140);
+  --olive-d:oklch(0.45 0.075 142);
+  --olive-dd:oklch(0.36 0.06 144);
+  --terra:oklch(0.62 0.10 48);
+  --sand:oklch(0.80 0.07 80);
+  --sky:oklch(0.72 0.055 230);
+  --accent:var(--olive-d);
+  --line:rgba(21,19,13,.13);
+  --line-2:rgba(21,19,13,.07);
+  --maxw:1240px;
+  --shadow:0 40px 90px -40px rgba(21,19,13,.42);
+  --shadow-s:0 18px 44px -22px rgba(21,19,13,.30);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Hanken Grotesk',sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased;font-weight:400}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.34;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E")}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 36px;position:relative;z-index:2}
+a{color:inherit;text-decoration:none}
+
+h1,h2,h3,.serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400;line-height:1.0;letter-spacing:-.005em}
+em,.it{font-style:italic;font-family:'Instrument Serif',serif}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:11px;font-family:'Hanken Grotesk';font-weight:600;font-size:15px;cursor:pointer;transition:.45s cubic-bezier(.2,.7,.2,1);border:none;padding:16px 30px;border-radius:4px;position:relative;overflow:hidden;letter-spacing:-.01em;white-space:nowrap}
+.btn-p{background:var(--ink);color:var(--paper)}
+.btn-p::after{content:"";position:absolute;inset:0;background:var(--olive-d);transform:translateY(101%);transition:transform .5s cubic-bezier(.2,.7,.2,1);z-index:0}
+.btn-p:hover::after{transform:translateY(0)}
+.btn-p:hover{transform:translateY(-3px);box-shadow:0 18px 34px -14px rgba(21,19,13,.55)}
+.btn-p>*{position:relative;z-index:1}
+.btn-l{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn-l:hover{background:var(--ink);color:var(--paper);transform:translateY(-3px)}
+.arrow{transition:transform .4s cubic-bezier(.2,.7,.2,1);font-size:1.05em}
+.btn:hover .arrow{transform:translate(4px,-4px)}
+.btn .wa{width:18px;height:18px;flex-shrink:0}
+.btn-wa{background:#25d366;color:#0a2e1a}
+.btn-wa::after{content:"";position:absolute;inset:0;background:#1ebe5b;transform:translateY(101%);transition:transform .5s cubic-bezier(.2,.7,.2,1);z-index:0}
+.btn-wa:hover::after{transform:translateY(0)}
+.btn-wa:hover{transform:translateY(-3px);box-shadow:0 18px 34px -14px rgba(37,211,102,.55)}
+.btn-wa>*{position:relative;z-index:1}
+
+/* ---------- cursor ---------- */
+.cursor{position:fixed;top:0;left:0;width:30px;height:30px;border:1.5px solid var(--olive-d);border-radius:50%;pointer-events:none;z-index:300;transform:translate(-50%,-50%);transition:width .3s,height .3s,background .3s,border-color .3s,opacity .3s;mix-blend-mode:multiply;opacity:0}
+.cursor.on{opacity:1}
+.cursor.big{width:62px;height:62px;background:color-mix(in oklab,var(--olive) 22%,transparent);border-color:transparent}
+@media(hover:none){.cursor{display:none}}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(34px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.rv.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+#progress{position:fixed;top:0;left:0;height:2px;width:0;z-index:200;background:var(--olive-d)}
+
+/* ---------- nav ---------- */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:.45s}
+.ni{max-width:var(--maxw);margin:0 auto;padding:26px 36px;display:flex;align-items:center;justify-content:space-between}
+nav.sc{background:color-mix(in oklab,var(--paper) 84%,transparent);backdrop-filter:blur(18px);border-bottom:1px solid var(--line-2)}
+nav.sc .ni{padding:15px 36px}
+.brand{display:flex;align-items:center;gap:12px;font-family:'Instrument Serif';font-size:27px;letter-spacing:.01em}
+.brand .mk{width:24px;height:24px;position:relative;flex-shrink:0}
+.brand .mk .core{position:absolute;top:50%;left:50%;width:8px;height:8px;border-radius:50%;background:var(--olive-d);transform:translate(-50%,-50%)}
+.brand .mk .rg{position:absolute;inset:0;border:1.5px solid var(--olive-d);border-radius:50%}
+.brand .mk .rg.b{inset:4px;border-style:dashed;opacity:.55;animation:spin 9s linear infinite}
+.brand .mk .sat{position:absolute;top:-1px;left:50%;width:5px;height:5px;border-radius:50%;background:var(--terra);transform-origin:1px 13px;animation:spin 4.5s linear infinite}
+.brand sub{font-family:'JetBrains Mono';font-size:.4em;letter-spacing:.16em;font-weight:500;color:var(--ink-soft);align-self:flex-end;margin-bottom:.55em;margin-left:-.3em}
+.nav-links{display:flex;gap:30px;align-items:center}
+.nav-links a.txt{font-size:14px;font-weight:500;position:relative;color:var(--ink-2)}
+.nav-links a.txt::after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:1.5px;background:var(--olive-d);transition:width .35s}
+.nav-links a.txt:hover::after{width:100%}
+@media(max-width:760px){.nav-links a.txt{display:none}}
+
+/* ---------- hero ---------- */
+header{padding:178px 0 90px;position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:30px;align-items:center}
+.kicker{display:inline-flex;align-items:center;gap:11px;font-family:'JetBrains Mono';font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;color:var(--ink-soft);margin-bottom:30px;background:color-mix(in oklab,var(--paper-2) 80%,transparent);padding:9px 16px;border-radius:60px;border:1px solid var(--line-2)}
+.kicker .gl{width:8px;height:8px;border-radius:50%;background:var(--olive);box-shadow:0 0 0 4px color-mix(in oklab,var(--olive) 30%,transparent);animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 4px color-mix(in oklab,var(--olive) 30%,transparent)}50%{box-shadow:0 0 0 9px transparent}}
+header h1{font-size:clamp(56px,8.4vw,116px);letter-spacing:-.018em;margin-bottom:30px;line-height:.94}
+.line{display:block;overflow:hidden;padding:.02em 0}
+.line i{display:block;font-style:normal;transform:translateY(112%);transition:transform 1.15s cubic-bezier(.16,1,.3,1)}
+.loaded .line i{transform:translateY(0)}
+.line:nth-child(2) i{transition-delay:.09s}.line:nth-child(3) i{transition-delay:.18s}
+header h1 .em{color:var(--olive-d)}
+.hero-p{font-size:clamp(17px,1.5vw,20px);color:var(--ink-soft);max-width:46ch;margin:0 0 36px;line-height:1.6}
+.hero-cta{display:flex;gap:13px;flex-wrap:wrap}
+.trust{display:flex;gap:14px 28px;flex-wrap:wrap;margin-top:40px;color:var(--ink-faint);font-family:'JetBrains Mono';font-size:12px;letter-spacing:.02em}
+.trust span{display:inline-flex;align-items:center;gap:9px}
+.trust span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--olive);flex-shrink:0}
+
+/* orbital system */
+.orbit{position:relative;width:100%;aspect-ratio:1;max-width:520px;margin-left:auto;justify-self:end}
+.orbit .ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1.5px solid var(--line);transform:translate(-50%,-50%)}
+.orbit .ring.dash{border-style:dashed;border-color:color-mix(in oklab,var(--olive) 55%,transparent)}
+.orbit .r1{width:30%;height:30%}
+.orbit .r2{width:56%;height:56%}
+.orbit .r3{width:80%;height:80%}
+.orbit .r4{width:100%;height:100%}
+.orbit .sun{position:absolute;top:50%;left:50%;width:30%;height:30%;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 36% 32%,var(--sand),var(--terra) 58%,var(--olive-dd) 104%);box-shadow:0 24px 60px -18px color-mix(in oklab,var(--terra) 75%,transparent),inset -6px -8px 20px rgba(21,19,13,.22),inset 5px 6px 16px rgba(255,255,255,.35);display:grid;place-items:center;z-index:3}
+.orbit .sun::after{content:"";position:absolute;inset:-14%;border-radius:50%;border:1px solid color-mix(in oklab,var(--terra) 45%,transparent);animation:halo 4.5s ease-in-out infinite}
+@keyframes halo{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.12);opacity:0}}
+.orbit .sun .lbl{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.14em;color:rgba(255,255,255,.95);text-transform:uppercase;text-align:center;line-height:1.45;text-shadow:0 1px 4px rgba(21,19,13,.3)}
+/* orbiting satellites — ride the rings */
+.sat-orbit{position:absolute;top:50%;left:50%;border-radius:50%;transform:translate(-50%,-50%);z-index:1}
+.sat-orbit .sat{position:absolute;top:-5px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%}
+.so-a{width:56%;height:56%;animation:spin 19s linear infinite}
+.so-b{width:80%;height:80%;animation:spin 31s linear infinite reverse}
+.so-c{width:100%;height:100%;animation:spin 47s linear infinite;animation-delay:-12s}
+.so-a .sat{background:var(--sky);box-shadow:0 0 12px color-mix(in oklab,var(--sky) 80%,transparent)}
+.so-b .sat{background:var(--terra);box-shadow:0 0 12px color-mix(in oklab,var(--terra) 80%,transparent)}
+.so-c .sat{background:var(--olive);box-shadow:0 0 12px color-mix(in oklab,var(--olive) 80%,transparent)}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+/* fixed, readable task chips that float gently */
+.chip{position:absolute;display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:60px;padding:8px 15px 8px 11px;font-family:'JetBrains Mono';font-size:11.5px;font-weight:500;white-space:nowrap;box-shadow:var(--shadow-s);color:var(--ink-2);z-index:4;animation:floaty 6.5s ease-in-out infinite}
+.chip .d{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.chip.k1{top:11%;left:-7%;animation-delay:-.4s}
+.chip.k2{top:43%;right:-11%;animation-delay:-2.6s}
+.chip.k3{bottom:12%;left:2%;animation-delay:-4.4s}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+@keyframes spinM{to{transform:rotate(360deg)}}
+.brand .mk .rg.b{animation:spinM 9s linear infinite}
+.brand .mk .sat{animation:spinM 4.5s linear infinite}
+
+@media(max-width:920px){
+  .hero-grid{grid-template-columns:1fr;gap:54px}
+  .orbit{max-width:380px;margin:0 auto;justify-self:center}
+  header{padding:150px 0 60px}
+}
+
+/* ---------- marquee ---------- */
+.tape{background:var(--ink);color:var(--paper);padding:17px 0;overflow:hidden;white-space:nowrap;position:relative;z-index:3;border-block:1px solid var(--ink)}
+.tape-tk{display:inline-flex;animation:roll 34s linear infinite}
+.tape-tk span{display:inline-flex;gap:20px;align-items:center;padding-right:20px;font-family:'Instrument Serif';font-style:italic;font-size:26px;color:var(--paper)}
+.tape .st{color:var(--olive);font-style:normal;font-family:'Hanken Grotesk';font-size:14px}
+@keyframes roll{to{transform:translateX(-50%)}}
+
+/* ---------- sections ---------- */
+section{padding:120px 0;position:relative}
+.eyebrow{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--olive-d);font-weight:500;margin-bottom:26px;display:flex;align-items:center;gap:13px}
+.eyebrow::before{content:"";width:30px;height:1.5px;background:var(--olive-d)}
+.eyebrow.ctr{justify-content:center}
+.big{font-size:clamp(36px,5.6vw,76px);max-width:15ch;letter-spacing:-.012em;line-height:1.02}
+
+/* problem */
+.prob{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.prob-list{display:flex;flex-direction:column;gap:0;margin-top:6px}
+.prob-row{display:flex;align-items:flex-start;gap:20px;padding:24px 6px;border-top:1px solid var(--line);transition:padding-left .45s cubic-bezier(.2,.7,.2,1)}
+.prob-row:last-child{border-bottom:1px solid var(--line)}
+.prob-row:hover{padding-left:16px}
+.prob-row .dot{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-family:'Instrument Serif';font-size:18px;color:var(--ink);margin-top:1px}
+.prob-row:nth-child(1) .dot{background:var(--sand)}
+.prob-row:nth-child(2) .dot{background:var(--sky)}
+.prob-row:nth-child(3) .dot{background:color-mix(in oklab,var(--terra) 55%,var(--paper))}
+.prob-row:nth-child(4) .dot{background:color-mix(in oklab,var(--olive) 50%,var(--paper))}
+.prob-row b{font-weight:600;font-size:17px;letter-spacing:-.01em}
+.prob-row p{font-size:14.5px;color:var(--ink-soft);margin-top:3px;line-height:1.5}
+@media(max-width:880px){.prob{grid-template-columns:1fr;gap:44px}}
+
+/* services */
+.serv{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px}
+.scard{background:var(--paper-2);border:1px solid var(--line-2);border-radius:20px;padding:42px 40px;position:relative;overflow:hidden;transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s}
+.scard:hover{transform:translateY(-8px);box-shadow:var(--shadow-s)}
+.scard .num{font-family:'JetBrains Mono';font-size:12px;color:var(--olive-d);letter-spacing:.08em;margin-bottom:22px;display:block}
+.scard h3{font-size:clamp(30px,3.2vw,42px);margin-bottom:14px;letter-spacing:-.01em}
+.scard>p{color:var(--ink-soft);font-size:15.5px;max-width:40ch;line-height:1.6;margin-bottom:26px}
+.scard .ex{display:flex;flex-wrap:wrap;gap:8px}
+.scard .ex span{font-family:'JetBrains Mono';font-size:11.5px;background:var(--paper);border:1px solid var(--line);padding:7px 13px;border-radius:60px;color:var(--ink-2)}
+.scard .glow{position:absolute;width:200px;height:200px;border-radius:50%;top:-80px;right:-60px;opacity:.5;filter:blur(8px);transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.scard:hover .glow{transform:scale(1.35)}
+.scard.s1 .glow{background:radial-gradient(circle,var(--olive),transparent 70%)}
+.scard.s2 .glow{background:radial-gradient(circle,var(--terra),transparent 70%)}
+@media(max-width:880px){.serv{grid-template-columns:1fr}}
+
+/* stats */
+.stats{background:var(--ink);color:var(--paper);border-radius:28px;padding:70px 56px;display:grid;grid-template-columns:repeat(3,1fr);gap:44px;position:relative;overflow:hidden}
+.stats .so{position:absolute;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,color-mix(in oklab,var(--olive) 55%,transparent),transparent 70%);bottom:-150px;right:-80px}
+.stats .so2{position:absolute;border-radius:50%;width:1px;height:1px;inset:auto auto -40px 8%;box-shadow:0 0 0 1px color-mix(in oklab,var(--paper) 18%,transparent),0 0 0 60px color-mix(in oklab,var(--paper) 7%,transparent)}
+.stat{position:relative;z-index:1}
+.stat h3{font-family:'Instrument Serif';font-size:clamp(54px,7vw,86px);line-height:1;color:var(--sand)}
+.stat h3 .u{font-size:.42em;color:var(--paper);letter-spacing:.01em;margin-left:.08em}
+.stat p{color:rgba(243,238,227,.72);font-size:14.5px;margin-top:14px;max-width:26ch;line-height:1.55}
+@media(max-width:760px){.stats{grid-template-columns:1fr;gap:38px;padding:50px 34px;text-align:center}.stat p{margin-inline:auto}}
+
+/* offres */
+.deal{text-align:center;margin-bottom:60px}
+.deal h2{font-size:clamp(34px,5.4vw,64px);letter-spacing:-.012em}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
+.card{background:var(--paper-2);border-radius:22px;padding:42px 34px;position:relative;overflow:hidden;transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s;display:flex;flex-direction:column;border:1px solid var(--line-2)}
+.card:hover{transform:translateY(-10px);box-shadow:var(--shadow)}
+.card .corb{position:absolute;width:160px;height:160px;border-radius:50%;top:-60px;right:-48px;opacity:.42;filter:blur(6px);transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.card:hover .corb{transform:scale(1.35)}
+.card.c1 .corb{background:var(--olive)}
+.card.c2 .corb{background:var(--sand)}
+.card.c3 .corb{background:var(--sky)}
+.card .step{font-family:'JetBrains Mono';font-size:12px;color:var(--olive-d);margin-bottom:18px;position:relative;z-index:1;letter-spacing:.04em}
+.card h3{font-size:30px;margin-bottom:8px;position:relative;z-index:1;letter-spacing:-.01em}
+.card .price{font-family:'Instrument Serif';font-size:54px;line-height:1;margin:14px 0 4px;position:relative;z-index:1}
+.card .price small{font-size:14px;font-style:italic;color:var(--ink-soft);display:block;margin-top:12px;font-family:'Instrument Serif'}
+.card ul{list-style:none;margin:24px 0 30px;display:flex;flex-direction:column;gap:13px;flex:1;position:relative;z-index:1}
+.card ul li{font-size:14.5px;color:var(--ink-soft);display:flex;gap:12px;align-items:flex-start;line-height:1.45}
+.card ul li::before{content:"";width:15px;height:15px;border-radius:50%;border:1.5px solid var(--olive-d);flex-shrink:0;margin-top:3px;background:radial-gradient(circle,var(--olive) 42%,transparent 44%)}
+.card .ftr{position:relative;z-index:1}
+.card.c2{background:var(--ink);color:var(--paper)}
+.card.c2 .step{color:var(--sand)}
+.card.c2 .price small{color:rgba(243,238,227,.6)}
+.card.c2 ul li{color:rgba(243,238,227,.8)}
+.card.c2 ul li::before{border-color:var(--sand);background:radial-gradient(circle,var(--sand) 42%,transparent 44%)}
+.card .tag{position:absolute;top:22px;right:22px;z-index:2;background:var(--sand);color:var(--ink);font-family:'JetBrains Mono';font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:60px}
+@media(max-width:880px){.cards{grid-template-columns:1fr;max-width:440px;margin-inline:auto}}
+
+/* méthode */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:18px;position:relative}
+.steps::before{content:"";position:absolute;top:31px;left:9%;right:9%;height:1.5px;background:repeating-linear-gradient(90deg,var(--olive-d) 0 7px,transparent 7px 16px);z-index:0;opacity:.55}
+@media(max-width:880px){.steps::before{display:none}}
+.stp{position:relative;z-index:1}
+.stp .o{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font-family:'Instrument Serif';font-size:28px;color:var(--ink);margin-bottom:20px;box-shadow:0 0 0 7px var(--paper)}
+.stp:nth-child(1) .o{background:var(--olive);color:#fff}
+.stp:nth-child(2) .o{background:var(--sand)}
+.stp:nth-child(3) .o{background:var(--sky)}
+.stp:nth-child(4) .o{background:color-mix(in oklab,var(--terra) 70%,var(--paper));color:#fff}
+.stp h4{font-family:'Instrument Serif';font-size:24px;margin-bottom:7px;letter-spacing:-.01em}
+.stp p{font-size:14px;color:var(--ink-soft);line-height:1.5}
+@media(max-width:880px){.steps{grid-template-columns:1fr 1fr;gap:38px}}
+@media(max-width:480px){.steps{grid-template-columns:1fr}}
+
+/* témoignage */
+.quote{text-align:center;max-width:22ch;margin:0 auto}
+.quote .qm{font-family:'Instrument Serif';font-size:110px;line-height:.4;color:var(--olive);display:block;height:54px}
+.quote h3{font-style:italic;font-size:clamp(28px,4.2vw,52px);letter-spacing:-.01em;max-width:none;line-height:1.12}
+.quote .who{margin-top:34px;font-family:'JetBrains Mono';font-size:12.5px;color:var(--ink-soft);letter-spacing:.02em}
+.quote .who b{color:var(--ink);font-weight:500}
+
+/* faq */
+.faq{max-width:800px;margin:42px auto 0}
+.fitem{border-bottom:1px solid var(--line)}
+.fitem:first-child{border-top:1px solid var(--line)}
+.fq{width:100%;background:none;border:none;text-align:left;cursor:pointer;padding:28px 4px;display:flex;justify-content:space-between;align-items:center;gap:24px;font-family:'Instrument Serif';font-size:clamp(20px,2.4vw,26px);color:var(--ink);transition:color .3s}
+.fq:hover{color:var(--olive-d)}
+.fq .pm{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;transition:.45s cubic-bezier(.2,.7,.2,1);font-family:'Hanken Grotesk';font-size:19px;font-weight:300;color:var(--ink)}
+.fitem.open .fq .pm{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:rotate(135deg)}
+.fa{max-height:0;overflow:hidden;transition:max-height .55s cubic-bezier(.4,0,.2,1)}
+.fa p{padding:0 4px 28px;color:var(--ink-soft);font-size:15.5px;max-width:64ch;line-height:1.62}
+
+/* cta */
+.cta{text-align:center;padding:150px 0 160px;position:relative;overflow:hidden}
+.cta .glow{position:absolute;top:0;left:50%;width:680px;height:680px;border-radius:50%;transform:translate(-50%,-42%);background:radial-gradient(circle,color-mix(in oklab,var(--sand) 70%,transparent),transparent 62%);opacity:.7;z-index:0;pointer-events:none}
+.cta-ring{position:absolute;top:50%;left:50%;border:1.5px solid var(--line);border-radius:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none}
+.cta-ring.a{width:560px;height:560px}.cta-ring.b{width:820px;height:820px;border-style:dashed;border-color:color-mix(in oklab,var(--olive) 38%,transparent)}
+.cta>.wrap{position:relative;z-index:2}
+.cta h2{font-size:clamp(50px,9vw,128px);letter-spacing:-.022em;margin-bottom:24px;line-height:.96}
+.cta p{color:var(--ink-soft);max-width:44ch;margin:0 auto 36px;font-size:18px;line-height:1.6}
+.cta .micro{margin-top:26px;font-family:'JetBrains Mono';font-size:13px;color:var(--ink-soft);letter-spacing:.01em}
+.cta .micro a{border-bottom:1px solid var(--line);transition:border-color .3s}
+.cta .micro a:hover{border-color:var(--ink)}
+
+footer{border-top:1px solid var(--line);padding:54px 0;position:relative;z-index:2}
+.foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:22px}
+.foot p{color:var(--ink-faint);font-family:'JetBrains Mono';font-size:12px;letter-spacing:.01em}
+.foot .lk{display:flex;gap:24px}.foot .lk a{font-size:14px;font-weight:500;transition:color .3s;color:var(--ink-2)}.foot .lk a:hover{color:var(--olive-d)}
+
+/* sticky mobile cta */
+.sticky{position:fixed;left:14px;right:14px;bottom:14px;z-index:95;display:none;background:var(--ink);color:var(--paper);border-radius:12px;padding:13px 16px;align-items:center;justify-content:space-between;gap:12px;box-shadow:var(--shadow-s)}
+.sticky .t{font-size:13px;line-height:1.3}
+.sticky .t b{font-weight:600}
+.sticky .t small{display:block;color:rgba(243,238,227,.6);font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.02em;margin-top:1px}
+.sticky a{background:#25d366;color:#0a2e1a;font-weight:600;font-size:13px;padding:11px 16px;border-radius:7px;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
+.sticky a .wa{width:16px;height:16px}
+@media(max-width:640px){.sticky{display:flex}}
+
+@media(max-width:880px){section{padding:84px 0}.wrap{padding:0 24px}.ni{padding:20px 24px}}
+@media(prefers-reduced-motion:reduce){.rv,.line i{transition:none!important;transform:none!important;opacity:1!important}.sat-orbit,.chip,.orbit .sun::after,.tape-tk,.brand .mk .rg.b,.brand .mk .sat,.kicker .gl{animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<nav id="nav"><div class="ni">
+  <a href="#top" class="brand">
+    <span class="mk"><span class="rg"></span><span class="rg b"></span><span class="core"></span><span class="sat"></span></span>
+    ORBE<sub>IA</sub>
+  </a>
+  <div class="nav-links">
+    <a href="#methode" class="txt">Méthode</a>
+    <a href="#services" class="txt">Ce qu'on fait</a>
+    <a href="#offres" class="txt">Offres</a>
+    <a href="#faq" class="txt">FAQ</a>
+    <a href="#contact" class="btn btn-p"><span>Prendre RDV</span></a>
+  </div>
+</div></nav>
+
+<header id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="kicker"><span class="gl"></span>Automatisation IA &amp; sites web · indépendants &amp; TPE</div>
+      <h1>
+        <span class="line"><i>Le répétitif,</i></span>
+        <span class="line"><i><span class="em it">en orbite.</span></i></span>
+      </h1>
+      <p class="hero-p rv d1">Les tâches qui reviennent chaque semaine, on les automatise. Et on conçoit le site qui travaille pour vous, jour et nuit. Vous récupérez vos heures pour ce qui compte vraiment.</p>
+      <div class="hero-cta rv d2">
+        <a href="#contact" class="btn btn-p"><span>Réserver un échange gratuit</span><span class="arrow">&#8599;</span></a>
+        <a href="#services" class="btn btn-l">Voir ce qu'on fait</a>
+      </div>
+      <div class="trust rv d3">
+        <span>Premier échange offert</span>
+        <span>Tarif fixé à l'avance</span>
+        <span>Opérationnel en quelques jours</span>
+      </div>
+    </div>
+    <div class="orbit rv d2" aria-hidden="true">
+      <span class="ring r1"></span>
+      <span class="ring r2 dash"></span>
+      <span class="ring r3"></span>
+      <span class="ring r4 dash"></span>
+      <span class="sat-orbit so-a"><span class="sat"></span></span>
+      <span class="sat-orbit so-b"><span class="sat"></span></span>
+      <span class="sat-orbit so-c"><span class="sat"></span></span>
+      <span class="sun"><span class="lbl">ORBE<br>IA</span></span>
+      <span class="chip k1"><span class="d" style="background:var(--terra)"></span>Relances</span>
+      <span class="chip k2"><span class="d" style="background:var(--sky)"></span>Mails types</span>
+      <span class="chip k3"><span class="d" style="background:var(--olive)"></span>Facturation</span>
+    </div>
+  </div>
+</header>
+
+<div class="tape">
+  <div class="tape-tk">
+    <span>Du temps retrouvé<span class="st">&#9679;</span>Moins de répétitif<span class="st">&#9679;</span>Plus rien qui passe à la trappe<span class="st">&#9679;</span>Un site qui travaille pour vous<span class="st">&#9679;</span>L'esprit plus léger<span class="st">&#9679;</span></span>
+    <span>Du temps retrouvé<span class="st">&#9679;</span>Moins de répétitif<span class="st">&#9679;</span>Plus rien qui passe à la trappe<span class="st">&#9679;</span>Un site qui travaille pour vous<span class="st">&#9679;</span>L'esprit plus léger<span class="st">&#9679;</span></span>
+  </div>
+</div>
+
+<!-- PROBLÈME -->
+<section>
+  <div class="wrap prob">
+    <div>
+      <div class="eyebrow rv">Le constat</div>
+      <h2 class="big rv">Ce qui se répète <em>peut se déléguer.</em></h2>
+      <p class="rv d1" style="color:var(--ink-soft);font-size:18px;max-width:42ch;margin-top:24px;line-height:1.6">Chaque semaine, des heures partent dans des gestes mécaniques. On repère lesquels, on les automatise proprement — et ce temps vous revient, sans que vous ayez à y penser.</p>
+    </div>
+    <div class="prob-list rv d1">
+      <div class="prob-row"><span class="dot">!</span><div><b>Les relances</b><p>Devis sans réponse, factures en attente : un suivi qu'il faut sans cesse reprendre.</p></div></div>
+      <div class="prob-row"><span class="dot">@</span><div><b>Les mails répétitifs</b><p>Les mêmes réponses, réécrites plusieurs fois par jour, du copier-coller chronophage.</p></div></div>
+      <div class="prob-row"><span class="dot">&#8635;</span><div><b>La double saisie</b><p>Recopier d'un outil à l'autre, ressaisir, vérifier deux fois, et corriger les oublis.</p></div></div>
+      <div class="prob-row"><span class="dot">&#9675;</span><div><b>Le site qui dort</b><p>Une vitrine en ligne jolie mais muette, qui n'amène aucun contact concret.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="wrap">
+    <div class="eyebrow rv">Ce qu'on fait</div>
+    <h2 class="big rv" style="margin-bottom:8px">Deux leviers, <em>un même objectif&#8239;:</em> votre temps.</h2>
+    <div class="serv">
+      <div class="scard s1 rv">
+        <span class="glow"></span>
+        <span class="num">01 / Automatisation</span>
+        <h3>On enlève le répétitif</h3>
+        <p>On connecte vos outils et on confie à l'IA les tâches qui reviennent : relances, réponses, saisies, suivis. Elles tournent toutes seules, sans erreur d'inattention.</p>
+        <div class="ex"><span>Relances automatiques</span><span>Réponses assistées</span><span>Facturation</span><span>Prise de RDV</span><span>Synchro d'outils</span></div>
+      </div>
+      <div class="scard s2 rv d1">
+        <span class="glow"></span>
+        <span class="num">02 / Sites web</span>
+        <h3>On crée le site qui convertit</h3>
+        <p>Un site clair, rapide et soigné, pensé pour transformer les visiteurs en prises de contact — et relié à vos automatisations pour ne plus jamais perdre une demande.</p>
+        <div class="ex"><span>Site vitrine</span><span>Landing page</span><span>Prise de RDV intégrée</span><span>Formulaires connectés</span><span>SEO de base</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="stats rv">
+      <div class="so"></div><div class="so2"></div>
+      <div class="stat"><h3 data-count="8" data-suf="h">0<span class="u">h</span></h3><p>récupérées par semaine en moyenne sur les tâches répétitives.</p></div>
+      <div class="stat"><h3 data-count="48" data-suf="h">0<span class="u">h</span></h3><p>entre le premier échange et la première automatisation en place.</p></div>
+      <div class="stat"><h3>1<span class="u">&#8239;seul</span></h3><p>interlocuteur, du premier rendez-vous jusqu'à la mise en route.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFRES -->
+<section id="offres">
+  <div class="wrap">
+    <div class="deal rv"><div class="eyebrow ctr">Les offres</div><h2>Simple. <em>Trois étapes.</em></h2></div>
+    <div class="cards">
+      <div class="card c1 rv">
+        <div class="corb"></div>
+        <span class="step">01 — On se rencontre</span>
+        <h3>Premier échange</h3>
+        <div class="price">Gratuit<small>30 min, sans engagement</small></div>
+        <ul>
+          <li>On passe en revue votre semaine type</li>
+          <li>On repère ce qui pèse pour peu de valeur</li>
+          <li>Vous repartez avec des pistes concrètes</li>
+        </ul>
+        <div class="ftr"><a href="#contact" class="btn btn-l" style="justify-content:center;width:100%">Prendre rendez-vous</a></div>
+      </div>
+      <div class="card c2 rv d1">
+        <span class="tag">Le plus demandé</span>
+        <div class="corb"></div>
+        <span class="step">02 — On s'en charge</span>
+        <h3>Une tâche, ou un site</h3>
+        <div class="price">dès 1&#8239;500&euro;<small>tarif annoncé avant de commencer</small></div>
+        <ul>
+          <li>Une tâche automatisée de bout en bout</li>
+          <li>Ou un site vitrine soigné, pensé pour convertir</li>
+          <li>Mis au point avec vous, prêt en quelques jours</li>
+        </ul>
+        <div class="ftr"><a href="#contact" class="btn" style="justify-content:center;width:100%;background:var(--sand);color:var(--ink)">Démarrer un projet <span class="arrow">&#8599;</span></a></div>
+      </div>
+      <div class="card c3 rv d2">
+        <div class="corb"></div>
+        <span class="step">03 — On va plus loin</span>
+        <h3>Sur mesure</h3>
+        <div class="price">Sur devis<small>on en discute ensemble</small></div>
+        <ul>
+          <li>Plusieurs automatismes connectés entre eux</li>
+          <li>Outils internes, tableaux de bord, intégrations</li>
+          <li>Accompagnement dans la durée</li>
+        </ul>
+        <div class="ftr"><a href="#contact" class="btn btn-l" style="justify-content:center;width:100%">En parler</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MÉTHODE -->
+<section id="methode">
+  <div class="wrap">
+    <div class="eyebrow rv">Comment ça se passe</div>
+    <h2 class="big rv" style="margin-bottom:54px">Du premier échange <em>au temps retrouvé.</em></h2>
+    <div class="steps">
+      <div class="stp rv"><div class="o">1</div><h4>On échange</h4><p>30 minutes pour comprendre votre quotidien et là où ça coince.</p></div>
+      <div class="stp rv d1"><div class="o">2</div><h4>On chiffre</h4><p>Un tarif clair, fixé avant de commencer. À vous de décider.</p></div>
+      <div class="stp rv d2"><div class="o">3</div><h4>On réalise</h4><p>On construit, on teste avec vous, on ajuste jusqu'au bon résultat.</p></div>
+      <div class="stp rv d3"><div class="o">4</div><h4>Vous reprenez la main</h4><p>Le temps revient, semaine après semaine, sans y penser.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TÉMOIGNAGE -->
+<section>
+  <div class="wrap">
+    <div class="quote rv">
+      <span class="qm">&ldquo;</span>
+      <h3>Je passais mes dimanches sur ma facturation. Aujourd'hui, elle se gère sans moi.</h3>
+      <p class="who"><b>Camille R.</b> &nbsp;·&nbsp; artisane fleuriste, Lyon</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="eyebrow ctr rv">Les questions qu'on nous pose</div>
+    <h2 class="big rv" style="margin:0 auto 10px;text-align:center;max-width:none">Vous vous demandez<em>…</em></h2>
+    <div class="faq">
+      <div class="fitem rv">
+        <button class="fq">Je ne suis pas à l'aise avec la technique, est-ce un problème&#8239;? <span class="pm">+</span></button>
+        <div class="fa"><p>Pas du tout, et c'est voulu. Vous n'avez rien à installer ni à paramétrer. La partie technique reste de notre côté ; du vôtre, vous constatez seulement le temps gagné.</p></div>
+      </div>
+      <div class="fitem rv">
+        <button class="fq">En combien de temps est-ce opérationnel&#8239;? <span class="pm">+</span></button>
+        <div class="fa"><p>Pour une tâche simple, quelques jours après le premier échange. Un site vitrine se livre généralement en une à deux semaines. Un délai ferme vous est donné dès le devis.</p></div>
+      </div>
+      <div class="fitem rv">
+        <button class="fq">Et si mon besoin est un peu particulier&#8239;? <span class="pm">+</span></button>
+        <div class="fa"><p>C'est souvent le cas, et plutôt bon signe. Le premier échange sert exactement à ça : examiner votre situation réelle et vous dire honnêtement ce qui est faisable, et à quel coût.</p></div>
+      </div>
+      <div class="fitem rv">
+        <button class="fq">Pourquoi un tarif annoncé dès le départ&#8239;? <span class="pm">+</span></button>
+        <div class="fa"><p>Parce qu'un devis flou ne sert personne. Le tarif est fixé avant de commencer : pas de temps facturé qui s'accumule, pas de mauvaise surprise à la livraison.</p></div>
+      </div>
+      <div class="fitem rv">
+        <button class="fq">Mes données sont-elles en sécurité&#8239;? <span class="pm">+</span></button>
+        <div class="fa"><p>Oui. On travaille avec des outils reconnus, on limite les accès au strict nécessaire, et rien n'est conservé au-delà de ce qui est utile au bon fonctionnement de votre automatisation.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="contact">
+  <div class="glow"></div>
+  <span class="cta-ring a"></span><span class="cta-ring b"></span>
+  <div class="wrap">
+    <h2 class="rv">On en parle<em>?</em></h2>
+    <p class="rv d1">30 minutes, sans engagement. On regarde ensemble, concrètement, ce que vous pourriez confier — et le temps que ça représente.</p>
+    <a href="https://wa.me/33655811520?text=Bonjour%2C%20je%20souhaite%20r%C3%A9server%20mon%20premier%20%C3%A9change%20gratuit." target="_blank" rel="noopener" class="btn btn-wa rv d2">
+      <svg class="wa" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.02h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.21 8.21 0 0 1-1.26-4.37c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.4-8.24 8.4Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.8-.79.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.65.31-.22.25-.85.84-.85 2.04 0 1.2.88 2.37 1 2.53.12.16 1.73 2.64 4.19 3.7.58.25 1.04.4 1.4.51.59.19 1.12.16 1.54.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.22-.17-.47-.29Z"/></svg>
+      <span>Réserver sur WhatsApp</span>
+    </a>
+    <p class="micro rv d2"><a href="mailto:orbe-ai@outlook.com">orbe-ai@outlook.com</a> &nbsp;·&nbsp; <a href="https://wa.me/33655811520" target="_blank" rel="noopener">WhatsApp : +33&#8239;6&#8239;55&#8239;81&#8239;15&#8239;20</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <a href="#top" class="brand">
+      <span class="mk"><span class="rg"></span><span class="rg b"></span><span class="core"></span><span class="sat"></span></span>
+      ORBE<sub>IA</sub>
+    </a>
+    <div class="lk"><a href="#services">Ce qu'on fait</a><a href="#offres">Offres</a><a href="#methode">Méthode</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></div>
+    <p>&copy; 2026 ORBE — Le répétitif en orbite.</p>
+  </div>
+</footer>
+
+<div class="sticky">
+  <div class="t"><b>Premier échange offert</b><small>30 min · sans engagement</small></div>
+  <a href="https://wa.me/33655811520?text=Bonjour%2C%20je%20souhaite%20r%C3%A9server%20mon%20premier%20%C3%A9change%20gratuit." target="_blank" rel="noopener">
+    <svg class="wa" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm4.52 11.86c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.8-.79.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.65.31-.22.25-.85.84-.85 2.04 0 1.2.88 2.37 1 2.53.12.16 1.73 2.64 4.19 3.7.58.25 1.04.4 1.4.51.59.19 1.12.16 1.54.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.22-.17-.47-.29Z"/></svg>
+    Réserver</a>
+</div>
+
+<div id="progress"></div>
+
+<script>
+addEventListener('load',function(){document.body.classList.add('loaded')});
+setTimeout(function(){document.body.classList.add('loaded')},400);
+
+var nav=document.getElementById('nav'),prog=document.getElementById('progress');
+function sc(){var s=scrollY,h=document.documentElement.scrollHeight-innerHeight;nav.classList.toggle('sc',s>40);prog.style.width=(h>0?s/h*100:0)+'%'}
+addEventListener('scroll',sc,{passive:true});sc();
+
+var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:.14});
+document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+
+/* cursor orb */
+var cur=document.getElementById('cursor');
+if(matchMedia('(hover:hover)').matches){
+  var cx=innerWidth/2,cy=innerHeight/2,tx=cx,ty=cy,started=false;
+  addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY;if(!started){started=true;cur.classList.add('on')}});
+  (function loop(){cx+=(tx-cx)*.2;cy+=(ty-cy)*.2;cur.style.transform='translate('+cx+'px,'+cy+'px) translate(-50%,-50%)';requestAnimationFrame(loop)})();
+  document.querySelectorAll('a,button').forEach(function(el){
+    el.addEventListener('mouseenter',function(){cur.classList.add('big')});
+    el.addEventListener('mouseleave',function(){cur.classList.remove('big')});
+  });
+}
+
+/* counters */
+var counted=false,statsEl=document.querySelector('.stats');
+var sio=new IntersectionObserver(function(e){e.forEach(function(x){
+  if(x.isIntersecting&&!counted){counted=true;
+    document.querySelectorAll('.stat h3[data-count]').forEach(function(h){
+      var end=+h.getAttribute('data-count'),suf=h.getAttribute('data-suf')||'',t0=null;
+      function step(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/1200,1);var v=Math.round((1-Math.pow(1-p,3))*end);
+        h.innerHTML=v+'<span class="u">'+suf+'</span>';if(p<1)requestAnimationFrame(step)}
+      requestAnimationFrame(step);
+    });
+  }
+})},{threshold:.4});
+if(statsEl)sio.observe(statsEl);
+
+/* faq */
+document.querySelectorAll('.fitem').forEach(function(it){
+  var q=it.querySelector('.fq'),a=it.querySelector('.fa');
+  q.addEventListener('click',function(){
+    var open=it.classList.contains('open');
+    document.querySelectorAll('.fitem').forEach(function(o){o.classList.remove('open');o.querySelector('.fa').style.maxHeight=null});
+    if(!open){it.classList.add('open');a.style.maxHeight=a.scrollHeight+'px'}
+  });
+});
+</script>
+</body>
+</html>
