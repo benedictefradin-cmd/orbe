@@ -3,296 +3,568 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ORBE IA — Studio</title>
-<meta name="description" content="ORBE IA conçoit des agents, des automatisations, des sites, des applications et des plateformes sur mesure qui travaillent pour votre activité.">
-<meta name="theme-color" content="#0b0a0d">
-<meta property="og:title" content="ORBE IA — Studio">
-<meta property="og:description" content="Agents, automatisations, sites, applications, plateformes. Conçus sur mesure.">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="fr_FR">
-<meta property="og:locale:alternate" content="en_US">
-<meta property="og:url" content="https://orbe-ia.com/">
-<meta property="og:image" content="https://orbe-ia.com/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ORBE IA — Studio">
-<meta name="twitter:description" content="Agents, automatisations, sites, applications, plateformes. Conçus sur mesure.">
-<meta name="twitter:image" content="https://orbe-ia.com/og-image.png">
+<title>ORBE IA — Le répétitif, en orbite</title>
+<meta name="description" content="ORBE IA — studio d'automatisation IA et de produits sur mesure pour indépendants et TPE. On automatise le répétitif et on construit les sites, applications et plateformes qui le portent.">
 <link rel="canonical" href="https://orbe-ia.com/">
-<link rel="alternate" hreflang="fr" href="https://orbe-ia.com/">
-<link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/">
-<link rel="alternate" hreflang="x-default" href="https://orbe-ia.com/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0a0d'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23d8a657' stroke-width='1' opacity='.45'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23f0d29a'/%3E%3Ccircle cx='16' cy='7' r='1.6' fill='%23d8a657'/%3E%3Ccircle cx='25' cy='16' r='1.4' fill='%23c47a4a'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://orbe-ia.com/">
+<meta property="og:title" content="ORBE IA — Le répétitif, en orbite">
+<meta property="og:description" content="Studio d'automatisation IA et de produits sur mesure pour indépendants et TPE. On automatise le répétitif, vous reprenez le pouvoir sur votre temps.">
+<meta property="og:image" content="https://orbe-ia.com/assets/showcase-1.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ORBE IA — Le répétitif, en orbite">
+<meta name="twitter:description" content="Studio d'automatisation IA et de produits sur mesure pour indépendants et TPE.">
+<meta name="twitter:image" content="https://orbe-ia.com/assets/showcase-1.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f6f1e7'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23c8841f' stroke-width='1.4' opacity='.6'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23c8841f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:opsz,wght@6..72,200;6..72,300;6..72,400&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:opsz,wght@6..72,200;6..72,300;6..72,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0b0a0d;
-    --bg-2:#100e14;
-    --ink:#ECE7DC;
-    --ink-soft:#9c968a;
-    --ink-faint:#5f5a55;
-    --gold:#d8a657;
-    --gold-soft:#f0d29a;
-    --rust:#c47a4a;
-    --line:rgba(236,231,220,.12);
-    --display:"Instrument Serif",Georgia,serif;
-    --body:"Newsreader",Georgia,serif;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{height:100%}
-  body{background:var(--bg);color:var(--ink);font-family:var(--body);font-weight:300;height:100dvh;overflow:hidden;-webkit-font-smoothing:antialiased;position:relative}
+:root{
+  --bg:#f6f1e7;
+  --bg2:#efe8d8;
+  --ink:#1c1810;
+  --ink-soft:#6b6253;
+  --ink-dim:#9c9384;
+  --gold:#c8841f;
+  --gold-deep:#a86a12;
+  --gold-soft:#e3a949;
+  --line:rgba(28,24,16,.12);
+  --line-gold:rgba(200,132,31,.3);
+  --serif:'Schibsted Grotesk',system-ui,sans-serif;
+  --sans:'Outfit',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-weight:300;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--gold);color:#fff}
+img{display:block;max-width:100%}
 
-  /* deep space backdrop */
-  .sky{position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:
-      radial-gradient(80% 60% at 72% 30%, rgba(80,70,120,.18), transparent 60%),
-      radial-gradient(70% 70% at 20% 80%, rgba(120,80,50,.14), transparent 60%),
-      radial-gradient(120% 100% at 50% -10%, rgba(216,166,87,.06), transparent 55%),
-      linear-gradient(160deg,var(--bg),var(--bg-2))}
-  .vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
-    background:radial-gradient(120% 100% at 50% 45%,transparent 55%,rgba(0,0,0,.55))}
-  .grain{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:.03;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* grain papier subtil */
+body::before{
+  content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
 
-  /* constellation canvas */
-  .constellation{position:fixed;inset:0;z-index:1;pointer-events:none}
-  .constellation svg{width:100%;height:100%;display:block}
-  .clink{stroke:rgba(216,166,87,.22);stroke-width:.6;fill:none;
-    stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
-    animation:draw 2.4s ease forwards var(--d)}
-  @keyframes draw{to{stroke-dashoffset:0}}
-  .star{fill:var(--gold-soft);opacity:0;animation:twinkle 4s ease-in-out infinite var(--td), pop .8s ease forwards var(--pd)}
-  @keyframes pop{to{opacity:1}}
-  @keyframes twinkle{0%,100%{opacity:.95}50%{opacity:.4}}
-  .star.hub{fill:#fff}
-  .halo{fill:var(--gold);opacity:.14;animation:breathe 6s ease-in-out infinite var(--td)}
-  @keyframes breathe{0%,100%{opacity:.1}50%{opacity:.22}}
-  /* one agent orbiting slowly along an ellipse */
-  .orbiter{transform-box:fill-box;transform-origin:center}
+/* ---------- Orbital fil conducteur ---------- */
+.orbit-rail{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:.5}
+.orbit-rail svg{width:100%;height:100%}
+.orbit-path{fill:none;stroke:var(--line-gold);stroke-width:1.1}
+.orbit-progress{fill:none;stroke:var(--gold);stroke-width:1.4;stroke-dasharray:1;stroke-dashoffset:1;will-change:stroke-dashoffset}
+.satellite{fill:var(--gold);filter:drop-shadow(0 0 8px rgba(200,132,31,.6));will-change:cx,cy}
 
-  .wrap{position:relative;z-index:3;height:100dvh;max-height:100dvh;overflow:hidden;display:grid;
-    grid-template-rows:auto 1fr auto;padding:clamp(1.4rem,3vh,2.2rem) clamp(1.6rem,5vw,4.5rem)}
+/* ---------- Nav ---------- */
+nav{position:fixed;top:0;left:0;width:100%;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:20px 40px;transition:background .4s,box-shadow .4s,padding .4s}
+nav.scrolled{background:rgba(246,241,231,.85);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--line);padding:14px 40px}
+.logo{font-family:var(--serif);font-size:1.4rem;letter-spacing:-.01em;font-weight:700;color:var(--ink)}
+.logo .ia{font-style:italic;color:var(--gold)}
+.nav-cta{font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:var(--bg);padding:12px 24px;border-radius:40px;text-decoration:none;transition:.35s;font-weight:400}
+.nav-cta:hover{background:var(--gold-deep)}
+@media(max-width:680px){nav{padding:16px 22px}nav.scrolled{padding:12px 22px}.nav-cta{padding:10px 16px;font-size:.72rem}}
 
-  header{display:flex;align-items:center;justify-content:space-between;
-    padding-bottom:clamp(.9rem,2vh,1.3rem);border-bottom:1px solid var(--line);
-    opacity:0;animation:fade 1.2s .05s forwards}
-  .brand{display:flex;align-items:baseline;gap:.85rem}
-  .logo{display:block;line-height:0;text-decoration:none}
-  .logo img{display:block;height:clamp(2.7rem,6vh,3.6rem);width:auto}
-  .tag{font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-faint);padding-left:.85rem;border-left:1px solid var(--line)}
-  nav{display:flex;align-items:center;gap:clamp(1.4rem,3vw,2.6rem)}
-  .journal{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;transition:color .4s;position:relative}
-  .journal::after{content:"";position:absolute;left:0;bottom:-4px;width:100%;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1)}
-  .journal:hover{color:var(--ink)}.journal:hover::after{transform:scaleX(1)}
-  .lang{display:flex;gap:.5rem;font-size:.74rem;letter-spacing:.12em}
-  .lang a{background:none;border:none;color:var(--ink-faint);font-family:var(--body);cursor:pointer;transition:color .4s;padding:0;text-decoration:none}
-  .lang a.on{color:var(--gold)}
-  .lang a:hover{color:var(--ink)}
-  .lang i{color:var(--ink-faint);opacity:.5}
+section{position:relative;z-index:2}
+.wrap{max-width:1140px;margin:0 auto;padding:0 40px}
+@media(max-width:680px){.wrap{padding:0 22px}}
 
-  main{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:0}
+.eyebrow{font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:18px;display:inline-flex;align-items:center;gap:11px;font-weight:600}
+.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(200,132,31,.15)}
 
-  h1{font-family:var(--display);font-weight:400;line-height:.95;letter-spacing:-.005em;font-size:clamp(3rem,10.5vw,8.6rem);max-width:15ch;position:relative}
-  h1 .ln{display:block;overflow:hidden;padding:.08em 0 .12em;margin:-.08em 0 -.12em}
-  h1 .ln>span{display:block;transform:translateY(105%);animation:up 1.1s cubic-bezier(.16,1,.3,1) forwards}
-  h1 .ln:nth-child(1)>span{animation-delay:.2s}
-  h1 .ln:nth-child(2)>span{animation-delay:.34s}
-  h1 .ln:nth-child(3)>span{animation-delay:.48s}
-  h1 i{font-style:italic;
-    background:linear-gradient(100deg,var(--gold-soft),var(--gold) 45%,var(--rust));
-    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+/* reveal */
+.reveal-line{display:block;overflow:hidden}
+.reveal-line>span{display:block;transform:translateY(110%);transition:transform 1s cubic-bezier(.16,1,.3,1)}
+.reveal-line.in>span{transform:translateY(0)}
+.fade{opacity:0;transform:translateY(34px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.fade.in{opacity:1;transform:none}
 
-  .right{position:absolute;right:0;bottom:clamp(2rem,7vh,4.5rem);width:min(33ch,40%);opacity:0;animation:fade 1.2s 1.1s forwards}
-  .lede{font-size:clamp(1.02rem,1.5vw,1.2rem);line-height:1.6;color:var(--ink-soft);font-weight:300;margin-bottom:1.6rem}
-  .lede b{color:var(--ink);font-weight:400}
-  .scope{font-size:.8rem;letter-spacing:.04em;color:var(--ink-faint);line-height:1.9;border-top:1px solid var(--line);padding-top:1.2rem;padding-bottom:.2rem}
-  .scope b{color:var(--gold);font-weight:400}
+.btn{display:inline-flex;align-items:center;gap:10px;font-size:.95rem;letter-spacing:.03em;padding:16px 32px;border-radius:46px;text-decoration:none;transition:.4s;cursor:pointer;border:none;font-weight:400}
+.btn-primary{background:var(--ink);color:var(--bg)}
+.btn-primary:hover{background:var(--gold-deep);transform:translateY(-2px);box-shadow:0 14px 36px rgba(168,106,18,.28)}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-gold:hover{background:var(--gold-deep);transform:translateY(-2px)}
+.btn-ghost{border:1px solid var(--ink);color:var(--ink);background:transparent}
+.btn-ghost:hover{background:var(--ink);color:var(--bg)}
 
-  .foot{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;opacity:0;animation:fade 1.2s 1.3s forwards}
-  .contact{font-size:.8rem;letter-spacing:.04em;color:var(--ink-faint)}
-  .contact a{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid var(--line);transition:color .4s,border-color .4s}
-  .contact a:hover{color:var(--gold);border-color:var(--gold)}
-  .cta{display:inline-flex;align-items:baseline;gap:.7rem;text-decoration:none;color:var(--ink);
-    font-family:var(--display);font-size:clamp(1.4rem,3vw,2.1rem);transition:color .4s;position:relative}
-  .cta .u{position:relative}
-  .cta .u::after{content:"";position:absolute;left:0;bottom:.08em;width:100%;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .55s cubic-bezier(.16,1,.3,1)}
-  .cta:hover{color:var(--gold-soft)}
-  .cta:hover .u::after{transform:scaleX(1)}
-  .cta .arrow{font-style:italic;color:var(--gold);transition:transform .4s}
-  .cta:hover .arrow{transform:translate(5px,-5px)}
+/* ---------- HERO ---------- */
+.hero{min-height:88vh;display:flex;flex-direction:column;justify-content:center;padding:120px 0 56px;position:relative;overflow:hidden}
+.hero-orb{position:absolute;top:8%;right:-6%;width:min(46vw,520px);height:min(46vw,520px);border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--gold-soft),var(--gold) 45%,var(--gold-deep) 100%);opacity:.14;filter:blur(2px);z-index:0;animation:float 14s ease-in-out infinite}
+.hero-orb::after{content:"";position:absolute;inset:-18% ;border-radius:50%;border:1px solid var(--line-gold);opacity:.5}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-22px) scale(1.03)}}
+.hero .wrap{position:relative;z-index:2}
+@media(max-width:680px){.hero-orb{top:auto;bottom:4%;right:-20%;opacity:.1}}
+.hero-label{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:26px;display:inline-flex;align-items:center;gap:11px}
+.hero-label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(200,132,31,.15)}
+.hero .selector{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px}
+.hero .selector button{background:transparent;border:1px solid var(--line);color:var(--ink-soft);font-family:var(--sans);font-size:.8rem;letter-spacing:.04em;padding:9px 18px;border-radius:40px;cursor:pointer;transition:.3s}
+.hero .selector button:hover,.hero .selector button.active{border-color:var(--gold);color:var(--gold-deep);background:rgba(200,132,31,.08)}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(2.7rem,7vw,5.9rem);line-height:.98;letter-spacing:-.038em;margin-bottom:24px}
+.hero h1 em{font-style:normal;color:var(--gold-deep)}
+.hero p.lede{font-size:clamp(1.02rem,1.8vw,1.22rem);color:var(--ink-soft);max-width:540px;margin-bottom:30px}
+.hero .actions{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:38px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--line);padding-top:22px;max-width:640px}
+.hero-meta span{font-size:.82rem;color:var(--ink-soft);letter-spacing:.01em;padding:0 22px;position:relative}
+.hero-meta span:first-child{padding-left:0}
+.hero-meta span:not(:first-child)::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:1px;background:var(--line)}
+@media(max-width:680px){.hero-meta{gap:8px}.hero-meta span{padding:0;width:100%}.hero-meta span:not(:first-child)::before{display:none}}
 
-  .btn{display:inline-flex;align-items:center;gap:.7rem;margin-top:2.1rem;text-decoration:none;
-    font-family:var(--body);font-weight:400;font-size:1rem;letter-spacing:.01em;color:#15110a;
-    background:linear-gradient(100deg,var(--gold-soft),var(--gold));
-    padding:.85rem 1.6rem;border-radius:2px;
-    box-shadow:0 1px 0 rgba(255,255,255,.25) inset, 0 8px 30px rgba(216,166,87,.22);
-    transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s}
-  .btn:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 14px 44px rgba(216,166,87,.38)}
-  .btn .arrow{transition:transform .4s}
-  .btn:hover .arrow{transform:translate(4px,-4px)}
-  @keyframes up{to{transform:translateY(0)}}
-  @keyframes fade{to{opacity:1}}
-  [data-lang=en] .fr{display:none}[data-lang=fr] .en{display:none}
+/* ---------- Image plein écran parallaxe ---------- */
+.showcase{position:relative;height:190vh}
+.showcase-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.showcase .bg{position:absolute;inset:-14% 0;background-size:cover;background-position:center;transform-origin:center;will-change:transform}
+.showcase-sticky::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,24,16,.32),rgba(28,24,16,.5))}
+.showcase .caption{transform-origin:center;will-change:transform}
+.showcase .caption{position:relative;z-index:3;text-align:center;color:#fff;max-width:min(92vw,820px);padding:46px 56px}
+.showcase .caption::before{content:"";position:absolute;inset:-12px -16px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 75% 80% at 50% 50%,rgba(16,13,9,.62) 0%,rgba(16,13,9,.4) 48%,rgba(16,13,9,0) 78%);filter:blur(10px)}
+.showcase .caption h2{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,5.5vw,4.4rem);line-height:1.04;letter-spacing:-.03em;text-shadow:0 2px 30px rgba(0,0,0,.45)}
+.showcase .caption h2 em{font-style:normal;color:var(--gold-soft)}
+.showcase .caption p{margin-top:20px;font-size:1.12rem;color:rgba(255,255,255,.92);max-width:50ch;margin-left:auto;margin-right:auto;text-shadow:0 1px 16px rgba(0,0,0,.45)}
+@media(max-width:680px){.showcase .caption{padding:32px 28px}}
+@media(max-width:680px){.showcase{height:165vh}.showcase-sticky{height:100svh}}
 
-  @media (max-width:780px){
-    header{padding-bottom:.9rem}
-    .tag{display:none}
-    nav{gap:1.3rem}
-    /* Title + text grouped near top; constellation breathes below */
-    main{justify-content:flex-start;gap:clamp(1.6rem,5vh,3rem);padding-top:clamp(1.6rem,5vh,3rem)}
-    h1{font-size:clamp(2.9rem,13vw,4.6rem);max-width:none;flex:0 0 auto}
-    .right{position:static;width:auto;flex:0 0 auto;margin-top:0}
-    .lede{font-size:1.05rem;line-height:1.55;margin-bottom:1.4rem;max-width:36ch}
-    .scope{display:block;margin-bottom:1.4rem;padding-top:1.1rem}
-    .btn{margin-top:0;margin-bottom:0}
-    .foot{flex-direction:column;align-items:flex-start;gap:.5rem;margin-top:auto}
-    .constellation svg{transform:scale(1.45) translate(2%,6%)}
-  }
-  /* Short landscape: two columns, comfortable, footer with room */
-  @media (max-height:560px) and (orientation:landscape){
-    .wrap{padding:.8rem clamp(1.4rem,4vw,3rem) 1rem}
-    header{padding-bottom:.6rem}
-    .tag{display:none}
-    main{flex-direction:row;align-items:center;gap:clamp(2rem,5vw,4rem);justify-content:space-between;padding:.4rem 0}
-    h1{font-size:clamp(1.7rem,5.5vw,2.5rem);max-width:11ch;flex:1;line-height:1.02}
-    .right{position:static;width:auto;flex:1;max-width:44ch}
-    .lede{font-size:.9rem;line-height:1.45;margin-bottom:.8rem}
-    .scope{display:none}
-    .btn{margin-top:.6rem;padding:.7rem 1.3rem;font-size:.92rem}
-    .foot{gap:.4rem;padding-top:.2rem}
-    .contact{font-size:.74rem}
-    .constellation svg{transform:none;opacity:.7}
-  }
-  /* Very small portrait: tighten everything, guarantee button/footer gap */
-  @media (max-width:400px){
-    .wrap{padding:1.1rem 1.2rem}
-    h1{font-size:clamp(2.4rem,12.5vw,3rem);line-height:1.0}
-    .lede{font-size:.92rem;line-height:1.45;margin-bottom:0}
-    .btn{margin-top:1rem;margin-bottom:.6rem;padding:.75rem 1.3rem;font-size:.95rem}
-    .foot{gap:.35rem;padding-top:.3rem}
-    .contact{font-size:.74rem}
-  }
-  @media (prefers-reduced-motion:reduce){
-    *{animation-duration:.01ms!important}
-    h1 .ln>span{transform:none}.clink{stroke-dashoffset:0}.star,.index,.right,.foot{opacity:1!important}
-    .orbiter{animation:none!important}
-  }
+/* ---------- MANIFESTE (pinned) ---------- */
+.manifesto{min-height:130vh;position:relative}
+.manifesto .sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center}
+.manifesto h2{font-family:var(--serif);font-weight:700;font-size:clamp(2.2rem,6vw,5.2rem);line-height:1.04;letter-spacing:-.03em;max-width:15ch;will-change:transform,opacity}
+.manifesto h2 strong{font-weight:800;color:var(--gold-deep);font-style:normal}
+
+/* ---------- Réassurance ---------- */
+.reassure{padding:60px 0;background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.reassure .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.reassure .item{padding:8px 40px;position:relative}
+.reassure .item:not(:first-child)::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:64px;background:var(--line)}
+.reassure .item:first-child{padding-left:0}
+.reassure .num{font-family:var(--serif);font-size:.78rem;font-weight:700;color:var(--gold-deep);letter-spacing:.1em;margin-bottom:12px;display:block}
+.reassure .item h4{font-family:var(--serif);font-size:1.18rem;font-weight:600;letter-spacing:-.01em;margin-bottom:6px;color:var(--ink)}
+.reassure .item p{color:var(--ink-soft);font-size:.96rem;line-height:1.5}
+@media(max-width:760px){.reassure .grid{grid-template-columns:1fr;gap:28px}.reassure{padding:48px 0}.reassure .item{padding:0}.reassure .item:not(:first-child)::before{display:none}.reassure .item:not(:first-child){padding-top:28px;border-top:1px solid var(--line)}}
+
+.block{padding:68px 0}
+.block h2.title{font-family:var(--serif);font-weight:700;font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.02;letter-spacing:-.03em;margin-bottom:14px;max-width:16ch}
+.block h2.title em{font-style:normal;color:var(--gold-deep)}
+.block .sub{color:var(--ink-soft);max-width:46ch;margin-bottom:36px;font-size:1.06rem}
+@media(max-width:680px){.block{padding:48px 0}.block .sub{margin-bottom:30px}}
+
+.cards4{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.cards4 .card{background:var(--bg);padding:34px 32px 30px;transition:.5s;position:relative}
+.cards4 .card::before{content:attr(data-n);position:absolute;top:30px;right:32px;font-family:var(--serif);font-size:.78rem;font-weight:700;color:var(--ink-dim);letter-spacing:.08em;transition:.4s}
+.cards4 .card::after{content:"";position:absolute;left:0;top:34px;width:0;height:2px;background:var(--gold);transition:width .5s cubic-bezier(.16,1,.3,1)}
+.cards4 .card:hover{background:#fff}
+.cards4 .card:hover::after{width:32px}
+.cards4 .card:hover::before{color:var(--gold-deep)}
+.cards4 .card .k{font-family:var(--serif);font-size:1.32rem;font-weight:600;color:var(--ink);margin-bottom:12px;letter-spacing:-.02em;padding-top:6px}
+.cards4 .card p{color:var(--ink-soft);font-size:.98rem}
+@media(max-width:680px){.cards4{grid-template-columns:1fr}.cards4 .card{padding:28px 26px}}
+
+.levers{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.lever{display:grid;grid-template-columns:64px 1fr 40px;gap:22px;padding:28px 0;border-bottom:1px solid var(--line);align-items:start;transition:.45s cubic-bezier(.16,1,.3,1)}
+.lever:hover{padding-left:18px;background:linear-gradient(90deg,rgba(200,132,31,.07),transparent 70%)}
+.lever .idx{font-family:var(--serif);color:var(--gold-deep);font-size:1rem;font-weight:700;letter-spacing:.04em;padding-top:6px}
+.lever h3{font-family:var(--serif);font-weight:600;font-size:clamp(1.45rem,2.8vw,2.15rem);letter-spacing:-.025em;margin-bottom:10px;transition:.4s}
+.lever:hover h3{color:var(--gold-deep)}
+.lever p{color:var(--ink-soft);max-width:58ch;font-size:1rem}
+.lever .arr{font-family:var(--serif);font-size:1.4rem;color:var(--gold-deep);opacity:0;transform:translateX(-8px);transition:.45s cubic-bezier(.16,1,.3,1);align-self:center}
+.lever:hover .arr{opacity:1;transform:translateX(0)}
+@media(max-width:680px){.lever{grid-template-columns:48px 1fr;gap:14px;padding:26px 0}.lever .arr{display:none}}
+
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+.tier{border:1px solid var(--line);border-radius:16px;padding:32px 26px;display:flex;flex-direction:column;transition:.5s;background:var(--bg)}
+.tier:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(28,24,16,.08)}
+.tier.featured{border-color:var(--gold);background:#fff;box-shadow:0 16px 44px rgba(168,106,18,.12)}
+.tier .tag{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:20px;min-height:14px;font-weight:500}
+.tier .step{font-family:var(--serif);font-weight:600;color:var(--ink-dim);margin-bottom:8px}
+.tier h3{font-family:var(--serif);font-weight:700;font-size:1.7rem;letter-spacing:-.02em;margin-bottom:6px}
+.tier .price{color:var(--gold-deep);font-size:1.05rem;margin-bottom:24px}
+.tier p{color:var(--ink-soft);font-size:.98rem;flex:1;margin-bottom:0}
+.tier a{align-self:flex-start}
+.tiers-cta{margin-top:28px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.tiers-cta span{color:var(--ink-dim);font-size:.9rem}
+@media(max-width:680px){.tiers-cta{margin-top:32px}}
+@media(max-width:880px){.tiers{grid-template-columns:1fr}}
+
+/* Témoignage avec image */
+.quote{position:relative;min-height:60vh;display:flex;align-items:center;overflow:hidden}
+.quote .bg{position:absolute;inset:-12% 0;background-size:cover;background-position:center;will-change:transform}
+.quote::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(28,24,16,.72),rgba(28,24,16,.35))}
+.quote .inner{position:relative;z-index:3;color:#fff}
+.quote .inner::before{content:"";position:absolute;inset:-24px -32px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 80% 90% at 30% 50%,rgba(16,13,9,.6) 0%,rgba(16,13,9,.32) 50%,rgba(16,13,9,0) 80%);filter:blur(12px)}
+.quote blockquote{font-family:var(--serif);font-weight:700;font-style:normal;font-size:clamp(1.8rem,4.4vw,3.4rem);line-height:1.1;letter-spacing:-.03em;max-width:18ch;text-shadow:0 2px 30px rgba(0,0,0,.4)}
+.quote .author{margin-top:32px;font-size:.95rem;color:var(--gold-soft);letter-spacing:.04em}
+
+/* Journal / blog minimaliste */
+.journal-list{border-top:1px solid var(--line)}
+.journal-item{display:grid;grid-template-columns:160px 1fr 40px;gap:28px;align-items:center;padding:26px 0;border-bottom:1px solid var(--line);text-decoration:none;color:inherit;transition:.45s cubic-bezier(.16,1,.3,1)}
+.journal-item:hover{padding-left:16px;background:linear-gradient(90deg,rgba(200,132,31,.07),transparent 70%)}
+.journal-meta{display:flex;flex-direction:column;gap:4px}
+.journal-meta .date{font-size:.78rem;font-weight:600;letter-spacing:.08em;color:var(--gold-deep);text-transform:uppercase}
+.journal-meta .cat{font-size:.78rem;color:var(--ink-dim);letter-spacing:.02em}
+.journal-item h3{font-family:var(--serif);font-weight:600;font-size:clamp(1.15rem,2.2vw,1.55rem);letter-spacing:-.02em;line-height:1.2;transition:.4s}
+.journal-item:hover h3{color:var(--gold-deep)}
+.journal-item .arr{font-family:var(--serif);font-size:1.3rem;color:var(--gold-deep);opacity:0;transform:translateX(-8px);transition:.45s cubic-bezier(.16,1,.3,1);justify-self:end}
+.journal-item:hover .arr{opacity:1;transform:translateX(0)}
+@media(max-width:680px){.journal-item{grid-template-columns:1fr 32px;gap:14px;padding:22px 0}.journal-meta{flex-direction:row;gap:12px;grid-column:1/-1;margin-bottom:-4px}.journal-item h3{grid-column:1}.journal-item .arr{display:none}}
+
+.faq-item{border-bottom:1px solid var(--line)}
+.faq-q{width:100%;background:none;border:none;color:var(--ink);font-family:var(--serif);font-size:clamp(1.1rem,2.2vw,1.4rem);font-weight:600;letter-spacing:-.02em;text-align:left;padding:24px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;transition:.3s}
+.faq-q:hover{color:var(--gold-deep)}
+.faq-q .plus{color:var(--gold);font-size:1.4rem;transition:transform .4s;flex-shrink:0}
+.faq-item.open .plus{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.16,1,.3,1)}
+.faq-a p{color:var(--ink-soft);padding:0 0 24px;max-width:62ch}
+
+/* CONTACT + FOOTER fusionnés */
+.endcap{background:var(--ink);color:var(--bg);padding:72px 0 0;position:relative;z-index:2}
+.endcap .top{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:center;padding-bottom:56px}
+.endcap h2{font-family:var(--serif);font-weight:700;font-size:clamp(2.2rem,5.5vw,4.4rem);line-height:1;letter-spacing:-.035em;margin-bottom:20px}
+.endcap h2 em{font-style:normal;color:var(--gold-soft)}
+.endcap .lead{color:rgba(246,241,231,.7);font-size:1.08rem;max-width:42ch}
+.endcap .act{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.endcap .act .btn-gold{background:var(--gold);color:#fff}
+.endcap .act .btn-gold:hover{background:var(--gold-soft)}
+.endcap .mail{color:rgba(246,241,231,.55);font-size:.95rem}
+.endcap .mail a{color:var(--gold-soft);text-decoration:none;border-bottom:1px solid rgba(227,169,73,.3);transition:.3s}
+.endcap .mail a:hover{border-color:var(--gold-soft)}
+.endcap .bar{display:flex;justify-content:space-between;align-items:center;padding:26px 0;border-top:1px solid rgba(246,241,231,.12);font-size:.82rem;color:rgba(246,241,231,.45);letter-spacing:.02em}
+.endcap .bar .logo-f{font-family:var(--serif);font-weight:700;color:var(--bg);letter-spacing:-.01em;font-size:1rem}
+.endcap .bar .ia{color:var(--gold-soft);font-style:italic}
+@media(max-width:760px){.endcap{padding-top:72px}.endcap .top{grid-template-columns:1fr;gap:34px;padding-bottom:56px}.endcap .bar{flex-direction:column;gap:10px;text-align:center}}
+
+.sticky-cta{position:fixed;bottom:0;left:0;width:100%;padding:14px 20px;background:rgba(246,241,231,.94);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:60;display:none;justify-content:center}
+.sticky-cta a{width:100%;justify-content:center}
+@media(max-width:680px){.sticky-cta{display:flex}}
 </style>
 </head>
-<body data-lang="fr">
-<div class="sky"></div>
-<div class="constellation" aria-hidden="true">
-  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
-    <!-- constellation lines (drawn) -->
-    <path class="clink" style="--len:340;--d:.6s"  d="M1080,150 L1210,250"/>
-    <path class="clink" style="--len:300;--d:.8s"  d="M1210,250 L1150,400"/>
-    <path class="clink" style="--len:360;--d:1.0s" d="M1150,400 L1300,470"/>
-    <path class="clink" style="--len:300;--d:1.2s" d="M1150,400 L1060,560"/>
-    <path class="clink" style="--len:340;--d:1.4s" d="M1080,150 L960,300"/>
-    <path class="clink" style="--len:320;--d:1.5s" d="M960,300 L1150,400"/>
-    <path class="clink" style="--len:300;--d:1.7s" d="M1060,560 L1230,640"/>
-    <!-- elliptical guide + slow orbiting agent around the hub -->
-    <ellipse cx="1150" cy="400" rx="190" ry="120" fill="none" stroke="rgba(216,166,87,.10)" stroke-width=".6"/>
-    <g style="transform-origin:1150px 400px;animation:spin 38s linear infinite">
-      <circle class="orbiter" cx="1340" cy="400" r="3.4" fill="var(--gold-soft)"/>
-    </g>
-    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
-    <!-- hub -->
-    <circle cx="1150" cy="400" r="30" fill="none" stroke="rgba(216,166,87,.25)" stroke-width=".8">
-      <animate attributeName="r" values="20;60" dur="5s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="0.5;0" dur="5s" repeatCount="indefinite"/>
-    </circle>
-    <circle class="halo" cx="1150" cy="400" r="26" style="--td:0s"/>
-    <circle class="star hub" cx="1150" cy="400" r="3.6" style="--pd:.4s;--td:1s"/>
-    <!-- agent stars -->
-    <circle class="halo" cx="1080" cy="150" r="14" style="--td:1.2s"/>
-    <circle class="star" cx="1080" cy="150" r="2.8" style="--pd:.7s;--td:.5s"/>
-    <circle class="star" cx="1210" cy="250" r="2.4" style="--pd:.9s;--td:2s"/>
-    <circle class="halo" cx="1300" cy="470" r="12" style="--td:.8s"/>
-    <circle class="star" cx="1300" cy="470" r="2.6" style="--pd:1.1s;--td:1.4s"/>
-    <circle class="star" cx="1060" cy="560" r="2.4" style="--pd:1.3s;--td:.9s"/>
-    <circle class="star" cx="960"  cy="300" r="2.2" style="--pd:1.5s;--td:2.4s"/>
-    <circle class="star" cx="1230" cy="640" r="2.6" style="--pd:1.6s;--td:1.1s"/>
-    <!-- mid/lower stars for mobile framing -->
-    <path class="clink" style="--len:260;--d:1.3s" d="M620,470 L780,560"/>
-    <path class="clink" style="--len:240;--d:1.6s" d="M780,560 L700,690"/>
-    <circle class="halo" cx="620" cy="470" r="12" style="--td:1.6s"/>
-    <circle class="star" cx="620" cy="470" r="2.6" style="--pd:1.4s;--td:1.8s"/>
-    <circle class="star" cx="780" cy="560" r="2.3" style="--pd:1.7s;--td:1.2s"/>
-    <circle class="star" cx="700" cy="690" r="2.5" style="--pd:1.9s;--td:2.1s"/>
-    <circle class="star" cx="540" cy="640" r="1.4" style="--pd:2.1s;--td:2.7s;opacity:.6"/>
-    <!-- scattered faint background stars -->
-    <circle class="star" cx="820"  cy="180" r="1.3" style="--pd:1.8s;--td:3s;opacity:.5"/>
-    <circle class="star" cx="700"  cy="640" r="1.2" style="--pd:2s;--td:2.2s"/>
-    <circle class="star" cx="1380" cy="720" r="1.4" style="--pd:2.1s;--td:1.7s"/>
-    <circle class="star" cx="900"  cy="760" r="1.2" style="--pd:2.2s;--td:2.6s"/>
-    <circle class="star" cx="1330" cy="130" r="1.3" style="--pd:2.3s;--td:3.2s"/>
+<body>
+
+<div class="orbit-rail">
+  <svg viewBox="0 0 100 1000" preserveAspectRatio="none">
+    <path class="orbit-path" id="rail" d="M 80 20 C 20 140, 90 260, 30 380 S 85 600, 25 720 S 80 900, 50 980"/>
+    <path class="orbit-progress" id="railProg" d="M 80 20 C 20 140, 90 260, 30 380 S 85 600, 25 720 S 80 900, 50 980"/>
+    <circle class="satellite" id="sat" r="3.2" cx="80" cy="20"/>
   </svg>
 </div>
-<div class="vignette"></div>
-<div class="grain"></div>
 
-<div class="wrap">
-  <header>
-    <div class="brand">
-      <a class="logo" href="/"><img src="/assets/logo-orbe.png" alt="Orbe IA" width="576" height="218"></a>
-      <span class="tag fr">Studio sur mesure</span><span class="tag en">Bespoke studio</span>
-    </div>
-    <nav>
-      <a class="journal fr" href="/journal/">Journal</a>
-      <a class="journal en" href="/en/journal/">Journal</a>
-      <div class="lang"><a data-set="fr" class="on" href="/">FR</a><i>/</i><a data-set="en" href="/en/">EN</a></div>
-    </nav>
-  </header>
+<nav id="nav">
+  <div class="logo">ORBE <span class="ia">IA</span></div>
+  <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="nav-cta">J'automatise mon activité ↗</a>
+</nav>
 
-  <main>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="hero-label fade">Studio d'automatisation &amp; de produits sur mesure</div>
     <h1>
-      <span class="fr">
-        <span class="ln"><span>Des agents</span></span>
-        <span class="ln"><span><i>en orbite</i></span></span>
-        <span class="ln"><span>autour de vous.</span></span>
-      </span>
-      <span class="en">
-        <span class="ln"><span>Agents</span></span>
-        <span class="ln"><span><i>in orbit</i></span></span>
-        <span class="ln"><span>around your work.</span></span>
-      </span>
+      <span class="reveal-line"><span>Entrez dans la</span></span>
+      <span class="reveal-line"><span><em>nouvelle ère</em> du travail.</span></span>
     </h1>
-    <div class="right">
-      <p class="lede">
-        <span class="fr">Nous concevons des systèmes <b>sur mesure</b> qui gravitent autour de votre activité et travaillent pour vous, sans relâche.</span>
-        <span class="en">We design <b>bespoke systems</b> that orbit your business and work for you, tirelessly.</span>
-      </p>
-      <p class="scope">
-        <span class="fr"><b>Agents IA</b> &nbsp;·&nbsp; Automatisation &nbsp;·&nbsp; Sites &nbsp;·&nbsp; Applications &nbsp;·&nbsp; Plateformes</span>
-        <span class="en"><b>AI agents</b> &nbsp;·&nbsp; Automation &nbsp;·&nbsp; Sites &nbsp;·&nbsp; Applications &nbsp;·&nbsp; Platforms</span>
-      </p>
-      <a class="btn" href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener">
-        <span class="fr">Réserver un échange</span><span class="en">Book a call</span>
-        <span class="arrow">↗</span>
+    <p class="lede">Choisissez ce que vous voulez déléguer pour reprendre le pouvoir sur votre temps. On automatise le répétitif et on construit les outils qui le portent.</p>
+    <div class="selector fade">
+      <button class="active">Automatisation IA</button>
+      <button>Site web</button>
+      <button>Application</button>
+      <button>Plateforme</button>
+    </div>
+    <div class="actions fade">
+      <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-primary">J'automatise mon entreprise ↗</a>
+      <a href="#services" class="btn btn-ghost">Voir ce qu'on fait</a>
+    </div>
+    <div class="hero-meta fade">
+      <span>Premier échange offert</span>
+      <span>Tarif annoncé d'avance</span>
+      <span>Un seul interlocuteur</span>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE 1 -->
+<section class="showcase">
+  <div class="showcase-sticky">
+    <div class="bg" style="background-image:url('assets/showcase-1.png')"></div>
+    <div class="caption">
+      <h2 class="fade">Vos outils <em>travaillent</em>, vous décidez.</h2>
+      <p class="fade">Pendant que vous lisez ceci, ils pourraient déjà gérer vos relances et vos suivis.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTE -->
+<section class="manifesto">
+  <div class="sticky">
+    <div class="wrap">
+      <h2 class="fade">Vos journées sont mangées par le répétitif. <strong>Vous méritez mieux.</strong> Rejoignez ceux qui automatisent leur activité au lieu de la subir.</h2>
+    </div>
+  </div>
+</section>
+
+<!-- RÉASSURANCE -->
+<section class="reassure">
+  <div class="wrap">
+    <div class="grid">
+      <div class="item fade"><span class="num">01</span><h4>Un seul interlocuteur</h4><p>Du premier échange à la livraison, vous parlez toujours à la même personne.</p></div>
+      <div class="item fade"><span class="num">02</span><h4>Tarif annoncé d'avance</h4><p>Le prix est fixé avant de commencer. Aucune surprise en cours de route.</p></div>
+      <div class="item fade"><span class="num">03</span><h4>Des outils connectés</h4><p>Vos logiciels se parlent enfin, sans rupture ni oubli entre eux.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONSTAT -->
+<section class="block">
+  <div class="wrap">
+    <div class="eyebrow fade">Le constat</div>
+    <h2 class="title fade">Ce qui se répète <em>peut se déléguer.</em></h2>
+    <p class="sub fade">Chaque semaine, des heures partent dans des gestes mécaniques. On les identifie, on les automatise proprement, et ce temps vous revient.</p>
+    <div class="cards4">
+      <div class="card fade" data-n="01"><div class="k">Les relances</div><p>Devis sans réponse, factures en attente : un suivi qu'il faut sans cesse reprendre.</p></div>
+      <div class="card fade" data-n="02"><div class="k">Les mails répétitifs</div><p>Les mêmes réponses, réécrites plusieurs fois par jour. Un copier-coller qui épuise.</p></div>
+      <div class="card fade" data-n="03"><div class="k">La double saisie</div><p>Recopier d'un outil à l'autre, ressaisir, vérifier deux fois. Le travail invisible qui s'accumule.</p></div>
+      <div class="card fade" data-n="04"><div class="k">Les outils éparpillés</div><p>Des logiciels qui ne se parlent pas, des données dispersées, rien de centralisé.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE 2 -->
+<section class="showcase">
+  <div class="showcase-sticky">
+    <div class="bg" style="background-image:url('assets/workflow.jpg')"></div>
+    <div class="caption">
+      <h2 class="fade">Du temps rendu, <em>vraiment.</em></h2>
+      <p class="fade">Les heures gagnées reviennent à ce qui compte pour votre activité.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CE QU'ON FAIT -->
+<section class="block" id="services">
+  <div class="wrap">
+    <div class="eyebrow fade">Ce qu'on fait</div>
+    <h2 class="title fade">Choisissez <em>votre levier.</em></h2>
+    <p class="sub fade">Un objectif : votre temps. Tous les moyens pour y arriver.</p>
+    <div class="levers">
+      <div class="lever fade"><div class="idx">01</div><div><h3>Automatisation IA</h3><p>On retire le répétitif. Relances, réponses, saisies, suivis : ça tourne sans intervention, sans oubli, sans erreur d'inattention.</p></div><div class="arr">↗</div></div>
+      <div class="lever fade"><div class="idx">02</div><div><h3>Sites web</h3><p>Une vitrine claire et rapide, soignée, pensée pour transformer les visiteurs en prises de contact concrètes.</p></div><div class="arr">↗</div></div>
+      <div class="lever fade"><div class="idx">03</div><div><h3>Applications</h3><p>Un outil métier sur mesure, exactement adapté à votre façon de travailler, relié à vos automatisations.</p></div><div class="arr">↗</div></div>
+      <div class="lever fade"><div class="idx">04</div><div><h3>Plateformes sur mesure</h3><p>Tableaux de bord, espaces clients, intégrations entre vos services : le socle qui grandit avec votre activité.</p></div><div class="arr">↗</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFRES -->
+<section class="block" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="eyebrow fade">Les offres</div>
+    <h2 class="title fade">Simple. <em>Trois étapes.</em></h2>
+    <div class="tiers">
+      <div class="tier fade">
+        <div class="tag"></div><div class="step">01</div><h3>Premier échange</h3><div class="price">Gratuit</div>
+        <p>30 minutes, sans engagement. On passe en revue votre fonctionnement, on repère ce qui pèse pour peu de valeur, vous repartez avec des pistes concrètes.</p>
+      </div>
+      <div class="tier featured fade">
+        <div class="tag">Le plus demandé</div><div class="step">02</div><h3>Un projet ciblé</h3><div class="price">dès 1 500 €</div>
+        <p>Une automatisation, un site ou une application, livré de bout en bout. Mis au point avec vous, prêt en quelques jours, tarif fixé avant de commencer.</p>
+      </div>
+      <div class="tier fade">
+        <div class="tag"></div><div class="step">03</div><h3>Sur mesure</h3><div class="price">Sur devis</div>
+        <p>Plusieurs briques connectées entre elles : automatisations, plateforme, outils internes, intégrations. Un accompagnement dans la durée.</p>
+      </div>
+    </div>
+    <div class="tiers-cta fade">
+      <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-gold">Je trouve mon levier en 30 min ↗</a>
+      <span>Gratuit, sans engagement</span>
+    </div>
+  </div>
+</section>
+
+<!-- TÉMOIGNAGE avec image -->
+<section class="quote">
+  <div class="bg" data-parallax style="background-image:url('assets/temoignage.png')"></div>
+  <div class="wrap inner">
+    <blockquote class="fade">« Je passais mes dimanches sur ma facturation. Aujourd'hui, elle se gère sans moi. »</blockquote>
+    <div class="author fade">Camille R. · artisane fleuriste, Lyon</div>
+  </div>
+</section>
+
+<!-- JOURNAL -->
+<section class="block" id="journal">
+  <div class="wrap">
+    <div class="eyebrow fade">Le journal</div>
+    <h2 class="title fade">Ce qu'on apprend, <em>on le partage.</em></h2>
+    <p class="sub fade">Des repères concrets pour gagner du temps, sans jargon.</p>
+    <div class="journal-list">
+      <a href="#" class="journal-item fade">
+        <div class="journal-meta"><span class="date">12 Mai 2026</span><span class="cat">Automatisation</span></div>
+        <h3>Cinq tâches que vous pourriez arrêter de faire à la main</h3>
+        <div class="arr">↗</div>
+      </a>
+      <a href="#" class="journal-item fade">
+        <div class="journal-meta"><span class="date">28 Avr 2026</span><span class="cat">Site &amp; app</span></div>
+        <h3>Site vitrine ou application : comment choisir</h3>
+        <div class="arr">↗</div>
+      </a>
+      <a href="#" class="journal-item fade">
+        <div class="journal-meta"><span class="date">15 Avr 2026</span><span class="cat">Méthode</span></div>
+        <h3>Ce qu'une automatisation change vraiment dans une semaine type</h3>
+        <div class="arr">↗</div>
+      </a>
+      <a href="#" class="journal-item fade">
+        <div class="journal-meta"><span class="date">02 Avr 2026</span><span class="cat">Plateforme</span></div>
+        <h3>Quand vos outils ne se parlent plus : les signes qui ne trompent pas</h3>
+        <div class="arr">↗</div>
+      </a>
+      <a href="#" class="journal-item fade">
+        <div class="journal-meta"><span class="date">20 Mars 2026</span><span class="cat">Coulisses</span></div>
+        <h3>Comment on choisit ce qui mérite d'être automatisé</h3>
+        <div class="arr">↗</div>
       </a>
     </div>
-  </main>
-
-  <div class="foot">
-    <p class="contact">
-      <span class="fr">Premier échange offert · 30 min, sans engagement</span>
-      <span class="en">First call free · 30 min, no commitment</span>
-    </p>
-    <p class="contact"><a href="mailto:contact@orbe-ia.com">contact@orbe-ia.com</a></p>
   </div>
+</section>
+
+<!-- FAQ -->
+<section class="block">
+  <div class="wrap">
+    <div class="eyebrow fade">Questions fréquentes</div>
+    <h2 class="title fade" style="margin-bottom:36px">On vous <em>répond.</em></h2>
+    <div class="faq">
+      <div class="faq-item fade"><button class="faq-q">Concrètement, qu'est-ce que vous pouvez automatiser ?<span class="plus">+</span></button><div class="faq-a"><p>Tout ce qui revient et suit une logique : relances de devis et de factures, réponses aux mails récurrents, saisie de données d'un outil à l'autre, suivis, exports, notifications. On part de votre semaine type pour repérer ce qui se prête le mieux à l'automatisation.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">Vous faites des sites, mais aussi des applications ?<span class="plus">+</span></button><div class="faq-a"><p>Oui. Du site vitrine à la landing page, jusqu'à l'application métier et l'espace client. Le point commun : c'est relié à vos automatisations pour que chaque demande soit traitée, sans rien laisser filer.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">Une plateforme sur mesure, c'est pour qui ?<span class="plus">+</span></button><div class="faq-a"><p>Pour les activités qui jonglent avec plusieurs outils qui ne communiquent pas. On bâtit un socle — tableaux de bord, outils internes, intégrations — qui centralise vos données et grandit avec vous.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">Faut-il être à l'aise avec la technique ?<span class="plus">+</span></button><div class="faq-a"><p>Non, c'est tout l'intérêt. Vous gardez un seul interlocuteur, on traduit votre besoin en solution, et vous recevez quelque chose qui fonctionne. Pas de jargon, pas de paramétrage à votre charge.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">Comment se passe le premier échange ?<span class="plus">+</span></button><div class="faq-a"><p>30 minutes, sans engagement, en visio. On regarde votre fonctionnement, on identifie ce qui pèse, et vous repartez avec des pistes concrètes — que vous décidiez de travailler avec nous ou non.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT + FOOTER -->
+<section class="endcap">
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h2 class="fade">On en <em>parle ?</em></h2>
+        <p class="lead fade">30 minutes, sans engagement. On regarde ensemble, concrètement, ce que vous pourriez déléguer ou construire — et le temps que cela représente.</p>
+      </div>
+      <div class="act">
+        <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-gold fade">Je libère mon temps ↗</a>
+        <div class="mail fade">Ou écrivez-nous : <a href="mailto:contact@orbe-ia.com">contact@orbe-ia.com</a></div>
+      </div>
+    </div>
+    <div class="bar">
+      <span class="logo-f">ORBE <span class="ia">IA</span></span>
+      <span>Le répétitif, en orbite — © 2026</span>
+    </div>
+  </div>
+</section>
+
+<div class="sticky-cta">
+  <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-primary">J'automatise mon entreprise ↗</a>
 </div>
 
 <script>
-  // Manual language switch: links navigate to the other URL (no auto-redirect).
-  // We only remember the explicit choice in localStorage for SEO-friendly UX.
-  try{
-    document.querySelectorAll('.lang a[data-set]').forEach(function(a){
-      a.addEventListener('click',function(){try{localStorage.setItem('orbe-lang',a.dataset.set)}catch(e){}});
-    });
-  }catch(e){}
+// Reveal au scroll
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach((e)=>{
+    if(e.isIntersecting){
+      const el=e.target;
+      const sibs=[...el.parentElement.querySelectorAll('.fade')];
+      const idx=sibs.indexOf(el);
+      el.style.transitionDelay=(idx>=0?idx*70:0)+'ms';
+      el.classList.add('in');io.unobserve(el);
+    }
+  });
+},{threshold:.18});
+document.querySelectorAll('.fade').forEach(el=>io.observe(el));
+
+// Reveal lignes hero
+const lio=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){
+    document.querySelectorAll('.reveal-line').forEach((l,i)=>{l.querySelector('span').style.transitionDelay=(i*120+200)+'ms';l.classList.add('in');});
+  }});
+},{threshold:.4});
+const h1=document.querySelector('.hero h1');h1&&lio.observe(h1);
+
+// nav scrolled
+const nav=document.getElementById('nav');
+
+// parallaxe du témoignage + zoom des showcases
+const parallaxEls=[...document.querySelectorAll('.quote [data-parallax]')];
+const showcases=[...document.querySelectorAll('.showcase')];
+const mani=document.querySelector('.manifesto');
+const maniH2=mani.querySelector('h2');
+const railProg=document.getElementById('railProg');
+const rail=document.getElementById('rail');
+const sat=document.getElementById('sat');
+const len=rail.getTotalLength();
+railProg.style.strokeDasharray=len;railProg.style.strokeDashoffset=len;
+
+let maniTop=0,maniRange=1,docMax=1;
+function measure(){
+  maniTop=mani.offsetTop;
+  maniRange=Math.max(mani.offsetHeight-window.innerHeight,1);
+  docMax=Math.max(document.documentElement.scrollHeight-window.innerHeight,1);
+}
+let ticking=false;
+function render(){
+  const y=window.scrollY||window.pageYOffset;
+  nav.classList.toggle('scrolled',y>60);
+
+  // manifeste crossfade
+  const prog=Math.min(Math.max((y-maniTop)/maniRange,0),1);
+  if(prog>0.04&&prog<0.96)maniH2.classList.add('in');
+  maniH2.style.transform='scale('+(0.94+prog*0.06).toFixed(4)+')';
+  maniH2.style.opacity=(prog<0.5?0.4+prog:1.5-prog).toFixed(3);
+
+  // parallaxe image du témoignage
+  parallaxEls.forEach(el=>{
+    const r=el.parentElement.getBoundingClientRect();
+    const center=r.top+r.height/2-window.innerHeight/2;
+    el.style.transform='translateY('+(center*-0.08).toFixed(1)+'px)';
+  });
+
+  // showcases : on reste épinglé sur le texte (sticky) + zoom progressif au scroll
+  showcases.forEach(sec=>{
+    const rect=sec.getBoundingClientRect();
+    const travel=Math.max(rect.height-window.innerHeight,1);
+    const sp=Math.min(Math.max(-rect.top/travel,0),1);
+    const bg=sec.querySelector('.bg');
+    const cap=sec.querySelector('.caption');
+    if(bg)bg.style.transform='scale('+(1.05+sp*0.22).toFixed(4)+')';
+    if(cap)cap.style.transform='scale('+(0.82+sp*0.46).toFixed(4)+')';
+  });
+
+  // orbite
+  const p=Math.min(y/docMax,1);
+  railProg.style.strokeDashoffset=(len*(1-p)).toFixed(2);
+  const pt=rail.getPointAtLength(len*p);
+  sat.setAttribute('cx',pt.x.toFixed(2));sat.setAttribute('cy',pt.y.toFixed(2));
+
+  ticking=false;
+}
+function onScroll(){if(!ticking){ticking=true;requestAnimationFrame(render);}}
+window.addEventListener('scroll',onScroll,{passive:true});
+window.addEventListener('resize',()=>{measure();onScroll();});
+window.addEventListener('load',()=>{measure();onScroll();});
+measure();render();
+
+// FAQ
+document.querySelectorAll('.faq-q').forEach(q=>{
+  q.addEventListener('click',()=>{
+    const item=q.parentElement,a=item.querySelector('.faq-a');
+    if(item.classList.contains('open')){item.classList.remove('open');a.style.maxHeight=null;}
+    else{item.classList.add('open');a.style.maxHeight=a.scrollHeight+'px';}
+  });
+});
+// selector
+document.querySelectorAll('.hero .selector button').forEach(b=>{
+  b.addEventListener('click',()=>{document.querySelectorAll('.hero .selector button').forEach(x=>x.classList.remove('active'));b.classList.add('active');});
+});
 </script>
 </body>
 </html>

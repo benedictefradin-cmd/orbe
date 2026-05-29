@@ -1,65 +1,62 @@
 # ORBE IA — Règles du projet
 
-Studio sur mesure : agents IA, automatisation, sites, applications, plateformes.
-Site vitrine bilingue (FR/EN) + Journal SEO. Statique, sans CMS ni base de données.
+Studio d'automatisation IA + sites / applications / plateformes sur mesure pour
+indépendants et TPE. Site one-page statique (HTML/CSS/JS inline), sans CMS ni
+base de données, avec une section journal/blog minimaliste.
 
 ## Règles permanentes (NE JAMAIS enfreindre)
 
-1. **Bilingue obligatoire.** Toute page, tout contenu et tout article DOIVENT exister
-   en français ET en anglais. L'anglais doit être de qualité native (pas de traduction
-   littérale). FR = racine (`/`, `/journal/`), EN = préfixe (`/en/`, `/en/journal/`).
+1. **Direction artistique inchangée.** Fond crème `#f6f1e7`, accent ambre `#c8841f`,
+   grain papier subtil, signature orbitale dorée (fil conducteur de scroll +
+   satellite). Titres en **Schibsted Grotesk**, corps en **Outfit**. Ne pas dériver
+   vers un autre univers (pas de fond sombre, pas d'autres polices).
 
-2. **Home = zéro scroll.** `index.html` (FR et EN) doit tenir entièrement dans `100dvh`
-   (jamais `100vh`) sur desktop, tablette, mobile portrait ET mobile paysage. Tester
-   1440×900, 390×844, 844×390. Si un ajout fait déborder, réduire les marges ou retirer
-   du contenu — ne jamais autoriser le scroll sur la home.
+2. **Marque « ORBE IA ».** Le « IA » est en italique doré (`<span class="ia">`).
+   Présent dans la nav et le footer.
 
-3. **Pas de redirection auto de langue.** Servir la page demandée. Le sélecteur FR/EN
-   est manuel et mémorise le choix en `localStorage` (clé `orbe-lang`). Relier chaque
-   page à son équivalent via `hreflang` pour le SEO.
+3. **N'inventer aucune donnée.** Pas de chiffres de temps gagné, pas de délai « 48h »,
+   pas de statistique fictive. Les seuls repères chiffrés autorisés sont ceux déjà
+   présents (« dès 1 500 € », « 30 minutes »).
 
-4. **Marque.** Logo « Orbe IA » (le « IA » en italique doré). Le concept central est la
-   CONSTELLATION : des agents (étoiles) qui gravitent autour d'un hub (l'activité du
-   client). Ne pas retomber dans l'esthétique « SaaS sombre + glow » générique.
+4. **CTA = Calendly.** Tous les boutons d'action pointent vers
+   https://calendly.com/contact-orbe-ia/30min (nouvel onglet), libellés à la première
+   personne (« J'automatise mon entreprise », « Je libère mon temps », etc.).
+   Le mail `contact@orbe-ia.com` n'apparaît QUE dans le bloc contact final.
 
-## Direction artistique (tokens)
+5. **Périmètre, écrit une seule fois par bloc :** Automatisation IA · Sites · Applications · Plateformes.
 
-- Fond : `--bg:#0b0a0d` / `--bg-2:#100e14`, dégradé spatial profond (violet + ambre discrets) + vignette + grain léger.
-- Encre : `--ink:#ECE7DC`, `--ink-soft:#9c968a`, `--ink-faint:#5f5a55`.
-- Accent : doré `--gold:#d8a657` → `--gold-soft:#f0d29a` → rouille `--rust:#c47a4a`.
-- Display : **Instrument Serif** (titres, logo, gros chiffres). Body : **Newsreader**.
-- Italique doré (dégradé) réservé aux mots-clés (« en orbite », « IA »).
-- Animations : entrée en fondu + montée des lignes de titre ; constellation qui se dessine ;
-  étoiles qui scintillent ; respecter `prefers-reduced-motion`.
+## Structure des fichiers
 
-## Périmètre (à n'écrire qu'UNE fois par page, pas de doublon)
-
-Agents IA · Automatisation · Sites · Applications · Plateformes
-
-## CTA
-
-- Action principale : bouton « Réserver un échange » / « Book a call »
-  → https://calendly.com/contact-orbe-ia/30min (nouvel onglet).
-- Contact secondaire : contact@orbe-ia.com.
+- `index.html` — la page d'accueil complète (CSS + JS inline). Source unique éditable.
+- `assets/` — illustrations locales : `showcase-1.png`, `workflow.jpg`, `temoignage.png`.
+  (Ne PAS re-référencer d'URL CloudFront/externe : tout doit être local.)
+- `journal/_template.html` — gabarit d'article minimaliste (mêmes typos, couleurs, grain
+  que la home). Dupliquer en `journal/<slug>.html` et remplir les champs `{{...}}`.
+- `sitemap.xml`, `robots.txt`, `CNAME`, `.nojekyll` — déploiement GitHub Pages.
 
 ## Ajouter un article au Journal
 
-1. Créer `journal/<slug>.md` (FR) ET `en/journal/<slug>.md` (EN).
-   Front-matter : `title`, `description`, `date`, `lang`, `slug`, `translationKey` (identique FR/EN), `readingTime`.
-2. Régénérer : `node build.mjs` → index FR + index EN, pages d'article, `sitemap.xml`.
-3. Chaque page d'article : `<title>` + meta description uniques, Open Graph,
-   JSON-LD (Article + BreadcrumbList), canonical, hreflang FR↔EN.
-4. Vérifier que le style reprend les mêmes tokens que la home.
+1. Dupliquer `journal/_template.html` → `journal/<slug>.html`, remplir
+   `{{TITRE}}`, `{{DESCRIPTION}}`, `{{SLUG}}`, `{{DATE}}`, `{{CATEGORIE}}`, le corps.
+2. Dans `index.html`, section `#journal` : remplacer un `href="#"` par
+   `href="journal/<slug>.html"` et mettre à jour date / catégorie / titre.
+3. Ajouter une `<url>` correspondante dans `sitemap.xml`.
+4. Conserver la colonne étroite, la typo et le grain du gabarit — pas de contenu inventé.
+
+## Home — comportement attendu
+
+Le scroll est volontaire et travaillé : hero, manifeste épinglé (sticky), parallaxe
+sur les images plein écran, reveal des titres, trajectoire orbitale dorée qui suit la
+progression de scroll, accordéon FAQ, sélecteur produit du hero, sticky CTA en bas sur
+mobile. Vérifier la fluidité (pas de saccade) et le responsive mobile.
 
 ## Build & déploiement
 
-- `node build.mjs` régénère tout le Journal (zéro dépendance npm, parseur Markdown maison).
-- Sortie 100 % statique → déployable sur GitHub Pages (branche `main`, racine).
-- Fichiers générés (ne pas éditer à la main) : `journal/index.html`, `journal/<slug>.html`,
-  `en/journal/index.html`, `en/journal/<slug>.html`, `sitemap.xml`.
-- Sources éditables : `*.md`, `index.html`, `en/index.html`, `assets/`, `build.mjs`.
+- Aucun build : le site est 100 % statique, servi tel quel.
+- Tester en local : `python3 -m http.server 8000`.
+- Déploiement GitHub Pages (branche `main`, racine).
 
 ## Performance & a11y
 
 Pages légères, polices préchargées, Lighthouse 95+. Contrastes AA, navigation clavier,
-`alt` sur les images, `prefers-reduced-motion` honoré partout.
+`alt` sur les images, `prefers-reduced-motion` à honorer si des animations sont ajoutées.
