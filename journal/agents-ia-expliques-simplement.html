@@ -40,10 +40,11 @@ body::before{content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;
 .brand{display:flex;align-items:center;gap:16px}
 .logo{font-family:var(--serif);font-size:1.1rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
 .logo .ia{font-style:italic;color:var(--gold)}
-.lang{display:flex;gap:7px;font-size:.76rem;letter-spacing:.08em}
-.lang a{color:var(--ink-dim);text-decoration:none}
-.lang a.on{color:var(--gold-deep);font-weight:600}
-.lang span{color:var(--ink-dim);opacity:.5}
+.lang-switch{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;letter-spacing:.08em;font-weight:500}
+.lang-switch a{color:var(--ink-dim);text-decoration:none;transition:color .35s}
+.lang-switch a:hover{color:var(--gold-deep)}
+.lang-switch a.on{color:var(--gold-deep);font-weight:600}
+.lang-switch .sep{color:var(--ink-dim);opacity:.5}
 /* Article */
 article{max-width:720px;margin:0 auto;padding:32px 24px 40px}
 .meta{display:flex;gap:16px;align-items:center;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:22px}
@@ -97,7 +98,7 @@ hr{border:none;border-top:1px solid var(--line);margin:48px 0}
 <header class="topbar">
   <a href="index.html" class="back">← Journal</a>
   <div class="brand">
-    <div class="lang"><a href="/journal/agents-ia-expliques-simplement.html" class="on">FR</a><span>/</span><a href="/en/journal/ai-agents-explained-simply.html">EN</a></div>
+    <div class="lang-switch" role="group" aria-label="Choix de la langue / Language"><a href="/journal/agents-ia-expliques-simplement.html" class="on" aria-current="true" hreflang="fr">FR</a><span class="sep" aria-hidden="true">/</span><a href="/en/journal/ai-agents-explained-simply.html" hreflang="en">EN</a></div>
     <a href="../index.html" class="logo">ORBE <span class="ia">IA</span></a>
   </div>
 </header>

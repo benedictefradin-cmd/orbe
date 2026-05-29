@@ -48,6 +48,12 @@ body::before{
 .back:hover{color:var(--gold-deep)}
 .logo{font-family:var(--serif);font-size:1.1rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
 .logo .ia{font-style:italic;color:var(--gold)}
+.brand{display:flex;align-items:center;gap:18px}
+.lang-switch{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;letter-spacing:.08em;font-weight:500}
+.lang-switch a{color:var(--ink-dim);text-decoration:none;transition:color .35s}
+.lang-switch a:hover{color:var(--gold-deep)}
+.lang-switch a.on{color:var(--gold-deep);font-weight:600}
+.lang-switch .sep{color:var(--ink-dim);opacity:.5}
 
 /* Corps en colonne étroite */
 article{max-width:720px;margin:0 auto;padding:32px 24px 96px}
@@ -75,7 +81,11 @@ hr{border:none;border-top:1px solid var(--line);margin:48px 0}
 
 <header class="topbar">
   <a href="index.html" class="back">← Journal</a>
-  <a href="../index.html" class="logo">ORBE <span class="ia">IA</span></a>
+  <div class="brand">
+    <!-- ▸ FR = cette page (class="on") ; EN = la version anglaise de l'article (slug EN). -->
+    <div class="lang-switch" role="group" aria-label="Choix de la langue / Language"><a href="/journal/{{SLUG}}.html" class="on" aria-current="true" hreflang="fr">FR</a><span class="sep" aria-hidden="true">/</span><a href="/en/journal/{{SLUG_EN}}.html" hreflang="en">EN</a></div>
+    <a href="../index.html" class="logo">ORBE <span class="ia">IA</span></a>
+  </div>
 </header>
 
 <article>
