@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Orbe IA — Journal</title>
+  <link>https://orbe-ia.com/en/journal/</link>
+  <atom:link href="https://orbe-ia.com/en/journal/feed.xml" rel="self" type="application/rss+xml"/>
+  <description>Notes from the ORBE IA studio on AI, automation and tools that work for your business.</description>
+  <language>en-US</language>
+  <lastBuildDate>Tue, 26 May 2026 00:00:00 GMT</lastBuildDate>
+  <item>
+    <title>5 tasks a freelancer can automate this week</title>
+    <link>https://orbe-ia.com/en/journal/5-tasks-to-automate-this-week.html</link>
+    <guid isPermaLink="true">https://orbe-ia.com/en/journal/5-tasks-to-automate-this-week.html</guid>
+    <pubDate>Tue, 26 May 2026 00:00:00 GMT</pubDate>
+    <description>Five concrete automations — payment chasers, quotes, booking, reporting, inbox triage — you can set up in a few hours, no code required.</description>
+  </item>
+  <item>
+    <title>AI agents, explained simply (and what they change in 2026)</title>
+    <link>https://orbe-ia.com/en/journal/ai-agents-explained-simply.html</link>
+    <guid isPermaLink="true">https://orbe-ia.com/en/journal/ai-agents-explained-simply.html</guid>
+    <pubDate>Wed, 20 May 2026 00:00:00 GMT</pubDate>
+    <description>An AI agent isn't a chatbot — it's a system that acts. Here's what sets them apart, where they're genuinely useful, and how to adopt them without falling for the hype.</description>
+  </item>
+</channel>
+</rss>

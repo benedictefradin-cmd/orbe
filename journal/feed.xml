@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Orbe IA — Journal</title>
+  <link>https://orbe-ia.com/journal/</link>
+  <atom:link href="https://orbe-ia.com/journal/feed.xml" rel="self" type="application/rss+xml"/>
+  <description>Notes du studio ORBE IA sur l’IA, l’automatisation et les outils qui travaillent pour votre activité.</description>
+  <language>fr-FR</language>
+  <lastBuildDate>Tue, 26 May 2026 00:00:00 GMT</lastBuildDate>
+  <item>
+    <title>5 tâches qu'un indépendant peut automatiser dès cette semaine</title>
+    <link>https://orbe-ia.com/journal/5-taches-a-automatiser-cette-semaine.html</link>
+    <guid isPermaLink="true">https://orbe-ia.com/journal/5-taches-a-automatiser-cette-semaine.html</guid>
+    <pubDate>Tue, 26 May 2026 00:00:00 GMT</pubDate>
+    <description>Cinq automatisations concrètes — relances, devis, prise de rendez-vous, reporting, tri des e-mails — que vous pouvez mettre en place en quelques heures, sans code.</description>
+  </item>
+  <item>
+    <title>Les agents IA, expliqués simplement (et ce qu'ils changent en 2026)</title>
+    <link>https://orbe-ia.com/journal/agents-ia-expliques-simplement.html</link>
+    <guid isPermaLink="true">https://orbe-ia.com/journal/agents-ia-expliques-simplement.html</guid>
+    <pubDate>Wed, 20 May 2026 00:00:00 GMT</pubDate>
+    <description>Un agent IA n'est pas un chatbot. C'est un système qui agit. Voici ce qui les distingue, où ils sont vraiment utiles, et comment les adopter sans se faire avoir par le bruit ambiant.</description>
+  </item>
+</channel>
+</rss>
