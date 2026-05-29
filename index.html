@@ -413,27 +413,27 @@ section{position:relative;z-index:2}
     <h2 class="title fade">Ce qu'on apprend, <em>on le partage.</em></h2>
     <p class="sub fade">Des repères concrets pour gagner du temps, sans jargon.</p>
     <div class="journal-list">
-      <a href="#" class="journal-item fade">
+      <a href="journal/cinq-taches-a-arreter.html" class="journal-item fade">
         <div class="journal-meta"><span class="date">12 Mai 2026</span><span class="cat">Automatisation</span></div>
         <h3>Cinq tâches que vous pourriez arrêter de faire à la main</h3>
         <div class="arr">↗</div>
       </a>
-      <a href="#" class="journal-item fade">
+      <a href="journal/site-ou-application.html" class="journal-item fade">
         <div class="journal-meta"><span class="date">28 Avr 2026</span><span class="cat">Site &amp; app</span></div>
         <h3>Site vitrine ou application : comment choisir</h3>
         <div class="arr">↗</div>
       </a>
-      <a href="#" class="journal-item fade">
+      <a href="journal/automatisation-semaine-type.html" class="journal-item fade">
         <div class="journal-meta"><span class="date">15 Avr 2026</span><span class="cat">Méthode</span></div>
         <h3>Ce qu'une automatisation change vraiment dans une semaine type</h3>
         <div class="arr">↗</div>
       </a>
-      <a href="#" class="journal-item fade">
+      <a href="journal/outils-qui-ne-se-parlent-plus.html" class="journal-item fade">
         <div class="journal-meta"><span class="date">02 Avr 2026</span><span class="cat">Plateforme</span></div>
         <h3>Quand vos outils ne se parlent plus : les signes qui ne trompent pas</h3>
         <div class="arr">↗</div>
       </a>
-      <a href="#" class="journal-item fade">
+      <a href="journal/choisir-ce-qui-merite.html" class="journal-item fade">
         <div class="journal-meta"><span class="date">20 Mars 2026</span><span class="cat">Coulisses</span></div>
         <h3>Comment on choisit ce qui mérite d'être automatisé</h3>
         <div class="arr">↗</div>
@@ -532,16 +532,26 @@ function render(){
     el.style.transform='translateY('+(center*-0.08).toFixed(1)+'px)';
   });
 
-  // showcases : on reste épinglé sur le texte (sticky) + zoom progressif au scroll
+  // showcases : image épinglée (sticky), mouvement piloté par le scroll
   showcases.forEach(sec=>{
     const rect=sec.getBoundingClientRect();
     const travel=Math.max(rect.height-window.innerHeight,1);
     const sp=Math.min(Math.max(-rect.top/travel,0),1);
     const bg=sec.querySelector('.bg');
     const cap=sec.querySelector('.caption');
-    if(bg)bg.style.transform='scale('+(1.05+sp*0.22).toFixed(4)+')';
-    // .flat : pas de zoom sur le texte (2e showcase), il reste à taille fixe
-    if(cap)cap.style.transform=sec.classList.contains('flat')?'none':'scale('+(0.82+sp*0.46).toFixed(4)+')';
+    if(sec.classList.contains('flat')){
+      // 2e showcase : parallaxe douce de l'image + révélation du texte (montée + fondu)
+      const d=sp-0.5;                       // -0.5 → 0.5, centré au milieu du sticky
+      if(bg)bg.style.transform='translateY('+(d*-9).toFixed(2)+'%) scale(1.08)';
+      if(cap){
+        cap.style.transform='translateY('+(d*-46).toFixed(1)+'px)';
+        cap.style.opacity=Math.min(Math.max(1-(Math.abs(d)-0.22)*4.5,0),1).toFixed(3);
+      }
+    }else{
+      // 1er showcase : zoom progressif de l'image et du texte
+      if(bg)bg.style.transform='scale('+(1.05+sp*0.22).toFixed(4)+')';
+      if(cap)cap.style.transform='scale('+(0.82+sp*0.46).toFixed(4)+')';
+    }
   });
 
   // orbite
