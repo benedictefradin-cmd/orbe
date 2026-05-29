@@ -9,7 +9,7 @@ Site statique hébergé sur **GitHub Pages**.
 
 - Page : [`index.html`](index.html)
 - Domaine personnalisé : `orbe-ia.com` (fichier [`CNAME`](CNAME))
-- Contact : orbe-ai@outlook.com · WhatsApp +33 6 55 81 15 20
+- Contact : contact@orbe-ia.com · WhatsApp +33 6 55 81 15 20
 
 ## Mise en ligne
 
