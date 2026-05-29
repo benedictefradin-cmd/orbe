@@ -178,6 +178,24 @@ section{position:relative;z-index:2}
 .lever:hover .arr{opacity:1;transform:translateX(0)}
 @media(max-width:680px){.lever{grid-template-columns:48px 1fr;gap:14px;padding:26px 0}.lever .arr{display:none}}
 
+/* ---------- Qui sommes-nous ---------- */
+.about-grid{display:grid;grid-template-columns:0.82fr 1fr;gap:64px;align-items:start}
+.about-aside{position:sticky;top:120px}
+.about-aside .title{margin-bottom:30px;max-width:14ch}
+.about-facts{list-style:none;border-top:1px solid var(--line)}
+.about-facts li{padding:18px 0;border-bottom:1px solid var(--line);color:var(--ink-soft);font-size:.96rem;line-height:1.45;display:flex;flex-direction:column;gap:4px}
+.about-facts .fk{font-family:var(--serif);font-weight:700;color:var(--gold-deep);font-size:1.06rem;letter-spacing:-.01em}
+.about-body{padding-top:6px}
+.about-body .sub{max-width:54ch;margin-bottom:22px}
+.about-body .sub:last-of-type{margin-bottom:0}
+.about-quote{position:relative;font-family:var(--serif);font-weight:600;font-size:clamp(1.3rem,2.4vw,1.85rem);line-height:1.28;letter-spacing:-.02em;color:var(--ink);margin:34px 0;padding:6px 0 6px 28px;border-left:2px solid var(--gold)}
+.about-quote em{font-style:normal;color:var(--gold-deep)}
+.about-cta{display:inline-flex;align-items:center;gap:12px;margin-top:38px;font-family:var(--serif);font-weight:600;font-size:1.15rem;letter-spacing:-.01em;color:var(--ink);text-decoration:none;transition:.4s}
+.about-cta .ar{display:inline-flex;width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--bg);align-items:center;justify-content:center;font-size:1.05rem;transition:.4s}
+.about-cta:hover{color:var(--gold-deep)}
+.about-cta:hover .ar{background:var(--gold-deep);transform:translateX(4px)}
+@media(max-width:860px){.about-grid{grid-template-columns:1fr;gap:30px}.about-aside{position:static}.about-aside .title{margin-bottom:22px}}
+
 .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
 .tier{border:1px solid var(--line);border-radius:16px;padding:32px 26px;display:flex;flex-direction:column;transition:.5s;background:var(--bg)}
 .tier:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(28,24,16,.08)}
@@ -387,13 +405,23 @@ section{position:relative;z-index:2}
 
 <!-- QUI SOMMES-NOUS -->
 <section class="block" id="agence">
-  <div class="wrap">
-    <div class="eyebrow fade">Qui sommes-nous</div>
-    <h2 class="title fade">L'IA, je la pratique <em>avant de la proposer.</em></h2>
-    <p class="sub fade">Je me suis mis à l'intelligence artificielle il y a cinq ans, bien avant qu'elle devienne une mode. Pas pour surfer sur la vague : pour bâtir des outils qui servent vraiment, au quotidien.</p>
-    <p class="sub fade">Communication interne, jeux, applications métier : j'ai conçu et fait tourner des projets très différents. Et chaque jour, l'IA gère une partie de ma propre entreprise, comme elle épaule déjà mes clients. Je ne vends pas de la théorie — je transmets ce que je pratique.</p>
-    <p class="sub fade">Ma conviction : ces outils ne devraient pas rester réservés aux grosses structures. Je les rends accessibles à ceux que les grandes agences ignorent ou intimident, à un prix calé sur vos moyens. L'IA reste un outil au service des gens, jamais l'inverse.</p>
-    <p class="sub fade"><strong>Parlons de ce qu'elle peut changer chez vous.</strong></p>
+  <div class="wrap about-grid">
+    <div class="about-aside">
+      <div class="eyebrow fade">Qui sommes-nous</div>
+      <h2 class="title fade">L'IA, je la pratique <em>avant de la proposer.</em></h2>
+      <ul class="about-facts fade">
+        <li><span class="fk">Cinq ans</span> à concevoir et faire tourner des outils d'IA — bien avant la mode.</li>
+        <li><span class="fk">Au quotidien</span> l'IA gère une partie de ma propre entreprise.</li>
+        <li><span class="fk">Dès 1 500 €</span> un prix calé sur vos moyens, pas sur ceux des grandes agences.</li>
+      </ul>
+    </div>
+    <div class="about-body">
+      <p class="sub fade">Je me suis mis à l'intelligence artificielle il y a cinq ans, bien avant qu'elle devienne une mode. Pas pour surfer sur la vague : pour bâtir des outils qui servent vraiment, au quotidien.</p>
+      <p class="sub fade">Communication interne, jeux, applications métier : j'ai conçu et fait tourner des projets très différents. Et chaque jour, l'IA épaule mes clients comme elle gère une partie de mon entreprise. Je ne vends pas de la théorie — je transmets ce que je pratique.</p>
+      <blockquote class="about-quote fade">Ces outils ne devraient pas rester réservés aux grosses structures. <em>L'IA reste un outil au service des gens, jamais l'inverse.</em></blockquote>
+      <p class="sub fade">Je les rends accessibles à ceux que les grandes agences ignorent ou intimident, à un prix calé sur leurs moyens.</p>
+      <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="about-cta fade">Parlons de ce qu'elle peut changer chez vous<span class="ar">↗</span></a>
+    </div>
   </div>
 </section>
 
