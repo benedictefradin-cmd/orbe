@@ -230,8 +230,10 @@ section{position:relative;z-index:2}
 .tiers-cta{margin-top:28px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
 .tiers-cta span{color:var(--ink-dim);font-size:.9rem}
 .tiers-dots{display:none}
-.tiers-dots button{width:8px;height:8px;padding:0;border:none;border-radius:50%;background:var(--line);cursor:pointer;transition:background .3s,transform .3s;-webkit-appearance:none;appearance:none}
-.tiers-dots button.on{background:var(--gold-deep);transform:scale(1.25)}
+.tiers-dots button{width:18px;height:22px;padding:0;border:none;background:transparent;cursor:pointer;position:relative;-webkit-appearance:none;appearance:none}
+.tiers-dots button::after{content:"";position:absolute;top:50%;left:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--line);transition:background .3s,transform .3s}
+.tiers-dots button.on::after{background:var(--gold-deep);transform:scale(1.3)}
+.tiers-dots button:focus-visible{outline:2px solid var(--gold-deep);outline-offset:2px;border-radius:50%}
 @media(max-width:680px){.tiers-cta{margin-top:24px}}
 @media(max-width:880px){.tiers{grid-template-columns:1fr}}
 
@@ -358,7 +360,7 @@ section{position:relative;z-index:2}
   .tiers{display:flex;grid-template-columns:none;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:14px;scrollbar-width:none}
   .tiers::-webkit-scrollbar{display:none}
   .tier{flex:0 0 84%;scroll-snap-align:start;order:0;padding:30px 26px}
-  .tiers-dots{display:flex;justify-content:center;gap:9px;margin-top:4px}
+  .tiers-dots{display:flex;justify-content:center;gap:3px;margin-top:10px}
   .tiers-cta .btn{width:100%;justify-content:center}
   .tiers-cta span{width:100%;text-align:center}
 
