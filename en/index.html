@@ -310,6 +310,14 @@ section{position:relative;z-index:2}
   .manifesto{padding:88px 0}
   .manifesto h2{font-size:clamp(1.7rem,6.4vw,2.3rem);line-height:1.2;max-width:none}
 
+  /* Reassurance: 3 points as cards with a large gold number on the left (3rd design variation) */
+  .reassure .grid{grid-template-columns:1fr;gap:12px}
+  .reassure .item,.reassure .item:first-child,.reassure .item:not(:first-child){padding:20px 18px;border:1px solid var(--line);border-radius:14px;background:var(--bg);display:grid;grid-template-columns:auto 1fr;column-gap:18px;row-gap:4px;align-items:center}
+  .reassure .item::before{display:none}
+  .reassure .num{grid-column:1;grid-row:1/3;align-self:center;margin:0;font-size:1.7rem;letter-spacing:0}
+  .reassure .item h4{grid-column:2;align-self:end;margin-bottom:2px}
+  .reassure .item p{grid-column:2;align-self:start;font-size:.92rem;line-height:1.45}
+
   /* Cards in a 2×2 grid (airier than a long single column) */
   .cards4{grid-template-columns:repeat(2,1fr);border-radius:14px}
   .cards4 .card{padding:24px 16px 22px;display:flex;flex-direction:column}
