@@ -325,9 +325,19 @@ section{position:relative;z-index:2}
   .cards4 .card .k{font-size:1.1rem;padding-top:14px;margin-bottom:9px;line-height:1.2}
   .cards4 .card p{font-size:.9rem;line-height:1.45}
 
-  /* OFFRES : la formule mise en avant passe en premier */
-  .tier.featured{order:-1}
-  .tier{padding:28px 24px}
+  /* CE QU'ON FAIT : les 4 leviers en cartes 2×2 — design distinct (numéro en pastille, fond doré dégradé) */
+  .levers{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:none}
+  .lever{grid-template-columns:1fr;gap:0;padding:22px 16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(165deg,rgba(200,132,31,.08),transparent 62%);align-items:start}
+  .lever:hover{padding-left:16px;background:linear-gradient(165deg,rgba(200,132,31,.08),transparent 62%)}
+  .lever .idx{width:34px;height:34px;border-radius:50%;border:1px solid var(--line-gold);display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;padding-top:0;margin-bottom:14px;background:var(--bg)}
+  .lever h3{font-size:1.16rem;margin-bottom:8px}
+  .lever p{font-size:.88rem;line-height:1.45;max-width:none}
+  .lever .arr{display:none}
+
+  /* OFFRES : carrousel horizontal à défilement (plutôt qu'un empilement vertical) */
+  .tiers{display:flex;grid-template-columns:none;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:14px;scrollbar-width:none}
+  .tiers::-webkit-scrollbar{display:none}
+  .tier{flex:0 0 84%;scroll-snap-align:start;order:0;padding:30px 26px}
   .tiers-cta .btn{width:100%;justify-content:center}
   .tiers-cta span{width:100%;text-align:center}
 
@@ -360,8 +370,13 @@ section{position:relative;z-index:2}
   .cards4 .card{padding:20px 13px 18px}
   .cards4 .card .k{font-size:1.02rem}
   .cards4 .card p{font-size:.86rem}
-  .lever{grid-template-columns:38px 1fr;gap:12px}
-  .lever .idx{font-size:.88rem}
+  /* leviers 2×2 : padding et titre resserrés */
+  .levers{gap:10px}
+  .lever{padding:18px 14px}
+  .lever h3{font-size:1.08rem}
+  .lever p{font-size:.84rem}
+  /* carrousel offres : carte un peu plus large sur très petit écran */
+  .tier{flex:0 0 86%;padding:26px 22px}
 }
 </style>
 </head>
