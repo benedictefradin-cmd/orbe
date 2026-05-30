@@ -228,7 +228,10 @@ section{position:relative;z-index:2}
 .tier a{align-self:flex-start}
 .tiers-cta{margin-top:28px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
 .tiers-cta span{color:var(--ink-dim);font-size:.9rem}
-@media(max-width:680px){.tiers-cta{margin-top:32px}}
+.tiers-dots{display:none}
+.tiers-dots button{width:8px;height:8px;padding:0;border:none;border-radius:50%;background:var(--line);cursor:pointer;transition:background .3s,transform .3s;-webkit-appearance:none;appearance:none}
+.tiers-dots button.on{background:var(--gold-deep);transform:scale(1.25)}
+@media(max-width:680px){.tiers-cta{margin-top:24px}}
 @media(max-width:880px){.tiers{grid-template-columns:1fr}}
 
 /* Témoignage avec image */
@@ -354,6 +357,7 @@ section{position:relative;z-index:2}
   .tiers{display:flex;grid-template-columns:none;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:14px;scrollbar-width:none}
   .tiers::-webkit-scrollbar{display:none}
   .tier{flex:0 0 84%;scroll-snap-align:start;order:0;padding:30px 26px}
+  .tiers-dots{display:flex;justify-content:center;gap:9px;margin-top:4px}
   .tiers-cta .btn{width:100%;justify-content:center}
   .tiers-cta span{width:100%;text-align:center}
 
@@ -531,6 +535,11 @@ section{position:relative;z-index:2}
         <div class="tag"></div><div class="step">03</div><h3>Sur mesure</h3><div class="price">Sur devis</div>
         <p>Applications et plateformes : plusieurs briques connectées entre elles : automatisations, outils internes, intégrations. Un accompagnement dans la durée.</p>
       </div>
+    </div>
+    <div class="tiers-dots" role="tablist" aria-label="Faire défiler les offres">
+      <button type="button" class="on" aria-label="Offre 1"></button>
+      <button type="button" aria-label="Offre 2"></button>
+      <button type="button" aria-label="Offre 3"></button>
     </div>
     <div class="tiers-cta fade">
       <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-gold">Je trouve mon levier en 30 min ↗</a>
@@ -725,6 +734,29 @@ document.querySelectorAll('.faq-q').forEach(q=>{
     else{item.classList.add('open');a.style.maxHeight=a.scrollHeight+'px';}
   });
 });
+
+// Carrousel des offres : points de défilement (mobile)
+(function(){
+  const tiers=document.querySelector('.tiers');
+  const dots=document.querySelector('.tiers-dots');
+  if(!tiers||!dots)return;
+  const dotEls=[...dots.children];
+  const cards=[...tiers.querySelectorAll('.tier')];
+  function active(){
+    const base=tiers.getBoundingClientRect().left;
+    let best=0,min=Infinity;
+    cards.forEach((c,i)=>{const d=Math.abs(c.getBoundingClientRect().left-base);if(d<min){min=d;best=i;}});
+    return best;
+  }
+  function sync(){const b=active();dotEls.forEach((d,i)=>d.classList.toggle('on',i===b));}
+  let t=false;
+  tiers.addEventListener('scroll',()=>{if(!t){t=true;requestAnimationFrame(()=>{sync();t=false;});}},{passive:true});
+  dotEls.forEach((d,i)=>d.addEventListener('click',()=>{
+    const delta=cards[i].getBoundingClientRect().left-tiers.getBoundingClientRect().left;
+    tiers.scrollBy({left:delta,behavior:'smooth'});
+  }));
+  sync();
+})();
 </script>
 </body>
 </html>
