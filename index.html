@@ -194,6 +194,11 @@ section{position:relative;z-index:2}
 .lever:hover .arr{opacity:1;transform:translateX(0)}
 @media(max-width:680px){.lever{grid-template-columns:48px 1fr;gap:14px;padding:26px 0}.lever .arr{display:none}}
 .lever-note{display:inline-block;margin-top:10px;font-size:.78rem;font-weight:600;letter-spacing:.01em;color:var(--gold-deep);opacity:.85}
+/* Levier phare : l'automatisation IA domine, les autres sont des extensions */
+.lever.flagship{background:linear-gradient(90deg,rgba(200,132,31,.09),transparent 72%)}
+.lever.flagship .idx{color:var(--gold)}
+.lever.flagship h3{color:var(--gold-deep)}
+.lever.flagship .lever-note{opacity:1}
 
 /* ---------- Qui sommes-nous ---------- */
 .about-grid{display:grid;grid-template-columns:0.82fr 1fr;gap:64px;align-items:start}
@@ -447,10 +452,10 @@ section{position:relative;z-index:2}
 <section class="hero">
   <div class="hero-orb" aria-hidden="true"></div>
   <div class="wrap">
-    <div class="hero-label fade">Automatisation IA &amp; produits sur mesure</div>
+    <div class="hero-label fade">Automatisation IA pour indépendants, artisans &amp; TPE</div>
     <h1>
-      <span class="reveal-line"><span>Entrez dans la</span></span>
-      <span class="reveal-line"><span><em>nouvelle ère</em> du travail.</span></span>
+      <span class="reveal-line"><span>Automatisez les tâches</span></span>
+      <span class="reveal-line"><span><em>qui vous volent</em> du temps.</span></span>
     </h1>
     <p class="lede">On automatise les tâches répétitives. Vous récupérez le temps qu'elles vous coûtaient.</p>
     <div class="actions fade">
