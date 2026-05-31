@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ORBE IA · Le répétitif, en orbite</title>
-<meta name="description" content="ORBE IA, agence d'automatisation IA et de produits sur mesure pour indépendants et TPE. On automatise le répétitif et on construit les sites, applications et plateformes qui le portent.">
+<meta name="description" content="ORBE IA : automatisation IA, sites, applications et plateformes sur mesure pour indépendants et TPE. On automatise le répétitif, vous récupérez votre temps.">
 <link rel="canonical" href="https://orbe-ia.com/">
 <link rel="alternate" hreflang="fr" href="https://orbe-ia.com/">
 <link rel="alternate" hreflang="en" href="https://orbe-ia.com/en/">
@@ -76,11 +76,11 @@ nav.scrolled{background:rgba(246,241,231,.85);backdrop-filter:blur(12px);box-sha
 .nav-right{display:flex;align-items:center;gap:24px}
 .nav-link{font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none;font-weight:500;transition:.35s}
 .nav-link:hover{color:var(--gold-deep)}
-@media(max-width:680px){nav{padding:16px 22px}nav.scrolled{padding:12px 22px}.nav-cta{padding:10px 16px;font-size:.72rem}.nav-right{gap:14px}.nav-link{font-size:.72rem}}
+@media(max-width:680px){nav{padding:16px 22px}nav.scrolled{padding:12px 22px}.nav-cta{display:none}.nav-right{gap:14px}.nav-link{font-size:.72rem}}
 
 /* ---------- Sélecteur de langue (FR / EN) ---------- */
-.lang-switch{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;letter-spacing:.1em;font-weight:500}
-.lang-switch a{color:var(--ink-dim);text-decoration:none;transition:color .35s}
+.lang-switch{display:inline-flex;align-items:center;gap:2px;font-size:.82rem;letter-spacing:.1em;font-weight:500;margin:-8px 0;margin-right:-6px}
+.lang-switch a{color:var(--ink-dim);text-decoration:none;transition:color .35s;display:inline-block;padding:8px 6px;border-radius:8px;line-height:1}
 .lang-switch a:hover{color:var(--gold-deep)}
 .lang-switch a.on{color:var(--gold-deep);font-weight:600}
 .lang-switch .sep{color:var(--ink-dim);opacity:.5}
@@ -265,7 +265,7 @@ section{position:relative;z-index:2}
 
 .faq-item{border-bottom:1px solid var(--line)}
 .faq-q{width:100%;background:none;border:none;color:var(--ink);font-family:var(--serif);font-size:clamp(1.1rem,2.2vw,1.4rem);font-weight:600;letter-spacing:-.02em;text-align:left;padding:24px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;transition:.3s}
-.faq-q:hover{color:var(--gold-deep)}
+.faq-q:hover,.faq-item.open .faq-q{color:var(--gold-deep)}
 .faq-q .plus{color:var(--gold);font-size:1.4rem;transition:transform .4s;flex-shrink:0}
 .faq-item.open .plus{transform:rotate(45deg)}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.16,1,.3,1)}
@@ -283,7 +283,7 @@ section{position:relative;z-index:2}
 .endcap .mail{color:rgba(246,241,231,.55);font-size:.95rem}
 .endcap .mail a{color:var(--gold-soft);text-decoration:none;border-bottom:1px solid rgba(227,169,73,.3);transition:.3s}
 .endcap .mail a:hover{border-color:var(--gold-soft)}
-.endcap .bar{display:flex;justify-content:space-between;align-items:center;padding:26px 0;border-top:1px solid rgba(246,241,231,.12);font-size:.82rem;color:rgba(246,241,231,.45);letter-spacing:.02em}
+.endcap .bar{display:flex;justify-content:space-between;align-items:center;padding:26px 0;border-top:1px solid rgba(246,241,231,.12);font-size:.82rem;color:rgba(246,241,231,.62);letter-spacing:.02em}
 .endcap .bar .logo-f{font-family:var(--serif);font-weight:700;color:var(--bg);letter-spacing:-.01em;font-size:1rem}
 .endcap .bar .ia{color:var(--gold-soft);font-style:italic}
 .endcap .bar a{color:rgba(246,241,231,.55);text-decoration:none;border-bottom:1px solid rgba(246,241,231,.2);transition:.3s}
@@ -439,7 +439,7 @@ section{position:relative;z-index:2}
       <a href="/en/" hreflang="en">EN</a>
     </div>
     <a href="#journal" class="nav-link">Journal</a>
-    <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="nav-cta">J'automatise mon activité ↗</a>
+    <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="nav-cta">Je réserve mon échange gratuit<span aria-hidden="true"> ↗</span></a>
   </div>
 </nav>
 
@@ -454,7 +454,7 @@ section{position:relative;z-index:2}
     </h1>
     <p class="lede">On automatise les tâches répétitives. Vous récupérez le temps qu'elles vous coûtaient.</p>
     <div class="actions fade">
-      <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-primary">J'automatise mon entreprise ↗</a>
+      <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-primary">Je réserve mon échange gratuit<span aria-hidden="true"> ↗</span></a>
       <a href="#services" class="btn btn-ghost">Voir ce qu'on fait</a>
     </div>
     <div class="hero-meta fade">
@@ -489,9 +489,9 @@ section{position:relative;z-index:2}
 <section class="reassure">
   <div class="wrap">
     <div class="grid">
-      <div class="item fade"><span class="num">01</span><h4>Un seul interlocuteur</h4><p>Du premier échange à la livraison, vous parlez toujours à la même personne.</p></div>
-      <div class="item fade"><span class="num">02</span><h4>Tarif annoncé d'avance</h4><p>Le prix est fixé avant de commencer. Aucune surprise en cours de route.</p></div>
-      <div class="item fade"><span class="num">03</span><h4>Des outils connectés</h4><p>Vos logiciels échangent enfin leurs informations, sans ressaisie ni oubli.</p></div>
+      <div class="item fade"><span class="num">01</span><h3>Un seul interlocuteur</h3><p>Du premier échange à la livraison, vous parlez toujours à la même personne.</p></div>
+      <div class="item fade"><span class="num">02</span><h3>Tarif annoncé d'avance</h3><p>Le prix est fixé avant de commencer. Aucune surprise en cours de route.</p></div>
+      <div class="item fade"><span class="num">03</span><h3>Des outils connectés</h3><p>Vos logiciels échangent enfin leurs informations, sans ressaisie ni oubli.</p></div>
     </div>
   </div>
 </section>
@@ -503,7 +503,7 @@ section{position:relative;z-index:2}
     <h2 class="title fade">Ce qui se répète <em>peut se déléguer.</em></h2>
     <p class="sub fade">Chaque semaine, des heures partent dans des gestes mécaniques. On les repère, on les automatise proprement, et ce temps vous revient.</p>
     <div class="cards4">
-      <div class="card fade" data-n="01"><div class="k">Les relances</div><p>Devis sans réponse, factures en attente : un suivi à reprendre sans arrêt.</p></div>
+      <div class="card fade" data-n="01"><div class="k">Les relances</div><p>Devis sans réponse, factures en attente : un suivi à reprendre sans arrêt.</p></div>
       <div class="card fade" data-n="02"><div class="k">Les mails répétitifs</div><p>Les mêmes réponses, réécrites plusieurs fois par jour. Un copier-coller qui épuise.</p></div>
       <div class="card fade" data-n="03"><div class="k">La double saisie</div><p>Recopier d'un outil à l'autre, ressaisir, vérifier deux fois. Le travail invisible qui s'accumule.</p></div>
       <div class="card fade" data-n="04"><div class="k">Les outils éparpillés</div><p>Des logiciels qui ne se parlent pas, des données dispersées, rien de centralisé.</p></div>
@@ -527,12 +527,12 @@ section{position:relative;z-index:2}
   <div class="wrap">
     <div class="eyebrow fade">Ce qu'on fait</div>
     <h2 class="title fade">Choisissez <em>votre levier.</em></h2>
-    <p class="sub fade">Un objectif : votre temps. Tous les moyens pour y arriver.</p>
+    <p class="sub fade">Un objectif : votre temps. Tous les moyens pour y arriver.</p>
     <div class="levers">
-      <div class="lever fade"><div class="idx">01</div><div><h3>Automatisation IA</h3><p>On retire le répétitif. Relances, réponses, saisies, suivis : ça tourne sans intervention, sans oubli, sans erreur d'inattention.</p><span class="lever-note">Disponible seule dès l'offre Projet ciblé</span></div><div class="arr">↗</div></div>
-      <div class="lever fade"><div class="idx">02</div><div><h3>Sites web</h3><p>Une vitrine claire et rapide, soignée, pensée pour transformer les visiteurs en prises de contact concrètes.</p><span class="lever-note">Disponible seul dès l'offre Projet ciblé</span></div><div class="arr">↗</div></div>
-      <div class="lever fade"><div class="idx">03</div><div><h3>Applications</h3><p>Un outil métier sur mesure, exactement adapté à votre façon de travailler, relié à vos automatisations.</p><span class="lever-note">Relève de l'offre Sur mesure</span></div><div class="arr">↗</div></div>
-      <div class="lever fade"><div class="idx">04</div><div><h3>Plateformes sur mesure</h3><p>Tableaux de bord, espaces clients, intégrations entre vos services : le socle qui grandit avec votre activité.</p><span class="lever-note">Relève de l'offre Sur mesure</span></div><div class="arr">↗</div></div>
+      <div class="lever fade"><div class="idx">01</div><div><h3>Automatisation IA</h3><p>On retire le répétitif. Relances, réponses, saisies, suivis : ça tourne sans intervention, sans oubli, sans erreur d'inattention.</p><span class="lever-note">Disponible seule dès l'offre Projet ciblé</span></div><div class="arr" aria-hidden="true">↗</div></div>
+      <div class="lever fade"><div class="idx">02</div><div><h3>Sites web</h3><p>Une vitrine claire et rapide, soignée, pensée pour transformer les visiteurs en prises de contact concrètes.</p><span class="lever-note">Disponible seul dès l'offre Projet ciblé</span></div><div class="arr" aria-hidden="true">↗</div></div>
+      <div class="lever fade"><div class="idx">03</div><div><h3>Applications</h3><p>Un outil métier sur mesure, exactement adapté à votre façon de travailler, relié à vos automatisations.</p><span class="lever-note">Relève de l'offre Sur mesure</span></div><div class="arr" aria-hidden="true">↗</div></div>
+      <div class="lever fade"><div class="idx">04</div><div><h3>Plateformes sur mesure</h3><p>Tableaux de bord, espaces clients, intégrations entre vos services : le socle qui grandit avec votre activité.</p><span class="lever-note">Relève de l'offre Sur mesure</span></div><div class="arr" aria-hidden="true">↗</div></div>
     </div>
   </div>
 </section>
@@ -564,12 +564,12 @@ section{position:relative;z-index:2}
         <p>On regarde comment vous travaillez, on repère les tâches qui vous coûtent du temps pour peu de valeur, et vous repartez avec des pistes concrètes.</p>
       </div>
       <div class="tier featured fade">
-        <div class="tag">Le plus demandé</div><div class="step">02</div><h3>Un projet ciblé</h3><div class="price">à partir de 1 200 €</div>
+        <div class="tag">Le plus demandé</div><div class="step">02</div><h3>Un projet ciblé</h3><div class="price">à partir de 1 200 €</div>
         <p>Un site vitrine soigné, ou une première automatisation, livré de bout en bout. Mis au point avec vous, prêt en 2 à 3 semaines, tarif fixé avant de commencer.</p>
       </div>
       <div class="tier fade">
         <div class="tag"></div><div class="step">03</div><h3>Sur mesure</h3><div class="price">Sur devis</div>
-        <p>Applications et plateformes : plusieurs éléments reliés entre eux — automatisations, outils internes, connexions entre vos services. Un accompagnement dans la durée.</p>
+        <p>Applications et plateformes : plusieurs éléments reliés entre eux — automatisations, outils internes, connexions entre vos services. Un accompagnement dans la durée.</p>
       </div>
     </div>
     <div class="tiers-dots" role="tablist" aria-label="Faire défiler les offres">
@@ -578,7 +578,7 @@ section{position:relative;z-index:2}
       <button type="button" aria-label="Offre 3"></button>
     </div>
     <div class="tiers-cta fade">
-      <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-gold">Je trouve mon levier en 30 min ↗</a>
+      <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-gold">Je réserve mon échange gratuit<span aria-hidden="true"> ↗</span></a>
       <span>Gratuit, sans engagement</span>
     </div>
   </div>
@@ -600,11 +600,11 @@ section{position:relative;z-index:2}
       </div>
     </div>
     <div class="about-body">
-      <p class="sub fade">On s'est mis à l'intelligence artificielle il y a cinq ans, bien avant qu'elle devienne une mode. Pas pour surfer sur la vague : pour bâtir des outils qui servent vraiment, au quotidien.</p>
+      <p class="sub fade">On s'est mis à l'intelligence artificielle il y a cinq ans, bien avant qu'elle devienne une mode. Pas pour surfer sur la vague : pour bâtir des outils qui servent vraiment, au quotidien.</p>
       <p class="sub fade">On a conçu et fait tourner des projets très différents. Chaque jour, l'IA épaule nos clients comme elle gère une partie de notre activité. On ne vend pas de la théorie, on transmet ce qu'on pratique.</p>
-      <blockquote class="about-quote fade">Ces outils ne devraient pas rester réservés aux grosses structures : <em>l'IA reste un outil au service des gens, jamais l'inverse.</em></blockquote>
+      <blockquote class="about-quote fade">Ces outils ne devraient pas rester réservés aux grosses structures : <em>l'IA reste un outil au service des gens, jamais l'inverse.</em></blockquote>
       <p class="sub fade">On les rend accessibles à ceux que les grandes agences ignorent ou intimident, à un prix calé sur leurs moyens.</p>
-      <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="about-cta fade">Parlons de ce qu'elle peut changer chez vous<span class="ar">↗</span></a>
+      <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="about-cta fade">Je réserve mon échange gratuit<span class="ar" aria-hidden="true">↗</span></a>
     </div>
   </div>
 </section>
@@ -619,20 +619,20 @@ section{position:relative;z-index:2}
       <a href="journal/5-taches-a-automatiser-cette-semaine.html" class="journal-item fade">
         <div class="journal-meta"><span class="date">20 Mai 2026</span><span class="cat">Automatisation</span></div>
         <h3>5 tâches qu'un indépendant peut automatiser dès cette semaine</h3>
-        <div class="arr">↗</div>
+        <div class="arr" aria-hidden="true">↗</div>
       </a>
       <a href="journal/ia-pour-tpe-par-ou-commencer.html" class="journal-item fade">
         <div class="journal-meta"><span class="date">18 Mai 2026</span><span class="cat">IA</span></div>
-        <h3>L'IA pour une TPE : par où commencer sans se tromper</h3>
-        <div class="arr">↗</div>
+        <h3>L'IA pour une TPE : par où commencer sans se tromper</h3>
+        <div class="arr" aria-hidden="true">↗</div>
       </a>
       <a href="journal/agents-ia-expliques-simplement.html" class="journal-item fade">
         <div class="journal-meta"><span class="date">15 Mai 2026</span><span class="cat">Agents IA</span></div>
         <h3>Les agents IA expliqués simplement (et ce qu'ils changent)</h3>
-        <div class="arr">↗</div>
+        <div class="arr" aria-hidden="true">↗</div>
       </a>
     </div>
-    <a href="journal/" class="journal-all fade">Voir tous les articles ↗</a>
+    <a href="journal/" class="journal-all fade">Voir tous les articles<span aria-hidden="true"> ↗</span></a>
   </div>
 </section>
 
@@ -642,13 +642,13 @@ section{position:relative;z-index:2}
     <div class="eyebrow fade">Questions fréquentes</div>
     <h2 class="title fade" style="margin-bottom:36px">On vous <em>répond.</em></h2>
     <div class="faq">
-      <div class="faq-item fade"><button class="faq-q">Concrètement, qu'est-ce que vous pouvez automatiser ?<span class="plus">+</span></button><div class="faq-a"><p>Tout ce qui revient et suit une logique : relances de devis et de factures, réponses aux mails récurrents, saisie de données d'un outil à l'autre, suivis, exports, notifications. On part de votre semaine type pour repérer ce qui se prête le mieux à l'automatisation.</p></div></div>
-      <div class="faq-item fade"><button class="faq-q">Vous faites des sites, mais aussi des applications ?<span class="plus">+</span></button><div class="faq-a"><p>Oui. Du site vitrine à la landing page, jusqu'à l'application métier et l'espace client. Le point commun : c'est relié à vos automatisations pour que chaque demande soit traitée, sans rien laisser filer.</p></div></div>
-      <div class="faq-item fade"><button class="faq-q">Une plateforme sur mesure, c'est pour qui ?<span class="plus">+</span></button><div class="faq-a"><p>Pour les activités qui jonglent avec plusieurs outils qui ne communiquent pas. On bâtit un socle (tableaux de bord, outils internes, intégrations) qui centralise vos données et grandit avec vous.</p></div></div>
-      <div class="faq-item fade"><button class="faq-q">Faut-il être à l'aise avec la technique ?<span class="plus">+</span></button><div class="faq-a"><p>Non, c'est tout l'intérêt. Vous gardez un seul interlocuteur, on traduit votre besoin en solution, et vous recevez quelque chose qui fonctionne. Pas de jargon, pas de paramétrage à votre charge.</p></div></div>
-      <div class="faq-item fade"><button class="faq-q">Comment se passe le premier échange ?<span class="plus">+</span></button><div class="faq-a"><p>30 minutes, sans engagement, en visio. On regarde votre fonctionnement, on identifie ce qui pèse, et vous repartez avec des pistes concrètes, que vous décidiez de travailler avec nous ou non.</p></div></div>
-      <div class="faq-item fade"><button class="faq-q">Et si une automatisation tombe en panne ?<span class="plus">+</span></button><div class="faq-a"><p>On reste joignables après la livraison. Si quelque chose se bloque, on corrige rapidement ; un suivi peut être prévu selon vos besoins.</p></div></div>
-      <div class="faq-item fade"><button class="faq-q">Mes données sont-elles en sécurité ?<span class="plus">+</span></button><div class="faq-a"><p>Vos données restent les vôtres. On utilise des outils conformes au RGPD et on ne conserve que ce qui est nécessaire au bon fonctionnement de vos automatisations.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-1">Concrètement, qu'est-ce que vous pouvez automatiser ?<span class="plus" aria-hidden="true">+</span></button><div class="faq-a" id="faq-1"><p>Tout ce qui revient et suit une logique : relances de devis et de factures, réponses aux mails récurrents, saisie de données d'un outil à l'autre, suivis, exports, notifications. On part de votre semaine type pour repérer ce qui se prête le mieux à l'automatisation.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-2">Vous faites des sites, mais aussi des applications ?<span class="plus" aria-hidden="true">+</span></button><div class="faq-a" id="faq-2"><p>Oui. Du site vitrine à la landing page, jusqu'à l'application métier et l'espace client. Le point commun : c'est relié à vos automatisations pour que chaque demande soit traitée, sans rien laisser filer.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-3">Une plateforme sur mesure, c'est pour qui ?<span class="plus" aria-hidden="true">+</span></button><div class="faq-a" id="faq-3"><p>Pour les activités qui jonglent avec plusieurs outils qui ne communiquent pas. On bâtit un socle (tableaux de bord, outils internes, intégrations) qui centralise vos données et grandit avec vous.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-4">Faut-il être à l'aise avec la technique ?<span class="plus" aria-hidden="true">+</span></button><div class="faq-a" id="faq-4"><p>Non, c'est tout l'intérêt. Vous gardez un seul interlocuteur, on traduit votre besoin en solution, et vous recevez quelque chose qui fonctionne. Pas de jargon, pas de paramétrage à votre charge.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-5">Comment se passe le premier échange ?<span class="plus" aria-hidden="true">+</span></button><div class="faq-a" id="faq-5"><p>30 minutes, sans engagement, en visio. On regarde votre fonctionnement, on identifie ce qui pèse, et vous repartez avec des pistes concrètes, que vous décidiez de travailler avec nous ou non.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-6">Et si une automatisation tombe en panne ?<span class="plus" aria-hidden="true">+</span></button><div class="faq-a" id="faq-6"><p>On reste joignables après la livraison. Si quelque chose se bloque, on corrige rapidement ; un suivi peut être prévu selon vos besoins.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-7">Mes données sont-elles en sécurité ?<span class="plus" aria-hidden="true">+</span></button><div class="faq-a" id="faq-7"><p>Vos données restent les vôtres. On utilise des outils conformes au RGPD et on ne conserve que ce qui est nécessaire au bon fonctionnement de vos automatisations.</p></div></div>
     </div>
   </div>
 </section>
@@ -658,12 +658,12 @@ section{position:relative;z-index:2}
   <div class="wrap">
     <div class="top">
       <div>
-        <h2 class="fade">On en <em>parle ?</em></h2>
+        <h2 class="fade">On en <em>parle ?</em></h2>
         <p class="lead fade">30 minutes, sans engagement. On regarde ensemble, concrètement, ce que vous pourriez déléguer ou construire, et le temps que vous y gagneriez.</p>
       </div>
       <div class="act">
-        <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-gold fade">Je libère mon temps ↗</a>
-        <div class="mail fade">Ou écrivez-nous : <a href="mailto:contact@orbe-ia.com">contact@orbe-ia.com</a></div>
+        <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-gold fade">Je réserve mon échange gratuit<span aria-hidden="true"> ↗</span></a>
+        <div class="mail fade">Ou écrivez-nous : <a href="mailto:contact@orbe-ia.com">contact@orbe-ia.com</a></div>
       </div>
     </div>
     <div class="bar">
@@ -674,7 +674,7 @@ section{position:relative;z-index:2}
 </section>
 
 <div class="sticky-cta">
-  <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-primary">J'automatise mon entreprise ↗</a>
+  <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-primary">Je réserve mon échange gratuit<span aria-hidden="true"> ↗</span></a>
 </div>
 
 <script>
@@ -768,8 +768,9 @@ measure();render();
 document.querySelectorAll('.faq-q').forEach(q=>{
   q.addEventListener('click',()=>{
     const item=q.parentElement,a=item.querySelector('.faq-a');
-    if(item.classList.contains('open')){item.classList.remove('open');a.style.maxHeight=null;}
-    else{item.classList.add('open');a.style.maxHeight=a.scrollHeight+'px';}
+    const open=item.classList.toggle('open');
+    q.setAttribute('aria-expanded',open?'true':'false');
+    a.style.maxHeight=open?a.scrollHeight+'px':null;
   });
 });
 
