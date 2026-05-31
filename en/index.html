@@ -55,7 +55,7 @@ img{display:block;max-width:100%}
 /* grain papier subtil */
 body::before{
   content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.04;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   mix-blend-mode:multiply;
 }
 
@@ -151,15 +151,18 @@ section{position:relative;z-index:2}
 .manifesto h2 strong{font-weight:800;color:var(--gold-deep);font-style:normal}
 
 /* ---------- Réassurance ---------- */
-.reassure{padding:60px 0;background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.reassure{padding:66px 0;background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .reassure .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
-.reassure .item{padding:8px 40px;position:relative}
-.reassure .item:not(:first-child)::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:64px;background:var(--line)}
+.reassure .item{padding:6px 44px;position:relative;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.reassure .item:not(:first-child)::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:74px;background:var(--line)}
 .reassure .item:first-child{padding-left:0}
-.reassure .num{font-family:var(--serif);font-size:.78rem;font-weight:700;color:var(--gold-deep);letter-spacing:.1em;margin-bottom:12px;display:block}
-.reassure .item h4{font-family:var(--serif);font-size:1.18rem;font-weight:600;letter-spacing:-.01em;margin-bottom:6px;color:var(--ink)}
-.reassure .item p{color:var(--ink-soft);font-size:.96rem;line-height:1.5}
-@media(max-width:760px){.reassure .grid{grid-template-columns:1fr;gap:28px}.reassure{padding:48px 0}.reassure .item{padding:0}.reassure .item:not(:first-child)::before{display:none}.reassure .item:not(:first-child){padding-top:28px;border-top:1px solid var(--line)}}
+.reassure .num{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;border:1px solid var(--line-gold);font-family:var(--serif);font-size:.82rem;font-weight:700;color:var(--gold-deep);letter-spacing:.01em;margin-bottom:18px;position:relative;transition:.5s cubic-bezier(.16,1,.3,1)}
+.reassure .num::after{content:"";position:absolute;width:6px;height:6px;margin:-3px;top:50%;left:50%;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px var(--bg2);transform:rotate(-48deg) translateY(-21px);transition:transform .7s cubic-bezier(.16,1,.3,1)}
+.reassure .item:hover .num{border-color:var(--gold);box-shadow:0 0 0 5px rgba(200,132,31,.07)}
+.reassure .item:hover .num::after{transform:rotate(132deg) translateY(-21px)}
+.reassure .item h4{font-family:var(--serif);font-size:1.2rem;font-weight:600;letter-spacing:-.015em;margin-bottom:7px;color:var(--ink)}
+.reassure .item p{color:var(--ink-soft);font-size:.96rem;line-height:1.55}
+@media(max-width:760px){.reassure .grid{grid-template-columns:1fr;gap:26px}.reassure{padding:48px 0}.reassure .item{padding:0}.reassure .item:not(:first-child)::before{display:none}.reassure .item:not(:first-child){padding-top:26px;border-top:1px solid var(--line)}.reassure .num{margin-bottom:14px}}
 
 .block{padding:68px 0}
 .block h2.title{font-family:var(--serif);font-weight:700;font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.02;letter-spacing:-.03em;margin-bottom:14px;max-width:16ch}
@@ -168,15 +171,17 @@ section{position:relative;z-index:2}
 @media(max-width:680px){.block{padding:48px 0}.block .sub{margin-bottom:30px}}
 
 .cards4{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}
-.cards4 .card{background:var(--bg);padding:34px 32px 30px;transition:.5s;position:relative}
-.cards4 .card::before{content:attr(data-n);position:absolute;top:30px;right:32px;font-family:var(--serif);font-size:.78rem;font-weight:700;color:var(--ink-dim);letter-spacing:.08em;transition:.4s}
-.cards4 .card::after{content:"";position:absolute;left:0;top:34px;width:0;height:2px;background:var(--gold);transition:width .5s cubic-bezier(.16,1,.3,1)}
-.cards4 .card:hover{background:#fff}
-.cards4 .card:hover::after{width:32px}
+.cards4 .card{background:var(--bg);padding:36px 34px 32px;transition:.5s cubic-bezier(.16,1,.3,1);position:relative;z-index:0}
+.cards4 .card::before{content:attr(data-n);position:absolute;top:34px;right:34px;font-family:var(--serif);font-size:.78rem;font-weight:700;color:var(--ink-dim);letter-spacing:.08em;transition:.4s}
+.cards4 .card::after{content:"";position:absolute;left:0;top:36px;width:0;height:2px;background:var(--gold);transition:width .5s cubic-bezier(.16,1,.3,1)}
+.cards4 .card:hover{background:#fff;z-index:1;box-shadow:0 16px 40px rgba(28,24,16,.07)}
+.cards4 .card:hover::after{width:34px}
 .cards4 .card:hover::before{color:var(--gold-deep)}
-.cards4 .card .k{font-family:var(--serif);font-size:1.32rem;font-weight:600;color:var(--ink);margin-bottom:12px;letter-spacing:-.02em;padding-top:6px}
-.cards4 .card p{color:var(--ink-soft);font-size:.98rem}
-@media(max-width:680px){.cards4{grid-template-columns:1fr}.cards4 .card{padding:28px 26px}}
+.cards4 .card .k{font-family:var(--serif);font-size:1.34rem;font-weight:600;color:var(--ink);margin-bottom:12px;letter-spacing:-.02em;padding-top:8px;transition:color .4s}
+.cards4 .card:hover .k{color:var(--gold-deep)}
+.cards4 .card p{color:var(--ink-soft);font-size:.98rem;line-height:1.55}
+@media(max-width:680px){.cards4{grid-template-columns:1fr}.cards4 .card{padding:28px 26px}.cards4 .card:hover{box-shadow:none}}
+.cards-real .card:last-child{grid-column:1/-1}
 
 .levers{display:flex;flex-direction:column;border-top:1px solid var(--line)}
 .lever{display:grid;grid-template-columns:64px 1fr 40px;gap:22px;padding:28px 0;border-bottom:1px solid var(--line);align-items:start;transition:.45s cubic-bezier(.16,1,.3,1)}
@@ -188,6 +193,7 @@ section{position:relative;z-index:2}
 .lever .arr{font-family:var(--serif);font-size:1.4rem;color:var(--gold-deep);opacity:0;transform:translateX(-8px);transition:.45s cubic-bezier(.16,1,.3,1);align-self:center}
 .lever:hover .arr{opacity:1;transform:translateX(0)}
 @media(max-width:680px){.lever{grid-template-columns:48px 1fr;gap:14px;padding:26px 0}.lever .arr{display:none}}
+.lever-note{display:inline-block;margin-top:10px;font-size:.78rem;font-weight:600;letter-spacing:.01em;color:var(--gold-deep);opacity:.85}
 
 /* ---------- Qui sommes-nous ---------- */
 .about-grid{display:grid;grid-template-columns:0.82fr 1fr;gap:64px;align-items:start}
@@ -209,14 +215,19 @@ section{position:relative;z-index:2}
 @media(max-width:860px){.about-grid{grid-template-columns:1fr;gap:30px}.about-aside{position:static}.about-aside .title{margin-bottom:22px}}
 
 .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
-.tier{border:1px solid var(--line);border-radius:16px;padding:32px 26px;display:flex;flex-direction:column;transition:.5s;background:var(--bg)}
-.tier:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(28,24,16,.08)}
+.tier{position:relative;border:1px solid var(--line);border-radius:18px;padding:32px 28px;display:flex;flex-direction:column;transition:.5s cubic-bezier(.16,1,.3,1);background:var(--bg)}
+.tier:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(28,24,16,.08);border-color:var(--line-gold)}
 .tier.featured{border-color:var(--gold);background:#fff;box-shadow:0 16px 44px rgba(168,106,18,.12)}
-.tier .tag{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:20px;min-height:14px;font-weight:500}
-.tier .step{font-family:var(--serif);font-weight:600;color:var(--ink-dim);margin-bottom:8px}
+.tier.featured::after{content:"";position:absolute;inset:0;border-radius:18px;padding:1px;background:linear-gradient(155deg,var(--gold-soft),transparent 55%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.tier .tag{display:none}
+.tier.featured .tag{display:inline-flex;align-items:center;gap:7px;position:absolute;top:18px;right:18px;padding:6px 13px;border-radius:40px;background:var(--gold);color:#fff;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;box-shadow:0 8px 20px rgba(168,106,18,.28)}
+.tier.featured .tag::before{content:"";width:5px;height:5px;border-radius:50%;background:#fff;opacity:.9}
+.tier .step{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--line-gold);font-family:var(--serif);font-weight:600;font-size:.86rem;color:var(--gold-deep);margin-bottom:16px;transition:.5s cubic-bezier(.16,1,.3,1)}
+.tier.featured .step{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 6px 16px rgba(168,106,18,.28)}
+.tier:hover .step{border-color:var(--gold)}
 .tier h3{font-family:var(--serif);font-weight:700;font-size:1.7rem;letter-spacing:-.02em;margin-bottom:6px}
-.tier .price{color:var(--gold-deep);font-size:1.05rem;margin-bottom:24px}
-.tier p{color:var(--ink-soft);font-size:.98rem;flex:1;margin-bottom:0}
+.tier .price{color:var(--gold-deep);font-size:1.05rem;font-weight:500;margin-bottom:24px}
+.tier p{color:var(--ink-soft);font-size:.98rem;line-height:1.55;flex:1;margin-bottom:0}
 .tier a{align-self:flex-start}
 .tiers-cta{margin-top:28px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
 .tiers-cta span{color:var(--ink-dim);font-size:.9rem}
@@ -287,15 +298,20 @@ section{position:relative;z-index:2}
    MOBILE : optimisation & finitions (≤ 680px puis ≤ 460px)
    ============================================================ */
 @media(max-width:680px){
+  /* fil orbital décoratif : plus discret, ne gêne pas la lecture */
   .orbit-rail{opacity:.32}
+
+  /* la sticky-CTA occupe ~74px en bas : on libère le bas du footer */
   .endcap{padding-bottom:86px}
 
+  /* NAV : évite tout débordement, hiérarchise */
   nav{padding:14px 20px;gap:12px}
   nav.scrolled{padding:11px 20px}
   .logo{font-size:1.25rem}
   .nav-right{gap:13px}
   .nav-cta{padding:9px 14px;font-size:.66rem;letter-spacing:.06em;white-space:nowrap}
 
+  /* HERO : plus aéré, lisible, boutons pleine largeur */
   .hero{min-height:auto;padding:118px 0 48px}
   .hero h1{font-size:clamp(2.5rem,11vw,3.4rem);line-height:1.02;margin-bottom:20px}
   .hero p.lede{font-size:1.06rem;max-width:100%;margin-bottom:28px}
@@ -304,6 +320,7 @@ section{position:relative;z-index:2}
   .hero-meta{flex-direction:column;gap:11px;padding-top:20px}
   .hero-meta span{font-size:.86rem}
 
+  /* SHOWCASE : sections plein écran moins étirées, texte calibré */
   .showcase{height:150vh}
   .showcase-sticky{height:100svh}
   .showcase .caption{padding:30px 24px}
@@ -312,10 +329,11 @@ section{position:relative;z-index:2}
   .showcase.flat .caption h2{font-size:clamp(1.7rem,7.5vw,2.3rem)}
   .showcase.flat .caption p{font-size:.98rem}
 
+  /* MANIFESTE : moins de vide vertical sur mobile */
   .manifesto{padding:88px 0}
   .manifesto h2{font-size:clamp(1.7rem,6.4vw,2.3rem);line-height:1.2;max-width:none}
 
-  /* Reassurance: 3 points as cards with a large gold number on the left (3rd design variation) */
+  /* RÉASSURANCE : 3 points en cartes, grand numéro doré à gauche (3e variation de design) */
   .reassure .grid{grid-template-columns:1fr;gap:12px}
   .reassure .item,.reassure .item:first-child,.reassure .item:not(:first-child){padding:20px 18px;border:1px solid var(--line);border-radius:14px;background:var(--bg);display:grid;grid-template-columns:auto 1fr;column-gap:18px;row-gap:4px;align-items:center}
   .reassure .item::before{display:none}
@@ -323,7 +341,7 @@ section{position:relative;z-index:2}
   .reassure .item h4{grid-column:2;align-self:end;margin-bottom:2px}
   .reassure .item p{grid-column:2;align-self:start;font-size:.92rem;line-height:1.45}
 
-  /* Cards in a 2×2 grid (airier than a long single column) */
+  /* CONSTAT : les 4 cartes en grille 2×2 (plus aéré qu'une longue colonne) */
   .cards4{grid-template-columns:repeat(2,1fr);border-radius:14px}
   .cards4 .card{padding:24px 16px 22px;display:flex;flex-direction:column}
   .cards4 .card::before{top:16px;right:15px}
@@ -331,7 +349,7 @@ section{position:relative;z-index:2}
   .cards4 .card .k{font-size:1.1rem;padding-top:14px;margin-bottom:9px;line-height:1.2}
   .cards4 .card p{font-size:.9rem;line-height:1.45}
 
-  /* "What we do": the 4 levers as a 2×2 grid — distinct design (numbered pill, gold gradient) */
+  /* CE QU'ON FAIT : les 4 leviers en cartes 2×2 — design distinct (numéro en pastille, fond doré dégradé) */
   .levers{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:none}
   .lever{grid-template-columns:1fr;gap:0;padding:22px 16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(165deg,rgba(200,132,31,.08),transparent 62%);align-items:start}
   .lever:hover{padding-left:16px;background:linear-gradient(165deg,rgba(200,132,31,.08),transparent 62%)}
@@ -340,7 +358,7 @@ section{position:relative;z-index:2}
   .lever p{font-size:.88rem;line-height:1.45;max-width:none}
   .lever .arr{display:none}
 
-  /* Pricing: horizontal scroll-snap carousel (instead of a vertical stack) */
+  /* OFFRES : carrousel horizontal à défilement (plutôt qu'un empilement vertical) */
   .tiers{display:flex;grid-template-columns:none;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:14px;scrollbar-width:none}
   .tiers::-webkit-scrollbar{display:none}
   .tier{flex:0 0 84%;scroll-snap-align:start;order:0;padding:30px 26px}
@@ -348,12 +366,15 @@ section{position:relative;z-index:2}
   .tiers-cta .btn{width:100%;justify-content:center}
   .tiers-cta span{width:100%;text-align:center}
 
+  /* QUI SOMMES-NOUS : citation resserrée */
   .about-quote{font-size:clamp(1.25rem,5.4vw,1.5rem);padding-left:20px;margin:26px 0}
   .about-cta{margin-top:28px}
 
+  /* FAQ : meilleures zones de tap, lecture confortable */
   .faq-q{padding:20px 0;gap:14px}
   .faq-a p{font-size:.98rem;max-width:none}
 
+  /* CONTACT : bouton pleine largeur */
   .endcap .top{padding-bottom:44px}
   .endcap h2{margin-bottom:16px}
   .endcap .act{align-items:stretch}
@@ -365,21 +386,25 @@ section{position:relative;z-index:2}
   .wrap{padding:0 18px}
   nav{padding:13px 16px}
   .nav-right{gap:10px}
+  /* on masque le lien Journal : il reste accessible via la section + footer */
   .nav-link{display:none}
   .hero h1{font-size:clamp(2.3rem,11.5vw,3rem)}
   .hero p.lede{font-size:1.02rem}
   .reassure .item h4{font-size:1.12rem}
+  /* cartes 2×2 : padding resserré pour les très petits écrans */
   .cards4 .card{padding:20px 13px 18px}
   .cards4 .card .k{font-size:1.02rem}
   .cards4 .card p{font-size:.86rem}
+  /* leviers 2×2 : padding et titre resserrés */
   .levers{gap:10px}
   .lever{padding:18px 14px}
   .lever h3{font-size:1.08rem}
   .lever p{font-size:.84rem}
+  /* carrousel offres : carte un peu plus large sur très petit écran */
   .tier{flex:0 0 86%;padding:26px 22px}
 }
 
-/* ---------- Accessibility: honour prefers-reduced-motion ---------- */
+/* ---------- Accessibilité : on honore prefers-reduced-motion ---------- */
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{
     animation-duration:.001ms!important;
@@ -406,7 +431,7 @@ section{position:relative;z-index:2}
 </div>
 
 <nav id="nav">
-  <div class="logo">ORBE <span class="ia">IA</span></div>
+  <div class="logo notranslate" translate="no">ORBE <span class="ia">IA</span></div>
   <div class="nav-right">
     <div class="lang-switch" role="group" aria-label="Choix de la langue / Language">
       <a href="/" hreflang="fr">FR</a>
@@ -422,19 +447,19 @@ section{position:relative;z-index:2}
 <section class="hero">
   <div class="hero-orb" aria-hidden="true"></div>
   <div class="wrap">
-    <div class="hero-label fade">Automation &amp; custom-product agency</div>
+    <div class="hero-label fade">AI automation &amp; custom products</div>
     <h1>
       <span class="reveal-line"><span>Step into the</span></span>
-      <span class="reveal-line"><span><em>new era</em> of work.</span></span>
+      <span class="reveal-line"><span>the <em>new era</em> of work.</span></span>
     </h1>
-    <p class="lede">The time you spend on tasks that keep coming back, we give it back to you. You focus on what matters. We handle the rest.</p>
+    <p class="lede">We automate the repetitive tasks. You get back the time they used to cost you.</p>
     <div class="actions fade">
       <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-primary">I automate my business ↗</a>
       <a href="#services" class="btn btn-ghost">See what we do</a>
     </div>
     <div class="hero-meta fade">
-      <span>First call on us</span>
-      <span>Price set upfront</span>
+      <span>First call free</span>
+      <span>Price quoted upfront</span>
       <span>A single point of contact</span>
     </div>
   </div>
@@ -443,10 +468,10 @@ section{position:relative;z-index:2}
 <!-- SHOWCASE 1 -->
 <section class="showcase">
   <div class="showcase-sticky">
-    <div class="bg" style="background-image:url('../assets/showcase-1.png')"></div>
+    <div class="bg" style="background-image:url('assets/showcase-1.png')"></div>
     <div class="caption">
-      <h2 class="fade">Your tools <em>work</em>, you decide.</h2>
-      <p class="fade">While you read this, they could already be handling your follow-ups and reminders.</p>
+      <h2 class="fade">Your tools <em>do the work</em>, you make the calls.</h2>
+      <p class="fade">In the time it takes to read this page, they’d already have handled several follow-ups.</p>
     </div>
   </div>
 </section>
@@ -455,18 +480,18 @@ section{position:relative;z-index:2}
 <section class="manifesto">
   <div class="sticky">
     <div class="wrap">
-      <h2 class="fade">You already know the task you'd love to get rid of. <strong>Let's start with that one.</strong></h2>
+      <h2 class="fade">You already know the task you’d love to be rid of. <strong>That’s the one we start with.</strong></h2>
     </div>
   </div>
 </section>
 
-<!-- RÉASSURANCE -->
+<!-- REASSURANCE -->
 <section class="reassure">
   <div class="wrap">
     <div class="grid">
       <div class="item fade"><span class="num">01</span><h4>A single point of contact</h4><p>From the first call to delivery, you always speak to the same person.</p></div>
-      <div class="item fade"><span class="num">02</span><h4>Price set upfront</h4><p>The price is fixed before we start. No surprises along the way.</p></div>
-      <div class="item fade"><span class="num">03</span><h4>Connected tools</h4><p>Your software finally talks to itself: nothing dropped, nothing forgotten.</p></div>
+      <div class="item fade"><span class="num">02</span><h4>Price quoted upfront</h4><p>The price is set before we start. No surprises along the way.</p></div>
+      <div class="item fade"><span class="num">03</span><h4>Connected tools</h4><p>Your software finally shares its information, with no re-entry and nothing forgotten.</p></div>
     </div>
   </div>
 </section>
@@ -476,12 +501,12 @@ section{position:relative;z-index:2}
   <div class="wrap">
     <div class="eyebrow fade">The reality</div>
     <h2 class="title fade">What repeats <em>can be delegated.</em></h2>
-    <p class="sub fade">Every week, hours disappear into mechanical tasks. We pinpoint them, automate them cleanly, and that time comes back to you.</p>
+    <p class="sub fade">Every week, hours vanish into mechanical tasks. We spot them, automate them cleanly, and that time comes back to you.</p>
     <div class="cards4">
-      <div class="card fade" data-n="01"><div class="k">Follow-ups</div><p>Unanswered quotes, pending invoices: a chase you constantly have to pick back up.</p></div>
+      <div class="card fade" data-n="01"><div class="k">Follow-ups</div><p>Unanswered quotes, pending invoices: a chase you have to pick up over and over.</p></div>
       <div class="card fade" data-n="02"><div class="k">Repetitive emails</div><p>The same replies, rewritten several times a day. A copy-paste that wears you down.</p></div>
-      <div class="card fade" data-n="03"><div class="k">Double entry</div><p>Copying from one tool to another, re-typing, double-checking. The invisible work that piles up.</p></div>
-      <div class="card fade" data-n="04"><div class="k">Scattered tools</div><p>Software that doesn't talk to each other, data spread everywhere, nothing centralized.</p></div>
+      <div class="card fade" data-n="03"><div class="k">Double entry</div><p>Copying from one tool to another, re-keying, double-checking. The invisible work that piles up.</p></div>
+      <div class="card fade" data-n="04"><div class="k">Scattered tools</div><p>Software that doesn’t talk to each other, data spread around, nothing centralized.</p></div>
     </div>
   </div>
 </section>
@@ -489,26 +514,42 @@ section{position:relative;z-index:2}
 <!-- SHOWCASE 2 -->
 <section class="showcase flat">
   <div class="showcase-sticky">
-    <div class="bg" style="background-image:url('../assets/workflow.jpg')"></div>
+    <div class="bg" style="background-image:url('assets/workflow.jpg')"></div>
     <div class="caption">
       <h2 class="fade">Time <em>reclaimed.</em></h2>
-      <p class="fade">Room for what truly moves your business forward.</p>
+      <p class="fade">For what really moves your business forward.</p>
     </div>
   </div>
 </section>
 
-<!-- CE QU'ON FAIT -->
+<!-- WHAT WE DO -->
 <section class="block" id="services">
   <div class="wrap">
     <div class="eyebrow fade">What we do</div>
     <h2 class="title fade">Choose <em>your lever.</em></h2>
     <p class="sub fade">One goal: your time. Every means to get there.</p>
     <div class="levers">
-      <div class="lever fade"><div class="idx">01</div><div><h3>AI automation</h3><p>We take out the repetitive. Follow-ups, replies, data entry, tracking: it runs with no intervention, nothing forgotten, no careless mistakes.</p></div><div class="arr">↗</div></div>
-      <div class="lever fade"><div class="idx">02</div><div><h3>Websites</h3><p>A clear, fast, polished showcase, built to turn visitors into real conversations.</p></div><div class="arr">↗</div></div>
-      <div class="lever fade"><div class="idx">03</div><div><h3>Applications</h3><p>A custom business tool, shaped exactly to the way you work, wired into your automations.</p></div><div class="arr">↗</div></div>
-      <div class="lever fade"><div class="idx">04</div><div><h3>Custom platforms</h3><p>Dashboards, client portals, integrations between your services: the foundation that grows with your business.</p></div><div class="arr">↗</div></div>
+      <div class="lever fade"><div class="idx">01</div><div><h3>AI automation</h3><p>We take out the repetitive. Follow-ups, replies, data entry, tracking: it all runs with no intervention, nothing forgotten, no careless slips.</p><span class="lever-note">Available on its own from the Focused project tier</span></div><div class="arr">↗</div></div>
+      <div class="lever fade"><div class="idx">02</div><div><h3>Websites</h3><p>A clear, fast, polished showcase, designed to turn visitors into real conversations.</p><span class="lever-note">Available on its own from the Focused project tier</span></div><div class="arr">↗</div></div>
+      <div class="lever fade"><div class="idx">03</div><div><h3>Applications</h3><p>A custom business tool, shaped exactly to the way you work, connected to your automations.</p><span class="lever-note">Part of the Tailor-made tier</span></div><div class="arr">↗</div></div>
+      <div class="lever fade"><div class="idx">04</div><div><h3>Custom platforms</h3><p>Dashboards, client portals, integrations between your services: the foundation that grows with your business.</p><span class="lever-note">Part of the Tailor-made tier</span></div><div class="arr">↗</div></div>
     </div>
+  </div>
+</section>
+
+<!-- OUR WORK -->
+<section class="block">
+  <div class="wrap">
+    <div class="eyebrow fade">Our work</div>
+    <h2 class="title fade">What we <em>build.</em></h2>
+    <div class="cards4 cards-real">
+      <div class="card fade" data-n="01"><div class="k">Internal communication platforms</div><p>Bringing a team’s exchanges and information together in one place.</p></div>
+      <div class="card fade" data-n="02"><div class="k">Platforms for field agents</div><p>Giving mobile teams the right tool, accessible anywhere.</p></div>
+      <div class="card fade" data-n="03"><div class="k">Training platforms</div><p>Making content and learner tracking available in a single space.</p></div>
+      <div class="card fade" data-n="04"><div class="k">Game apps</div><p>Designing custom interactive experiences.</p></div>
+      <div class="card fade" data-n="05"><div class="k">Sites with a back office</div><p>A site whose team edits the content themselves, without depending on anyone.</p></div>
+    </div>
+    <!-- TO FILL IN: hard numbers, client names, screenshots, logos -->
   </div>
 </section>
 
@@ -520,15 +561,15 @@ section{position:relative;z-index:2}
     <div class="tiers">
       <div class="tier fade">
         <div class="tag"></div><div class="step">01</div><h3>First call</h3><div class="price">Free</div>
-        <p>30 minutes, no commitment. We review how you work, spot what costs a lot for little value, and you leave with concrete leads.</p>
+        <p>We look at how you work, pinpoint the tasks that cost you time for little value, and you leave with concrete leads.</p>
       </div>
       <div class="tier featured fade">
-        <div class="tag">Most popular</div><div class="step">02</div><h3>A focused project</h3><div class="price">from €1,500</div>
-        <p>A showcase website and an automation, delivered end to end. Built with you, ready in a few days, price fixed before we start.</p>
+        <div class="tag">Most requested</div><div class="step">02</div><h3>A focused project</h3><div class="price">from €1,200</div>
+        <p>A polished showcase website, or a first automation, delivered end to end. Built with you, ready in 2 to 3 weeks, price fixed before we start.</p>
       </div>
       <div class="tier fade">
         <div class="tag"></div><div class="step">03</div><h3>Tailor-made</h3><div class="price">On quote</div>
-        <p>Applications and platforms: several building blocks connected together: automations, internal tools, integrations. Support over the long term.</p>
+        <p>Applications and platforms: several elements wired together, automations, internal tools, links between your services. Support over the long term.</p>
       </div>
     </div>
     <div class="tiers-dots" role="tablist" aria-label="Scroll through the offers">
@@ -543,14 +584,14 @@ section{position:relative;z-index:2}
   </div>
 </section>
 
-<!-- QUI SOMMES-NOUS -->
+<!-- WHO WE ARE -->
 <section class="block" id="agence">
   <div class="wrap about-grid">
     <div class="about-aside">
       <div class="eyebrow fade">Who we are</div>
-      <h2 class="title fade">I practice AI <em>before I recommend it.</em></h2>
+      <h2 class="title fade">We practice AI <em>before we recommend it.</em></h2>
       <div class="about-domains fade">
-        <span class="about-domains-label">What I've built</span>
+        <span class="about-domains-label">What we’ve built</span>
         <div class="about-tags">
           <span>Internal communication</span>
           <span>Games</span>
@@ -559,11 +600,11 @@ section{position:relative;z-index:2}
       </div>
     </div>
     <div class="about-body">
-      <p class="sub fade">I got into artificial intelligence five years ago, long before it became a trend. Not to ride the wave, but to build tools that genuinely help, day to day.</p>
-      <p class="sub fade">I've designed and run very different projects. And every day, AI supports my clients just as it runs part of my own business. I don't sell theory, I pass on what I practice.</p>
-      <blockquote class="about-quote fade">These tools shouldn't stay reserved for big companies. <em>AI is a tool in the service of people, never the other way around.</em></blockquote>
-      <p class="sub fade">I make them accessible to those big agencies overlook or intimidate, at a price that fits their means.</p>
-      <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="about-cta fade">Let's talk about what it could change for you<span class="ar">↗</span></a>
+      <p class="sub fade">We started with artificial intelligence five years ago, well before it became a trend. Not to ride the wave, but to build tools that genuinely help, day to day.</p>
+      <p class="sub fade">We’ve designed and run very different projects. Every day, AI supports our clients just as it runs part of our own business. We don’t sell theory, we pass on what we practice.</p>
+      <blockquote class="about-quote fade">These tools shouldn’t stay reserved for big companies: <em>AI is a tool in the service of people, never the other way around.</em></blockquote>
+      <p class="sub fade">We make them accessible to those the big agencies overlook or intimidate, at a price that fits their means.</p>
+      <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="about-cta fade">Let’s talk about what it could change for you<span class="ar">↗</span></a>
     </div>
   </div>
 </section>
@@ -573,7 +614,7 @@ section{position:relative;z-index:2}
   <div class="wrap">
     <div class="eyebrow fade">The journal</div>
     <h2 class="title fade">What we learn, <em>we share.</em></h2>
-    <p class="sub fade">Concrete signposts to save time, no jargon.</p>
+    <p class="sub fade">Concrete pointers to save time, without the jargon.</p>
     <div class="journal-list">
       <a href="journal/5-tasks-to-automate-this-week.html" class="journal-item fade">
         <div class="journal-meta"><span class="date">20 May 2026</span><span class="cat">Automation</span></div>
@@ -598,14 +639,16 @@ section{position:relative;z-index:2}
 <!-- FAQ -->
 <section class="block">
   <div class="wrap">
-    <div class="eyebrow fade">Frequently asked</div>
-    <h2 class="title fade" style="margin-bottom:36px">We <em>answer.</em></h2>
+    <div class="eyebrow fade">Frequently asked questions</div>
+    <h2 class="title fade" style="margin-bottom:36px">We’ve <em>got answers.</em></h2>
     <div class="faq">
-      <div class="faq-item fade"><button class="faq-q">Concretely, what can you automate?<span class="plus">+</span></button><div class="faq-a"><p>Anything recurring that follows a logic: quote and invoice follow-ups, replies to recurring emails, data entry from one tool to another, tracking, exports, notifications. We start from your typical week to spot what's best suited to automation.</p></div></div>
-      <div class="faq-item fade"><button class="faq-q">You build websites, but applications too?<span class="plus">+</span></button><div class="faq-a"><p>Yes. From showcase sites and landing pages to business apps and client portals. The common thread: it's wired into your automations so every request is handled, with nothing slipping through.</p></div></div>
-      <div class="faq-item fade"><button class="faq-q">Who is a custom platform for?<span class="plus">+</span></button><div class="faq-a"><p>For businesses juggling several tools that don't communicate. We build a foundation (dashboards, internal tools, integrations) that centralizes your data and grows with you.</p></div></div>
-      <div class="faq-item fade"><button class="faq-q">Do I need to be tech-savvy?<span class="plus">+</span></button><div class="faq-a"><p>No, that's the whole point. You keep a single point of contact, we translate your need into a solution, and you get something that works. No jargon, no setup on your side.</p></div></div>
-      <div class="faq-item fade"><button class="faq-q">How does the first call work?<span class="plus">+</span></button><div class="faq-a"><p>30 minutes, no commitment, over video. We look at how you work, identify what weighs you down, and you leave with concrete leads, whether or not you decide to work with us.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">Concretely, what can you automate?<span class="plus">+</span></button><div class="faq-a"><p>Anything that recurs and follows a logic: quote and invoice follow-ups, replies to recurring emails, moving data from one tool to another, tracking, exports, notifications. We start from a typical week of yours to spot what lends itself best to automation.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">You build websites, but applications too?<span class="plus">+</span></button><div class="faq-a"><p>Yes. From the showcase site to the landing page, all the way to the business application and the client portal. The common thread: it’s connected to your automations so every request is handled, with nothing slipping through.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">Who is a custom platform for?<span class="plus">+</span></button><div class="faq-a"><p>For businesses juggling several tools that don’t talk to each other. We build a foundation (dashboards, internal tools, integrations) that centralizes your data and grows with you.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">Do I need to be comfortable with technology?<span class="plus">+</span></button><div class="faq-a"><p>No, that’s the whole point. You keep a single point of contact, we turn your need into a solution, and you receive something that works. No jargon, no setup on your plate.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">How does the first call work?<span class="plus">+</span></button><div class="faq-a"><p>30 minutes, no commitment, over video. We look at how you operate, identify what weighs you down, and you leave with concrete leads, whether or not you decide to work with us.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">And what if an automation breaks down?<span class="plus">+</span></button><div class="faq-a"><p>We stay reachable after delivery. If something gets stuck, we fix it quickly; ongoing support can be arranged depending on your needs.</p></div></div>
+      <div class="faq-item fade"><button class="faq-q">Is my data safe?<span class="plus">+</span></button><div class="faq-a"><p>Your data stays yours. We use GDPR-compliant tools and keep only what’s necessary for your automations to run properly.</p></div></div>
     </div>
   </div>
 </section>
@@ -616,7 +659,7 @@ section{position:relative;z-index:2}
     <div class="top">
       <div>
         <h2 class="fade">Shall we <em>talk?</em></h2>
-        <p class="lead fade">30 minutes, no commitment. Together we look, concretely, at what you could delegate or build, and the time it represents.</p>
+        <p class="lead fade">30 minutes, no commitment. Together we look, concretely, at what you could delegate or build, and the time you’d gain from it.</p>
       </div>
       <div class="act">
         <a href="https://calendly.com/contact-orbe-ia/30min" target="_blank" rel="noopener" class="btn btn-gold fade">I free up my time ↗</a>
@@ -730,7 +773,7 @@ document.querySelectorAll('.faq-q').forEach(q=>{
   });
 });
 
-// Pricing carousel: scroll dots (mobile)
+// Carrousel des offres : points de défilement (mobile)
 (function(){
   const tiers=document.querySelector('.tiers');
   const dots=document.querySelector('.tiers-dots');
