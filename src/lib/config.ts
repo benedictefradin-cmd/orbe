@@ -143,12 +143,12 @@ export function formaterJour(instant: Date | string, avecAnnee = false): string 
   });
 }
 
-/** « 16 h 30 », « 18 h » */
+/** « 16 h 30 », « 18 h », avec des espaces insécables pour ne jamais couper l'heure */
 export function formaterHeure(instant: Date | string): string {
   const [h, m] = new Date(instant)
     .toLocaleTimeString("fr-FR", { timeZone: FUSEAU, hour: "2-digit", minute: "2-digit" })
     .split(":") as [string, string];
-  return `${Number(h)} h${m === "00" ? "" : ` ${m}`}`;
+  return `${Number(h)}\u00a0h${m === "00" ? "" : `\u00a0${m}`}`;
 }
 
 /** « lundi 14 décembre, de 16 h 30 à 18 h » */

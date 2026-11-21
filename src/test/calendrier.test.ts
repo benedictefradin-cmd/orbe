@@ -40,11 +40,15 @@ describe("calendrier, heure de Paris", () => {
     expect(ajouterJours("2027-02-27", 2)).toBe("2027-03-01");
   });
 
+  it("ne coupe jamais une heure en fin de ligne", () => {
+    expect(formaterCreneau(ATELIERS[0].debut, ATELIERS[0].fin)).toContain("16\u00a0h\u00a030");
+  });
+
   it("formate les créneaux en français", () => {
-    expect(formaterCreneau(ATELIERS[0].debut, ATELIERS[0].fin)).toBe(
+    expect(formaterCreneau(ATELIERS[0].debut, ATELIERS[0].fin).replace(/\u00a0/g, " ")).toBe(
       "lundi 14 décembre, de 16 h 30 à 18 h",
     );
-    expect(formaterCreneau(ATELIERS[1].debut, ATELIERS[1].fin)).toBe(
+    expect(formaterCreneau(ATELIERS[1].debut, ATELIERS[1].fin).replace(/\u00a0/g, " ")).toBe(
       "vendredi 18 décembre, de 12 h 30 à 14 h",
     );
   });

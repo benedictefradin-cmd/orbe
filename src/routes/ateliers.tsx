@@ -22,6 +22,7 @@ import {
 } from "@/lib/formulaires";
 import { genererIcs } from "@/lib/ics";
 import { telecharger } from "@/lib/exports";
+import { usePret } from "@/lib/use-pret";
 import { getRequestOrigin } from "@/lib/origin.functions";
 import { envoyerInscription, getEtatSite, getJetonFormulaire } from "@/lib/site.functions";
 import { metaPage } from "@/lib/partage";
@@ -146,6 +147,7 @@ function Formulaire({
 }) {
   const obtenirJeton = useServerFn(getJetonFormulaire);
   const envoyer = useServerFn(envoyerInscription);
+  const pret = usePret();
   const [s, setS] = useState<Saisie>(VIDE);
   const [erreurs, setErreurs] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
@@ -198,6 +200,7 @@ function Formulaire({
   return (
     <form
       noValidate
+      method="post"
       className="mt-10"
       onSubmit={(e) => {
         e.preventDefault();
@@ -407,7 +410,7 @@ function Formulaire({
         <button
           type="submit"
           className="bouton bouton-plein w-full sm:w-auto"
-          disabled={envoi}
+          disabled={envoi || !pret}
           aria-busy={envoi}
         >
           {envoi ? T.envoi : T.bouton}
@@ -454,7 +457,7 @@ function Confirmation({
     <div className="flex flex-col gap-6">
       <div className="carte carte-accent">
         <CheckCircle2 size={40} className="text-accent" aria-hidden="true" />
-        <h1 ref={titre} tabIndex={-1} className="titre-section mt-3 outline-none" role="status">
+        <h1 ref={titre} tabIndex={-1} className="titre-section mt-3 outline-none">
           {T.merci}
         </h1>
         <ul className="mt-5 flex flex-col gap-3">

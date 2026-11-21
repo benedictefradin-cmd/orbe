@@ -82,7 +82,7 @@ export const MESURES: readonly Mesure[] = [
     id: "m11",
     axe: "Parent protecteur",
     texte:
-      "Garantir la sécurité du parent protecteur et bannir le « syndrome d'aliénation parentale » des débats judiciaires.",
+      "Garantir la sécurité du parent protecteur et bannir le « syndrome d'aliénation parentale » des débats judiciaires.",
     sources: "CIIVISE (25), FAI (17)",
   },
   {
@@ -117,7 +117,7 @@ export const MESURES: readonly Mesure[] = [
     id: "m16",
     axe: "Enquête et procédure",
     texte:
-      "Abandonner l'expression « classement sans suite », motiver chaque décision et l'expliquer de vive voix à la victime.",
+      "Abandonner l'expression « classement sans suite », motiver chaque décision et l'expliquer de vive voix à la victime.",
     sources: "CIIVISE (50, 51), Commission AN (21, 22)",
   },
   {

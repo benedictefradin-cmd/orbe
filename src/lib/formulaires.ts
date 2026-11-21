@@ -180,16 +180,16 @@ export const Q = {
 /** Profil, chaque question accepte « Je préfère ne pas répondre ». */
 const avecNsp = (o: readonly Option[]) =>
   z.enum([...valeurs([...o]), NE_PAS_REPONDRE.valeur] as [string, ...string[]], {
-    errorMap: () => ({ message: "Choisissez une réponse, ou « Je préfère ne pas répondre »." }),
+    errorMap: () => ({ message: "Choisissez une réponse, ou « Je préfère ne pas répondre »." }),
   });
 const multiAvecNsp = (o: readonly Option[]) =>
   z
     .array(z.enum([...valeurs([...o]), NE_PAS_REPONDRE.valeur] as [string, ...string[]]))
-    .min(1, "Choisissez au moins une réponse, ou « Je préfère ne pas répondre ».")
+    .min(1, "Choisissez au moins une réponse, ou « Je préfère ne pas répondre ».")
     .max(o.length + 1)
     .refine(
       (v) => !v.includes(NE_PAS_REPONDRE.valeur) || v.length === 1,
-      "« Je préfère ne pas répondre » ne se combine pas avec une autre réponse.",
+      "« Je préfère ne pas répondre » ne se combine pas avec une autre réponse.",
     );
 const facultatif = (o: readonly Option[]) => z.enum(valeurs([...o])).nullable();
 

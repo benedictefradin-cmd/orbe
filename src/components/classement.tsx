@@ -157,6 +157,17 @@ export function Classement({
           );
         })}
       </ul>
+      <div className="sticky bottom-0 z-10 -mx-4 mt-4 border-t border-bordure-forte bg-white/95 px-4 py-3 backdrop-blur sm:hidden">
+        <a
+          href="#mon-classement"
+          className="flex min-h-11 items-center justify-between gap-3 font-semibold no-underline"
+        >
+          <span>
+            {valeur.length} sur {NOMBRE_MESURES_A_CLASSER} choisies
+          </span>
+          <span className="text-accent">Voir mon classement</span>
+        </a>
+      </div>
       <p className="sr-only" role="status" aria-live="polite">
         {annonce}
       </p>

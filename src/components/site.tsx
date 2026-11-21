@@ -118,7 +118,7 @@ function LienExterne({
 export function Reseaux({ structure }: { structure: keyof typeof STRUCTURES }) {
   const s = STRUCTURES[structure];
   return (
-    <ul className="flex flex-wrap gap-2" aria-label={`Réseaux de ${s.nom}`}>
+    <ul className="flex flex-wrap gap-2" aria-label={`Réseaux, ${s.nom}`}>
       {s.reseaux.map((r) => (
         <li key={r.url}>
           <LienExterne

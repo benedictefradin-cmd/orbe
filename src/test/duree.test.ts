@@ -12,17 +12,44 @@ import { MESURES } from "@/lib/mesures";
 import { Q } from "@/lib/formulaires";
 
 const mots = (t: string) => t.split(/\s+/).filter(Boolean).length;
-const texteQuestion = (q: { libelle: string; options?: readonly { libelle: string }[]; aide?: string }) => [q.libelle, q.aide ?? "", ...(q.options ?? []).map((o) => o.libelle)].join(" ");
+const texteQuestion = (q: {
+  libelle: string;
+  options?: readonly { libelle: string }[];
+  aide?: string;
+}) => [q.libelle, q.aide ?? "", ...(q.options ?? []).map((o) => o.libelle)].join(" ");
 
 export function dureeParcoursSecondes() {
   const lecture = [
-    ...CONSULTATION.recap, CONSULTATION.accroche, CONSULTATION.anonymat, CONSULTATION.profilIntro,
-    texteQuestion(Q.age), texteQuestion(Q.genre), Q.region.libelle, texteQuestion(Q.lieuVie), texteQuestion(Q.situation), texteQuestion(Q.parent), texteQuestion(Q.liensEnfance), texteQuestion(Q.lienSujet),
-    CONSULTATION.priorites.intro, CONSULTATION.priorites.aide, ...MESURES.map((m) => `${m.axe} ${m.texte}`),
-    CONSULTATION.plusLoinIntro, texteQuestion(Q.mesureManquante), texteQuestion(Q.presenceDebat), texteQuestion(Q.poidsVote), texteQuestion(Q.provenance),
+    ...CONSULTATION.recap,
+    CONSULTATION.accroche,
+    CONSULTATION.anonymat,
+    CONSULTATION.profilIntro,
+    texteQuestion(Q.age),
+    texteQuestion(Q.genre),
+    Q.region.libelle,
+    texteQuestion(Q.lieuVie),
+    texteQuestion(Q.situation),
+    texteQuestion(Q.parent),
+    texteQuestion(Q.liensEnfance),
+    texteQuestion(Q.lienSujet),
+    CONSULTATION.priorites.intro,
+    CONSULTATION.priorites.aide,
+    ...MESURES.map((m) => `${m.axe} ${m.texte}`),
+    CONSULTATION.plusLoinIntro,
+    texteQuestion(Q.mesureManquante),
+    texteQuestion(Q.presenceDebat),
+    texteQuestion(Q.poidsVote),
+    texteQuestion(Q.provenance),
   ].join(" ");
   const relectureSecondes = 45; // récapitulatif
-  const clics = 8 /* profil */ + 2 /* région, liste */ + 5 + 3 /* choix et réordonnancement */ + 3 /* facultatives */ + 4 /* continuer */ + 1;
+  const clics =
+    8 /* profil */ +
+    2 /* région, liste */ +
+    5 +
+    3 /* choix et réordonnancement */ +
+    3 /* facultatives */ +
+    4 /* continuer */ +
+    1;
   return (mots(lecture) / 200) * 60 + relectureSecondes + clics * 2;
 }
 
@@ -30,7 +57,9 @@ describe("durée affichée", () => {
   it("correspond au parcours chronométré, arrondi à la minute supérieure", () => {
     const secondes = dureeParcoursSecondes();
     const minutes = Math.ceil(secondes / 60);
-    console.info(`Parcours chronométré : ${Math.round(secondes)} s, soit ${minutes} minutes affichées`);
+    console.info(
+      `Parcours chronométré : ${Math.round(secondes)} s, soit ${minutes} minutes affichées`,
+    );
     expect(DUREE_CONSULTATION_MINUTES).toBe(minutes);
   });
 });

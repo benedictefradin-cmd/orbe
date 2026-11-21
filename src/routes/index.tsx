@@ -204,7 +204,7 @@ function Accueil() {
                   id={e.ancre}
                   className={`carte flex flex-col gap-2 ${i === CALENDRIER.etapes.length - 1 ? "carte-accent" : ""}`}
                 >
-                  <p className="font-display text-lg font-bold capitalize text-primaire">
+                  <p className="font-display text-lg font-bold first-letter:uppercase text-primaire">
                     {e.quand}
                   </p>
                   <p>{e.texte}</p>

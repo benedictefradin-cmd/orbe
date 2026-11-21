@@ -32,7 +32,15 @@ export async function verifierEnvoi(
 /** Adresse IP du client, uniquement pour calculer une empreinte salée. */
 export function adresseClient(headers: Headers): string {
   const transmise = headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  return headers.get("cf-connecting-ip") ?? headers.get("x-real-ip") ?? transmise ?? "inconnue";
+  // En-têtes posés par l'hébergeur en priorité (Cloudflare, Vercel, Netlify), puis X-Forwarded-For.
+  return (
+    headers.get("cf-connecting-ip") ??
+    headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ??
+    headers.get("x-nf-client-connection-ip") ??
+    headers.get("x-real-ip") ??
+    transmise ??
+    "inconnue"
+  );
 }
 
 /** Quota de 10 envois par heure et par adresse, sur une empreinte conservée 24 h. */

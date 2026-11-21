@@ -101,6 +101,7 @@
   }
   a {
     color: var(--accent);
+    text-decoration-line: underline;
     text-underline-offset: 3px;
   }
   a:hover {
@@ -287,6 +288,7 @@
   min-height: 72px;
 }
 .logos {
+  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 10px;

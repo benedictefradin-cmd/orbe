@@ -19,6 +19,7 @@ import { mesureParId } from "@/lib/mesures";
 import { getRequestOrigin } from "@/lib/origin.functions";
 import { envoyerConsultation, getEtatSite, getJetonFormulaire } from "@/lib/site.functions";
 import { metaPage } from "@/lib/partage";
+import { usePret } from "@/lib/use-pret";
 
 export const Route = createFileRoute("/consultation")({
   loader: async () => {
@@ -118,6 +119,7 @@ function PageConsultation() {
 function Formulaire({ onEnvoye }: { onEnvoye: () => void }) {
   const obtenirJeton = useServerFn(getJetonFormulaire);
   const envoyer = useServerFn(envoyerConsultation);
+  const pret = usePret();
   const [etape, setEtape] = useState(0);
   const [d, setD] = useState<Donnees>(VIDE);
   const [erreurs, setErreurs] = useState<Record<string, string>>({});
@@ -226,6 +228,7 @@ function Formulaire({ onEnvoye }: { onEnvoye: () => void }) {
 
       <form
         noValidate
+        method="post"
         onSubmit={(e) => {
           e.preventDefault();
           if (etape < 3) suivant();
@@ -434,7 +437,7 @@ function Formulaire({ onEnvoye }: { onEnvoye: () => void }) {
             <span />
           )}
           {etape < 3 ? (
-            <button type="submit" className="bouton bouton-plein">
+            <button type="submit" className="bouton bouton-plein" disabled={!pret}>
               {CONSULTATION.suivant}
               <ArrowRight size={18} aria-hidden="true" />
             </button>
@@ -442,7 +445,7 @@ function Formulaire({ onEnvoye }: { onEnvoye: () => void }) {
             <button
               type="submit"
               className="bouton bouton-plein"
-              disabled={envoi}
+              disabled={envoi || !pret}
               aria-busy={envoi}
             >
               {envoi ? CONSULTATION.envoi : CONSULTATION.valider}
@@ -566,7 +569,7 @@ function Merci({ inscriptionsOuvertes }: { inscriptionsOuvertes: boolean }) {
     <div className="flex flex-col gap-6">
       <div className="carte carte-accent">
         <CheckCircle2 size={40} className="text-accent" aria-hidden="true" />
-        <h1 ref={titre} tabIndex={-1} className="titre-section mt-3 outline-none" role="status">
+        <h1 ref={titre} tabIndex={-1} className="titre-section mt-3 outline-none">
           {CONSULTATION.merci}
         </h1>
       </div>

@@ -218,7 +218,7 @@ export const AIDE = {
 export const FAQ = [
   {
     q: "Mes réponses sont elles anonymes ?",
-    r: "Oui. La consultation ne demande ni nom, ni email, ni code postal. Nous ne conservons ni votre adresse IP ni l'heure de votre réponse, seulement le jour. Les questions sur votre profil proposent toutes « Je préfère ne pas répondre ».",
+    r: "Oui. La consultation ne demande ni nom, ni email, ni code postal. Nous ne conservons ni votre adresse IP ni l'heure de votre réponse, seulement le jour. Les questions sur votre profil proposent toutes « Je préfère ne pas répondre ».",
   },
   {
     q: "Combien de temps faut il ?",
@@ -261,7 +261,7 @@ export const CONSULTATION = {
   anonymat: "Cette consultation est anonyme. Nous ne vous demandons ni nom ni email.",
   etapes: ["Qui êtes vous", "Vos priorités", "Pour aller plus loin", "Récapitulatif"],
   profilIntro:
-    "Ces questions nous aident à savoir qui a répondu. Chacune propose « Je préfère ne pas répondre ».",
+    "Ces questions nous aident à savoir qui a répondu. Chacune propose « Je préfère ne pas répondre ».",
   priorites: {
     intro: "Parmi ces 24 mesures, choisissez les 5 qui comptent le plus pour vous, dans l'ordre.",
     aide: "Touchez une mesure pour l'ajouter à votre classement. Vous pouvez ensuite changer l'ordre ou retirer une mesure.",
