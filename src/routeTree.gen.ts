@@ -15,6 +15,7 @@ import { Route as AteliersRouteImport } from './routes/ateliers'
 import { Route as ConsultationRouteImport } from './routes/consultation'
 import { Route as DonneesPersonnellesRouteImport } from './routes/donnees-personnelles'
 import { Route as AnnulerJetonRouteImport } from './routes/annuler.$jeton'
+import { Route as ApiMaintienRouteImport } from './routes/api.maintien'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const AnnulerJetonRoute = AnnulerJetonRouteImport.update({
   path: '/annuler/$jeton',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMaintienRoute = ApiMaintienRouteImport.update({
+  id: '/api/maintien',
+  path: '/api/maintien',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/consultation': typeof ConsultationRoute
   '/donnees-personnelles': typeof DonneesPersonnellesRoute
   '/annuler/$jeton': typeof AnnulerJetonRoute
+  '/api/maintien': typeof ApiMaintienRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/consultation': typeof ConsultationRoute
   '/donnees-personnelles': typeof DonneesPersonnellesRoute
   '/annuler/$jeton': typeof AnnulerJetonRoute
+  '/api/maintien': typeof ApiMaintienRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/consultation': typeof ConsultationRoute
   '/donnees-personnelles': typeof DonneesPersonnellesRoute
   '/annuler/$jeton': typeof AnnulerJetonRoute
+  '/api/maintien': typeof ApiMaintienRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/consultation'
     | '/donnees-personnelles'
     | '/annuler/$jeton'
+    | '/api/maintien'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/consultation'
     | '/donnees-personnelles'
     | '/annuler/$jeton'
+    | '/api/maintien'
   id:
     | '__root__'
     | '/'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/consultation'
     | '/donnees-personnelles'
     | '/annuler/$jeton'
+    | '/api/maintien'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +118,7 @@ export interface RootRouteChildren {
   ConsultationRoute: typeof ConsultationRoute
   DonneesPersonnellesRoute: typeof DonneesPersonnellesRoute
   AnnulerJetonRoute: typeof AnnulerJetonRoute
+  ApiMaintienRoute: typeof ApiMaintienRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -152,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnnulerJetonRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/maintien': {
+      id: '/api/maintien'
+      path: '/api/maintien'
+      fullPath: '/api/maintien'
+      preLoaderRoute: typeof ApiMaintienRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -162,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConsultationRoute: ConsultationRoute,
   DonneesPersonnellesRoute: DonneesPersonnellesRoute,
   AnnulerJetonRoute: AnnulerJetonRoute,
+  ApiMaintienRoute: ApiMaintienRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

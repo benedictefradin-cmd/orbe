@@ -1,10 +1,13 @@
-/** Pages publiques indexables. Administration, annulation et page de capture jamais indexées. */
+/** Pages publiques indexables. Administration, annulation, page de capture et routes techniques jamais indexées. */
 export const ROBOTS_PRIVE = "noindex, nofollow, noarchive";
 export const ROBOTS_PUBLIC = "index, follow";
 
 export function estPrive(chemin: string): boolean {
   return (
-    chemin.startsWith("/admin") || chemin.startsWith("/annuler") || chemin.startsWith("/partage")
+    chemin.startsWith("/admin") ||
+    chemin.startsWith("/annuler") ||
+    chemin.startsWith("/partage") ||
+    chemin.startsWith("/api")
   );
 }
 

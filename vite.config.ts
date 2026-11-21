@@ -12,7 +12,10 @@ export default defineConfig({
   plugins: [
     tsConfigPaths(),
     tanstackStart({ server: { entry: "server" } }),
-    nitro(),
+    nitro({
+      // Tâche quotidienne Vercel : sollicite la base pour que Supabase ne mette pas le projet gratuit en pause.
+      vercel: { config: { version: 3, crons: [{ path: "/api/maintien", schedule: "0 5 * * *" }] } },
+    }),
     viteReact(),
     tailwindcss(),
   ],

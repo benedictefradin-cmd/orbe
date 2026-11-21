@@ -60,6 +60,16 @@ export async function lirePlaces(): Promise<Place[]> {
   }));
 }
 
+/**
+ * Appelée chaque jour par la tâche Vercel. Écrit réellement en base (mise à jour des ateliers, purge des
+ * empreintes expirées) car Supabase met en pause un projet gratuit dont la base reste peu sollicitée 7 jours.
+ */
+export async function entretenirBase(): Promise<number> {
+  await synchroniserAteliers(true);
+  await rpc("purger_donnees_ateliers", { _a_partir_du: SUPPRESSION_DES_DONNEES_ATELIERS });
+  return (await lirePlaces()).length;
+}
+
 export async function etatSite(now: Date, avecPlaces = true): Promise<EtatSite> {
   return {
     maintenant: now.toISOString(),
