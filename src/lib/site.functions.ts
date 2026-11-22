@@ -16,6 +16,12 @@ export const getEtatSite = createServerFn({ method: "GET" }).handler(async () =>
   }
 });
 
+/** Résultats agrégés, null tant que RESULTATS_PUBLICS est faux (la page répond alors 404). */
+export const getResultatsPublics = createServerFn({ method: "GET" }).handler(async () => {
+  const { lireResultatsPublics } = await import("@/lib/server/services.server");
+  return lireResultatsPublics();
+});
+
 export const getJetonFormulaire = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) =>
     z.object({ formulaire: z.enum(["consultation", "inscription", "suite"]) }).parse(input),

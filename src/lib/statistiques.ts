@@ -1,5 +1,13 @@
 /** Calculs du tableau de bord, purs et testables. */
-import { ATELIERS, jourParis } from "@/lib/config";
+import {
+  ATELIERS,
+  COMPTEUR_ACTIF,
+  jourParis,
+  NOMBRE_MESURES_A_CLASSER,
+  SEUIL_COMPTEUR,
+  SEUIL_DIFFUSION,
+} from "@/lib/config";
+import { agregerClassement } from "@/lib/mesures";
 import type { InscriptionAdmin, ReponseAdmin } from "@/lib/server/services.server";
 
 export function parJour(jours: readonly string[]): { jour: string; n: number }[] {
@@ -60,5 +68,84 @@ export function statsConsultation(reponses: readonly ReponseAdmin[], aujourdhui:
     duJour: reponses.filter((r) => r.jour === aujourdhui).length,
     parJour: parJour(reponses.map((r) => r.jour)),
     mesuresManquantes: reponses.map((r) => r.mesure_manquante).filter((t): t is string => !!t),
+  };
+}
+
+/* ───────────── Seuils de diffusion ───────────── */
+
+/** Vrai si un effectif doit être masqué : entre 1 et le seuil exclu. Zéro ne révèle personne. */
+export function aMasquer(n: number, seuil = SEUIL_DIFFUSION): boolean {
+  return n > 0 && n < seuil;
+}
+
+/** Nombre public de réponses : rien sous le seuil, arrondi à la dizaine inférieure au delà. */
+export function compteurPublic(n: number): number | null {
+  if (!COMPTEUR_ACTIF || !Number.isFinite(n) || n < SEUIL_COMPTEUR) return null;
+  return Math.floor(n / 10) * 10;
+}
+
+/** Rang affiché à la personne qui vient de répondre, seulement si le compteur public est affiché. */
+export function rangPublic(rang: number | null | undefined): number | null {
+  if (!COMPTEUR_ACTIF || !rang || rang < SEUIL_COMPTEUR) return null;
+  return rang;
+}
+
+/* ───────────── Résultats publics (agrégats seulement) ───────────── */
+
+export type LigneResultat = {
+  id: string;
+  axe: string;
+  texte: string;
+  rang: number;
+  exAequo: boolean;
+  /** Points de Borda, null si masqué. */
+  points: number | null;
+  /** Part des personnes qui ont retenu la mesure (0 à 1), null si masquée. */
+  part: number | null;
+  /** Retenues moins rejets, sur les seules réponses qui ont vu la question des rejets, null si masqué. */
+  net: number | null;
+};
+export type ResultatsPublics = {
+  /** Nombre de réponses arrondi à la dizaine inférieure. */
+  total: number;
+  lignes: LigneResultat[];
+};
+
+/** Agrégats publiables. Rien sous le seuil de diffusion, et chaque case de moins de 10 réponses masquée. */
+export function resultatsPublics(
+  reponses: readonly Pick<ReponseAdmin, "classement" | "mesures_rejetees">[],
+): ResultatsPublics | null {
+  if (reponses.length < SEUIL_DIFFUSION) return null;
+  const n = NOMBRE_MESURES_A_CLASSER;
+  const tout = agregerClassement(
+    reponses.map((r) => r.classement),
+    n,
+  );
+  const v2 = reponses.filter((r) => r.mesures_rejetees !== null);
+  const net = new Map(
+    agregerClassement(
+      v2.map((r) => r.classement),
+      n,
+      v2.map((r) => r.mesures_rejetees ?? []),
+    ).map((l) => [l.mesure.id, l]),
+  );
+  return {
+    total: Math.floor(reponses.length / 10) * 10,
+    lignes: tout.map((l) => {
+      const masque = aMasquer(l.selections);
+      const n2 = net.get(l.mesure.id)!;
+      const netMasque =
+        v2.length < SEUIL_DIFFUSION || aMasquer(n2.selections) || aMasquer(n2.rejets);
+      return {
+        id: l.mesure.id,
+        axe: l.mesure.axe,
+        texte: l.mesure.texte,
+        rang: l.rang,
+        exAequo: l.exAequo,
+        points: masque ? null : l.points,
+        part: masque ? null : l.selections / reponses.length,
+        net: netMasque ? null : n2.net,
+      };
+    }),
   };
 }

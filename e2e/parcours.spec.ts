@@ -45,6 +45,15 @@ test.describe("parcours complets", () => {
       type: "durée machine",
       description: `${Math.round(duree / 1000)} s, dont 21 s d'attente anti robots`,
     });
+    // Écran de fin : rappel des priorités, suite de la démarche, aide, ateliers, partage.
+    await expect(page.getByRole("heading", { name: "Vos 5 priorités" })).toBeVisible();
+    await expect(
+      page.getByRole("region", { name: "Vos 5 priorités" }).getByRole("listitem"),
+    ).toHaveCount(5);
+    await expect(page.getByRole("heading", { name: "Et maintenant" })).toBeVisible();
+    await expect(page.getByText(/Vous êtes la \d+e personne/)).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /Appeler le 119/ }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: /Appeler le 116 006/ }).first()).toBeVisible();
     await expect(
       page.getByRole("heading", {
         name: "Allez plus loin : rejoignez un atelier de réflexion en décembre",
@@ -134,6 +143,28 @@ test.describe("navigation au clavier", () => {
     await tabJusqua(page, continuer);
     await page.keyboard.press("Enter");
     await expect(page.getByRole("alert").first()).toBeFocused();
+  });
+});
+
+test.describe("redevabilité", () => {
+  test("la méthode est accessible depuis la consultation", async ({ page }) => {
+    await page.goto("/consultation");
+    await pagePrete(page, "Continuer");
+    await page.getByRole("link", { name: "Comment vos réponses sont analysées" }).click();
+    await expect(page).toHaveURL(/\/methode$/);
+    await expect(
+      page.getByRole("heading", { name: "La méthode de la consultation", level: 1 }),
+    ).toBeVisible();
+    await expect(page.getByText(/méthode de Borda/)).toBeVisible();
+    await expect(page.getByText(/pas un échantillon représentatif/)).toBeVisible();
+  });
+
+  test("les résultats ne sont pas publics tant que le réglage est désactivé", async ({
+    request,
+  }) => {
+    const r = await request.get("/resultats");
+    expect(r.status()).toBe(404);
+    expect(await r.text()).not.toContain("Les résultats de la consultation");
   });
 });
 
@@ -296,6 +327,7 @@ test.describe("mise en page et accessibilité", () => {
         "/consultation",
         "/ateliers",
         "/donnees-personnelles",
+        "/methode",
         "/admin",
       ]) {
         await page.goto(chemin);
@@ -312,6 +344,7 @@ test.describe("mise en page et accessibilité", () => {
       "/consultation",
       "/ateliers",
       "/donnees-personnelles",
+      "/methode",
     ]) {
       await page.goto(chemin);
       await page.waitForLoadState("networkidle");

@@ -3,6 +3,7 @@ import { creerJeton } from "@/lib/server/anti-robot.server";
 import {
   annulerInscription,
   donneesAdmin,
+  etatSite,
   enregistrerConsultation,
   enregistrerContactSuite,
   enregistrerInscription,
@@ -13,10 +14,23 @@ import { tableauContactsSuite, tableauInscriptions, tableauReponses, versCsv } f
 import { COOKIE_PARTICIPATION, cookieParticipation } from "@/lib/server/participation.server";
 import { statsAteliers, adressesInscrits } from "@/lib/statistiques";
 import { CAPACITE_PAR_ATELIER } from "@/lib/config";
+import { rpc } from "@/lib/server/db.server";
 import { nouvelleBase } from "./base-de-test";
 import { inscriptionValide, reponseValide } from "./validation.test";
 
 const AVANT = new Date("2026-11-25T10:00:00+01:00");
+const reponseSqlServeur = {
+  jour: "2026-11-25",
+  age: "25-34",
+  genre: "nsp",
+  region: "idf",
+  lieu_vie: "rural",
+  situation: "emploi",
+  parent: "oui",
+  liens_enfance: ["sante"],
+  lien_sujet: [],
+  classement: ["m03", "m01", "m24", "m07", "m10"],
+};
 const headers = (ip = "203.0.113.7") => new Headers({ "x-forwarded-for": ip });
 const vieux = (f: string) => creerJeton(f, Date.now() - 21_000);
 const personne = (n: number, ateliers = ["atelier-1"]) => ({
@@ -46,7 +60,7 @@ describe("parcours côté serveur, sur un vrai Postgres", () => {
         headers(),
         AVANT,
       ),
-    ).toEqual({ ok: true });
+    ).toEqual({ ok: true, rang: null });
     const r = await enregistrerInscription(
       { ...personne(1), nom: "MARQUEUR_ATELIER", siteWeb: "", jeton: await vieux("inscription") },
       headers(),
@@ -277,6 +291,26 @@ describe("parcours côté serveur, sur un vrai Postgres", () => {
       ordre_affichage: reponseValide.ordreAffichage,
     });
     expect(Object.keys(r!)).not.toContain("consentement_concerne");
+  });
+
+  it("compteur et rang : rien sous 100 réponses, puis le rang à la seule personne qui répond", async () => {
+    const envoi = async (ip: string) =>
+      enregistrerConsultation(
+        { ...reponseValide, siteWeb: "", jeton: await vieux("consultation") },
+        headers(ip),
+        AVANT,
+      );
+    expect(await envoi("192.0.2.10")).toEqual({ ok: true, rang: null });
+    expect((await etatSite(AVANT)).compteur).toBeNull();
+    const r = { ...reponseSqlServeur, version_questionnaire: "v2", ordre_affichage: [] };
+    for (let i = 0; i < 98; i++) await rpc("enregistrer_reponse", { r });
+    expect((await etatSite(AVANT)).compteur).toBeNull();
+    expect(await envoi("192.0.2.11")).toEqual({ ok: true, rang: 100 });
+    expect((await etatSite(AVANT)).compteur).toBe(100);
+    for (let i = 0; i < 9; i++) await rpc("enregistrer_reponse", { r });
+    expect((await etatSite(AVANT)).compteur).toBe(100);
+    expect(await envoi("192.0.2.12")).toEqual({ ok: true, rang: 110 });
+    expect((await etatSite(AVANT)).compteur).toBe(110);
   });
 
   it("garde les emails pour la suite à part, sans doublon et sans lien avec les réponses", async () => {

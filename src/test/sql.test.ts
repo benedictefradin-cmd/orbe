@@ -122,6 +122,16 @@ describe("fonctions SQL", () => {
     expect(Object.keys(r!)).not.toContain("id");
   });
 
+  it("renvoie le rang de chaque réponse et compte les réponses, sans stocker le rang", async () => {
+    const r = { ...reponseSql, version_questionnaire: "v2", ordre_affichage: [] };
+    expect(await rpc("nombre_reponses")).toBe(0);
+    expect(await rpc("enregistrer_reponse", { r })).toEqual({ statut: "ok", rang: 1 });
+    expect(await rpc("enregistrer_reponse", { r })).toEqual({ statut: "ok", rang: 2 });
+    expect(await rpc("nombre_reponses")).toBe(2);
+    const [ligne] = await rpc<Record<string, unknown>[]>("admin_reponses");
+    expect(Object.keys(ligne!)).not.toContain("rang");
+  });
+
   it("refuse une réponse sans version du questionnaire", async () => {
     await expect(rpc("enregistrer_reponse", { r: reponseSql })).rejects.toThrow();
     expect(await rpc("admin_reponses")).toEqual([]);

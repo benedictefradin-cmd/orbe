@@ -15,6 +15,8 @@ import { Route as AteliersRouteImport } from './routes/ateliers'
 import { Route as ConsultationRouteImport } from './routes/consultation'
 import { Route as ContexteRouteImport } from './routes/contexte'
 import { Route as DonneesPersonnellesRouteImport } from './routes/donnees-personnelles'
+import { Route as MethodeRouteImport } from './routes/methode'
+import { Route as ResultatsRouteImport } from './routes/resultats'
 import { Route as AnnulerJetonRouteImport } from './routes/annuler.$jeton'
 import { Route as ApiMaintienRouteImport } from './routes/api.maintien'
 
@@ -48,6 +50,16 @@ const DonneesPersonnellesRoute = DonneesPersonnellesRouteImport.update({
   path: '/donnees-personnelles',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MethodeRoute = MethodeRouteImport.update({
+  id: '/methode',
+  path: '/methode',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResultatsRoute = ResultatsRouteImport.update({
+  id: '/resultats',
+  path: '/resultats',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AnnulerJetonRoute = AnnulerJetonRouteImport.update({
   id: '/annuler/$jeton',
   path: '/annuler/$jeton',
@@ -66,6 +78,8 @@ export interface FileRoutesByFullPath {
   '/consultation': typeof ConsultationRoute
   '/contexte': typeof ContexteRoute
   '/donnees-personnelles': typeof DonneesPersonnellesRoute
+  '/methode': typeof MethodeRoute
+  '/resultats': typeof ResultatsRoute
   '/annuler/$jeton': typeof AnnulerJetonRoute
   '/api/maintien': typeof ApiMaintienRoute
 }
@@ -76,6 +90,8 @@ export interface FileRoutesByTo {
   '/consultation': typeof ConsultationRoute
   '/contexte': typeof ContexteRoute
   '/donnees-personnelles': typeof DonneesPersonnellesRoute
+  '/methode': typeof MethodeRoute
+  '/resultats': typeof ResultatsRoute
   '/annuler/$jeton': typeof AnnulerJetonRoute
   '/api/maintien': typeof ApiMaintienRoute
 }
@@ -87,6 +103,8 @@ export interface FileRoutesById {
   '/consultation': typeof ConsultationRoute
   '/contexte': typeof ContexteRoute
   '/donnees-personnelles': typeof DonneesPersonnellesRoute
+  '/methode': typeof MethodeRoute
+  '/resultats': typeof ResultatsRoute
   '/annuler/$jeton': typeof AnnulerJetonRoute
   '/api/maintien': typeof ApiMaintienRoute
 }
@@ -99,6 +117,8 @@ export interface FileRouteTypes {
     | '/consultation'
     | '/contexte'
     | '/donnees-personnelles'
+    | '/methode'
+    | '/resultats'
     | '/annuler/$jeton'
     | '/api/maintien'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +129,8 @@ export interface FileRouteTypes {
     | '/consultation'
     | '/contexte'
     | '/donnees-personnelles'
+    | '/methode'
+    | '/resultats'
     | '/annuler/$jeton'
     | '/api/maintien'
   id:
@@ -119,6 +141,8 @@ export interface FileRouteTypes {
     | '/consultation'
     | '/contexte'
     | '/donnees-personnelles'
+    | '/methode'
+    | '/resultats'
     | '/annuler/$jeton'
     | '/api/maintien'
   fileRoutesById: FileRoutesById
@@ -130,6 +154,8 @@ export interface RootRouteChildren {
   ConsultationRoute: typeof ConsultationRoute
   ContexteRoute: typeof ContexteRoute
   DonneesPersonnellesRoute: typeof DonneesPersonnellesRoute
+  MethodeRoute: typeof MethodeRoute
+  ResultatsRoute: typeof ResultatsRoute
   AnnulerJetonRoute: typeof AnnulerJetonRoute
   ApiMaintienRoute: typeof ApiMaintienRoute
 }
@@ -178,6 +204,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DonneesPersonnellesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/methode': {
+      id: '/methode'
+      path: '/methode'
+      fullPath: '/methode'
+      preLoaderRoute: typeof MethodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resultats': {
+      id: '/resultats'
+      path: '/resultats'
+      fullPath: '/resultats'
+      preLoaderRoute: typeof ResultatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/annuler/$jeton': {
       id: '/annuler/$jeton'
       path: '/annuler/$jeton'
@@ -202,6 +242,8 @@ const rootRouteChildren: RootRouteChildren = {
   ConsultationRoute: ConsultationRoute,
   ContexteRoute: ContexteRoute,
   DonneesPersonnellesRoute: DonneesPersonnellesRoute,
+  MethodeRoute: MethodeRoute,
+  ResultatsRoute: ResultatsRoute,
   AnnulerJetonRoute: AnnulerJetonRoute,
   ApiMaintienRoute: ApiMaintienRoute,
 }

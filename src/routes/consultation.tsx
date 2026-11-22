@@ -12,7 +12,14 @@ import {
   Texte,
 } from "@/components/champs";
 import { Classement } from "@/components/classement";
-import { CONSULTATION, CRENEAU_1, CRENEAU_2, DATE_LIMITE_INSCRIPTION, SITE } from "@/lib/contenus";
+import {
+  CONSULTATION,
+  CRENEAU_1,
+  CRENEAU_2,
+  DATE_LIMITE_INSCRIPTION,
+  METHODE,
+  SITE,
+} from "@/lib/contenus";
 import { ATELIERS } from "@/lib/config";
 import {
   AGE_MOINS_15,
@@ -258,7 +265,8 @@ function Formulaire({
       const r = await envoyer({
         data: { ...d, ordreAffichage: ordre ?? [], siteWeb: piege, jeton: jeton.current },
       });
-      if (r.ok) return onEnvoye({ classement: d.classement, rang: null });
+      // Écran de fin seulement après la confirmation réelle du serveur.
+      if (r.ok) return onEnvoye({ classement: d.classement, rang: r.rang });
       if ("dejaRepondu" in r && r.dejaRepondu) return onDejaRepondu();
       const e = r.erreurs ?? {};
       const etapeErreur = CHAMPS_ETAPE.findIndex((champs) => champs.some((c) => e[c]));
@@ -291,6 +299,9 @@ function Formulaire({
           <p className="mt-4 font-titre text-xl text-primaire">{CONSULTATION.accroche}</p>
           <p className="mt-4 rounded-lg bg-accent-pale p-4 font-semibold">
             {CONSULTATION.anonymat}
+          </p>
+          <p className="mt-4">
+            <Link to="/methode">{METHODE.lienConsultation}</Link>
           </p>
         </header>
       )}
@@ -711,8 +722,9 @@ function Recapitulatif({ d, allerA }: { d: Donnees; allerA: (n: number) => void 
   );
 }
 
-function Merci({ inscriptionsOuvertes }: { envoi: Envoi; inscriptionsOuvertes: boolean }) {
+function Merci({ envoi, inscriptionsOuvertes }: { envoi: Envoi; inscriptionsOuvertes: boolean }) {
   const titre = useRef<HTMLHeadingElement>(null);
+  const F = CONSULTATION.fin;
   useEffect(() => {
     titre.current?.focus();
     window.scrollTo({ top: 0 });
@@ -724,7 +736,41 @@ function Merci({ inscriptionsOuvertes }: { envoi: Envoi; inscriptionsOuvertes: b
         <h1 ref={titre} tabIndex={-1} className="titre-section mt-3 outline-none">
           {CONSULTATION.merci}
         </h1>
+        {envoi.rang !== null && <p className="mt-3 font-semibold">{F.rang(envoi.rang)}</p>}
       </div>
+      <section className="carte" aria-labelledby="vos-priorites">
+        <h2 id="vos-priorites" className="text-2xl">
+          {F.vosPriorites}
+        </h2>
+        <ol className="mt-4 flex flex-col gap-2">
+          {envoi.classement.map((id, i) => (
+            <li key={id} className="flex gap-3">
+              <span className="rang" aria-hidden="true">
+                {i + 1}
+              </span>
+              <span>
+                <span className="sr-only">{i + 1}, </span>
+                {mesureParId(id)?.texte}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </section>
+      <section className="carte" aria-labelledby="ensuite-titre">
+        <h2 id="ensuite-titre" className="text-2xl">
+          {F.ensuiteTitre}
+        </h2>
+        {F.ensuite.map((t) => (
+          <p key={t} className="texte-long mt-3">
+            {t}
+          </p>
+        ))}
+        {F.resultats && <p className="texte-long mt-3">{F.resultats}</p>}
+        <p className="mt-3">
+          <Link to="/methode">{F.methode}</Link>
+        </p>
+      </section>
+      <BesoinDeParler compact id="aide-fin" />
       {inscriptionsOuvertes && (
         <section className="carte" aria-labelledby="rebond-titre">
           <h2 id="rebond-titre" className="text-2xl">
@@ -732,10 +778,10 @@ function Merci({ inscriptionsOuvertes }: { envoi: Envoi; inscriptionsOuvertes: b
           </h2>
           <ul className="mt-4 flex flex-col gap-1">
             <li>
-              Atelier 1, {ATELIERS[0].titre}, {CRENEAU_1}
+              Atelier 1 : {ATELIERS[0].titre} ({CRENEAU_1})
             </li>
             <li>
-              Atelier 2, {ATELIERS[1].titre}, {CRENEAU_2}
+              Atelier 2 : {ATELIERS[1].titre} ({CRENEAU_2})
             </li>
           </ul>
           <p className="mention mt-3">Inscriptions jusqu'au {DATE_LIMITE_INSCRIPTION} inclus</p>

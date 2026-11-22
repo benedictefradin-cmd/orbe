@@ -67,6 +67,24 @@ export const NOMBRE_MESURES_A_CLASSER = 5;
  */
 export const VERSION_QUESTIONNAIRE = "v2";
 
+/* ───────────── Redevabilité ───────────── */
+
+/** Compteur public des réponses : affiché seulement à partir du seuil, arrondi à la dizaine inférieure. */
+export const COMPTEUR_ACTIF = true;
+export const SEUIL_COMPTEUR = 100;
+
+/** Aucun chiffre portant sur moins de réponses que ce seuil n'est affiché (résultats, tableau de bord). */
+export const SEUIL_DIFFUSION = 10;
+
+/** Date de publication des résultats (AAAA-MM-JJ). Vide tant qu'elle n'est pas décidée : rien ne s'affiche. */
+export const DATE_RESULTATS = "";
+
+/** La page /resultats renvoie une erreur 404 tant que ce réglage vaut false. */
+export const RESULTATS_PUBLICS = false;
+
+/** Suppression des réponses anonymes (AAAA-MM-JJ). Vide tant qu'elle n'est pas décidée (docs/refonte/a-valider.md). */
+export const SUPPRESSION_DES_REPONSES = "";
+
 /** Nombre maximal de mesures que l'on peut signaler comme non soutenues (question facultative). */
 export const MAX_MESURES_REJETEES = 3;
 

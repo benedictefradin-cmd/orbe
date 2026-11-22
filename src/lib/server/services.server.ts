@@ -6,6 +6,7 @@ import {
   inscriptionsOuvertes,
   isClosed,
   jourParis,
+  RESULTATS_PUBLICS,
   SUPPRESSION_DES_DONNEES_ATELIERS,
   VERSION_QUESTIONNAIRE,
 } from "@/lib/config";
@@ -18,6 +19,7 @@ import {
 import { MESSAGES_REFUS, verifierEnvoi, verifierQuota } from "@/lib/server/anti-robot.server";
 import { rpc } from "@/lib/server/db.server";
 import { aDejaRepondu } from "@/lib/server/participation.server";
+import { compteurPublic, rangPublic, resultatsPublics } from "@/lib/statistiques";
 
 export type Place = {
   atelier_id: string;
@@ -31,6 +33,8 @@ export type EtatSite = {
   consultationClose: boolean;
   inscriptionsOuvertes: boolean;
   places: Place[];
+  /** Nombre public de réponses (arrondi), null sous le seuil, compteur inactif ou erreur. */
+  compteur: number | null;
 };
 export type Echec = { ok: false; message: string; erreurs?: Record<string, string> };
 
@@ -74,13 +78,34 @@ export async function entretenirBase(): Promise<number> {
   return (await lirePlaces()).length;
 }
 
+/** Jamais de chiffre de repli : en cas d'erreur, le compteur ne s'affiche pas. */
+export async function lireCompteur(): Promise<number | null> {
+  try {
+    return compteurPublic(Number(await rpc<number>("nombre_reponses")));
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
 export async function etatSite(now: Date, avecPlaces = true): Promise<EtatSite> {
+  const [places, compteur] = await Promise.all([
+    avecPlaces ? lirePlaces() : Promise.resolve([]),
+    avecPlaces ? lireCompteur() : Promise.resolve(null),
+  ]);
   return {
     maintenant: now.toISOString(),
     consultationClose: isClosed(now),
     inscriptionsOuvertes: inscriptionsOuvertes(now),
-    places: avecPlaces ? await lirePlaces() : [],
+    places,
+    compteur,
   };
+}
+
+/** Résultats publics : agrégats seulement, et uniquement quand RESULTATS_PUBLICS est vrai. */
+export async function lireResultatsPublics() {
+  if (!RESULTATS_PUBLICS) return null;
+  return resultatsPublics(await rpc<ReponseAdmin[]>("admin_reponses"));
 }
 
 const ERREUR_TECHNIQUE =
@@ -93,7 +118,7 @@ export async function enregistrerConsultation(
   input: unknown,
   headers: Headers,
   now: Date,
-): Promise<{ ok: true } | (Echec & { dejaRepondu?: true })> {
+): Promise<{ ok: true; rang: number | null } | (Echec & { dejaRepondu?: true })> {
   if (isClosed(now))
     return { ok: false, message: "La consultation est close, merci pour votre intérêt." };
   if (aDejaRepondu(headers)) return { ok: false, message: MESSAGE_DEJA_REPONDU, dejaRepondu: true };
@@ -109,7 +134,7 @@ export async function enregistrerConsultation(
   try {
     if (!(await verifierQuota(headers))) return { ok: false, message: MESSAGES_REFUS.quota };
     const d = v.data;
-    await rpc("enregistrer_reponse", {
+    const r = await rpc<{ statut: string; rang?: number }>("enregistrer_reponse", {
       r: {
         jour: jourParis(now),
         age: d.age,
@@ -130,7 +155,9 @@ export async function enregistrerConsultation(
         mesures_rejetees: d.mesuresRejetees,
       },
     });
-    return { ok: true };
+    if (r.statut !== "ok") return { ok: false, message: ERREUR_TECHNIQUE };
+    // Le rang n'est renvoyé qu'à la personne qui répond, et seulement si le compteur public s'affiche.
+    return { ok: true, rang: rangPublic(r.rang) };
   } catch (e) {
     console.error(e);
     return { ok: false, message: ERREUR_TECHNIQUE };

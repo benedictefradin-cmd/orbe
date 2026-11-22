@@ -270,22 +270,29 @@ export function melanger<T>(liste: readonly T[], aleatoire: () => number = Math.
 
 /**
  * Classement agrégé : points de Borda (1er = N points … Nᵉ = 1 point),
- * rang moyen parmi les personnes qui l'ont retenue, et nombre de fois en tête.
+ * nombre de personnes qui ont retenu la mesure, rang moyen parmi elles, nombre de fois en tête,
+ * nombre de personnes qui ne la soutiennent pas (questionnaire v2) et score net (retenues moins rejets).
+ * Les égalités de points ne sont jamais tranchées : les mesures à égalité partagent le même rang.
  */
 export type LigneClassement = {
   mesure: Mesure;
+  rang: number;
+  exAequo: boolean;
   points: number;
   selections: number;
   rangMoyen: number | null;
   enTete: number;
+  rejets: number;
+  net: number;
 };
 
 export function agregerClassement(
   classements: readonly (readonly string[])[],
   n: number,
+  rejets: readonly (readonly string[])[] = [],
 ): LigneClassement[] {
   const stats = new Map(
-    MESURES.map((m) => [m.id, { points: 0, selections: 0, sommeRangs: 0, enTete: 0 }]),
+    MESURES.map((m) => [m.id, { points: 0, selections: 0, sommeRangs: 0, enTete: 0, rejets: 0 }]),
   );
   for (const c of classements) {
     c.slice(0, n).forEach((id, i) => {
@@ -297,16 +304,37 @@ export function agregerClassement(
       if (i === 0) s.enTete += 1;
     });
   }
-  return MESURES.map((mesure) => {
+  for (const r of rejets)
+    for (const id of new Set(r)) {
+      const s = stats.get(id);
+      if (s) s.rejets += 1;
+    }
+  const lignes = MESURES.map((mesure) => {
     const s = stats.get(mesure.id)!;
     return {
       mesure,
+      rang: 0,
+      exAequo: false,
       points: s.points,
       selections: s.selections,
       rangMoyen: s.selections ? s.sommeRangs / s.selections : null,
       enTete: s.enTete,
+      rejets: s.rejets,
+      net: s.selections - s.rejets,
     };
-  }).sort(
-    (a, b) => b.points - a.points || b.enTete - a.enTete || a.mesure.id.localeCompare(b.mesure.id),
-  );
+  }).sort((a, b) => b.points - a.points || a.mesure.id.localeCompare(b.mesure.id));
+  return avecRangs(lignes, (l) => l.points);
+}
+
+/** Rang de compétition : 1, 2, 2, 4. Une ligne à égalité avec une autre est marquée ex aequo. */
+export function avecRangs<T extends { rang: number; exAequo: boolean }>(
+  triees: T[],
+  valeur: (x: T) => number,
+): T[] {
+  triees.forEach((l, i) => {
+    const precedente = triees[i - 1];
+    l.rang = precedente && valeur(precedente) === valeur(l) ? precedente.rang : i + 1;
+  });
+  for (const l of triees) l.exAequo = triees.some((x) => x !== l && x.rang === l.rang);
+  return triees;
 }

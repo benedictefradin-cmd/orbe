@@ -68,3 +68,22 @@ Fichier : `src/lib/formulaires.ts` (`Q.lienSujet`, `Q.consentementConcerne`). Li
 - [ ] **Base légale du traitement pour les 15 à 17 ans.** L'article 8 du règlement (UE) 2016/679 (RGPD) et l'article 45 de la loi n° 78‑17 du 6 janvier 1978 fixent en France à 15 ans l'âge à partir duquel une personne mineure peut consentir seule à un traitement de ses données dans le cadre des services de la société de l'information. Vérifier que cela couvre la consultation, en particulier la réponse « personne concernée » (donnée sensible, article 9 du RGPD).
 - [ ] **Moins de 15 ans.** Le site affiche un message bienveillant avec le 119 et n'enregistre rien (vérifié côté serveur). Texte dans `CONSULTATION.moins15` (`src/lib/contenus.ts`), à relire.
 - [ ] La mention « Ouvert à partir de 15 ans » s'affiche dans l'introduction de la consultation.
+
+## Lot C · Redevabilité
+
+### C1. Textes provisoires
+
+- [ ] **Page `/methode`** (`METHODE` dans `src/lib/contenus.ts`). En particulier : qui a choisi les 24 mesures (le site dit « l'Institut Rousseau et l'association Face à l'inceste »), la relecture des textes libres avant citation (qui relit, et selon quelle règle), le traitement des réponses identiques.
+- [ ] **Écran de fin** (`CONSULTATION.fin`). Le site dit que la synthèse sera présentée aux candidates et candidats lors du débat organisé par l'Institut Rousseau en février 2027 (repris de la page contexte).
+- [ ] **Date de publication des résultats.** `DATE_RESULTATS` est vide dans `src/lib/config.ts`. Rien ne s'affiche tant qu'elle n'est pas renseignée.
+- [ ] **Page `/resultats`.** Fermée (404) tant que `RESULTATS_PUBLICS = false`. À ouvrir seulement après la clôture, pour ne pas influencer les réponses.
+- [ ] **Compteur.** `COMPTEUR_ACTIF = true`, seuil de 100 réponses, arrondi à la dizaine inférieure. Le rang personnel (« Vous êtes la 342e personne à répondre ») suit le même réglage.
+
+### C2. Page données personnelles (ajouts à valider)
+
+Fichier : `DONNEES` dans `src/lib/contenus.ts`.
+
+- [ ] **Base légale.** Texte provisoire : le traitement repose sur le consentement. La réponse « personne concernée » repose sur un accord explicite (case à cocher), puisqu'il s'agit d'une donnée sensible (article 9 du RGPD). À confirmer par la personne en charge des données.
+- [ ] **Durée de conservation des réponses anonymes.** `SUPPRESSION_DES_REPONSES` est vide dans `src/lib/config.ts`. En attendant, le site dit que la date sera indiquée dès qu'elle sera fixée. Proposition à arbitrer : une date après la remise de la synthèse (par exemple fin 2027).
+- [ ] **Réponse « personne concernée ».** Nouveau paragraphe : facultative, enregistrée seulement avec l'accord, jamais publiée pour un groupe de moins de 10 personnes.
+- [ ] **Impossible de retrouver une réponse.** Paragraphe renforcé dans « Vos droits » : une réponse ne peut être ni retrouvée, ni modifiée, ni supprimée, car rien ne la relie à la personne.

@@ -18,6 +18,11 @@ import {
   RESTITUTION_ATELIERS,
   SUPPRESSION_DES_DONNEES_ATELIERS,
   RESPONSABLE_DES_DONNEES,
+  DATE_RESULTATS,
+  SEUIL_COMPTEUR,
+  SEUIL_DIFFUSION,
+  SUPPRESSION_DES_REPONSES,
+  NOMBRE_MESURES_A_CLASSER,
 } from "@/lib/config";
 
 /** Durée d'un parcours complet, mesurée par src/test/duree.test.ts (arrondie à la minute supérieure). */
@@ -352,6 +357,21 @@ export const CONSULTATION = {
     "La consultation est close. Merci pour votre participation. La synthèse sera présentée en février 2027.",
   merci:
     "Merci. Vos réponses sont bien enregistrées. Inscrivez vous aux ateliers pour en discuter.",
+  /** Écran de fin, affiché uniquement après la confirmation du serveur. */
+  fin: {
+    vosPriorites: "Vos 5 priorités",
+    rang: (n: number) => `Vous êtes la ${n.toLocaleString("fr-FR")}e personne à répondre.`,
+    ensuiteTitre: "Et maintenant",
+    ensuite: [
+      `La consultation reste ouverte jusqu'au ${DATE_FIN_CONSULTATION}.`,
+      `L'Institut Rousseau et Face à l'inceste rassemblent ensuite toutes les réponses dans une synthèse. Elle sera présentée aux candidates et candidats à la présidentielle lors du débat organisé par l'Institut Rousseau en ${DEBAT}.`,
+    ],
+    /** Affiché seulement si DATE_RESULTATS est renseignée dans config.ts. */
+    resultats: DATE_RESULTATS
+      ? `Les résultats seront publiés le ${formaterJour(DATE_RESULTATS, true)}.`
+      : "",
+    methode: "Comment les réponses sont analysées",
+  },
   rebondTitre: "Allez plus loin : rejoignez un atelier de réflexion en décembre",
   rebondBouton: "Je découvre les ateliers",
   dejaRepondu: {
@@ -414,6 +434,95 @@ export const ANNULATION = {
   perdu: "Un empêchement et plus de lien ? Écrivez nous et nous annulerons pour vous.",
 };
 
+/** Compteur public, affiché seulement au dessus du seuil (voir config.ts). */
+export const COMPTEUR = {
+  texte: (n: number) => `Plus de ${n.toLocaleString("fr-FR")} personnes ont déjà répondu`,
+};
+
+/* ───────────── Méthode (textes provisoires, docs/refonte/a-valider.md) ───────────── */
+
+export const METHODE = {
+  titre: "La méthode de la consultation",
+  lienPied: "Méthode",
+  lienConsultation: "Comment vos réponses sont analysées",
+  retour: "Retour à la consultation",
+  intro:
+    "Cette page explique d'où viennent les 24 mesures et comment les réponses sont comptées. Elle sera complétée si la méthode évolue.",
+  sections: [
+    {
+      titre: "D'où viennent les 24 mesures",
+      textes: [
+        "Les 24 mesures ont été choisies par l'Institut Rousseau et l'association Face à l'inceste.",
+        "Elles reprennent des préconisations du rapport de la CIIVISE (novembre 2023), des propositions de Face à l'inceste et des propositions issues des travaux d'une commission de l'Assemblée nationale. Les sources de chaque mesure sont indiquées sous son texte.",
+        "Vous pouvez aussi proposer une mesure qui manque. Toutes les propositions sont lues.",
+      ],
+    },
+    {
+      titre: "Comment les résultats sont calculés",
+      textes: [
+        `Chaque personne classe ${NOMBRE_MESURES_A_CLASSER} mesures. Une mesure classée en première position reçoit 5 points. La deuxième reçoit 4 points et ainsi de suite jusqu'à la cinquième (1 point). Les points de toutes les réponses sont additionnés (méthode de Borda).`,
+        "Pour chaque mesure, nous indiquons aussi la part des personnes qui l'ont retenue dans leurs 5 priorités.",
+        "Vous pouvez signaler jusqu'à 3 mesures que vous ne soutenez pas. Le score net d'une mesure est le nombre de personnes qui l'ont retenue moins le nombre de personnes qui ne la soutiennent pas. Cette question a été ajoutée en cours de consultation. Le score net ne porte que sur les réponses qui l'ont vue.",
+        "Deux mesures à égalité de points partagent le même rang. Aucune n'est avantagée.",
+      ],
+    },
+    {
+      titre: "Qui a répondu",
+      textes: [
+        "Les personnes qui répondent ne forment pas un échantillon représentatif de la population. Les résultats disent ce que pensent les personnes qui ont choisi de participer. Ce n'est pas un sondage.",
+        "Les questions sur votre profil servent à décrire qui a répondu. Elles proposent toutes « Je préfère ne pas répondre ».",
+      ],
+    },
+    {
+      titre: "Un ordre tiré au hasard",
+      textes: [
+        "Les 24 mesures s'affichent dans un ordre tiré au hasard pour chaque personne. Aucune mesure n'est avantagée par sa place dans la liste.",
+        "Cet ordre est enregistré avec la réponse. Il permet de vérifier qu'il n'a pas pesé sur les choix.",
+        "Les mesures en tête ne sont jamais affichées pendant la consultation, pour ne pas influencer les réponses.",
+      ],
+    },
+    {
+      titre: "Les réponses en double",
+      textes: [
+        "La consultation accepte une seule réponse par navigateur. Un cookie technique, sans identifiant, le vérifie.",
+        "Les réponses strictement identiques sont repérées. Les résultats sont calculés avec et sans elles.",
+      ],
+    },
+    {
+      titre: "Les textes libres",
+      textes: [
+        "Les propositions écrites librement sont relues avant toute citation. Tout élément qui pourrait permettre de reconnaître une personne est retiré.",
+      ],
+    },
+    {
+      titre: "Ce qui est publié",
+      textes: [
+        `Aucun chiffre portant sur moins de ${SEUIL_DIFFUSION} réponses n'est publié.`,
+        `Le nombre de réponses n'est affiché qu'à partir de ${SEUIL_COMPTEUR} réponses. Il est arrondi à la dizaine inférieure.`,
+      ],
+    },
+  ],
+};
+
+/* ───────────── Résultats (page fermée tant que RESULTATS_PUBLICS est faux) ───────────── */
+
+export const RESULTATS = {
+  titre: "Les résultats de la consultation",
+  total: (n: number) => `Plus de ${n.toLocaleString("fr-FR")} réponses`,
+  avertissement:
+    "Les personnes qui ont répondu ne forment pas un échantillon représentatif. Les cases de moins de 10 réponses sont masquées.",
+  colonnes: {
+    rang: "Rang",
+    mesure: "Mesure",
+    points: "Points",
+    part: "Retenue par",
+    net: "Score net",
+  },
+  exAequo: "ex aequo",
+  masque: "Moins de 10",
+  methode: "Comprendre le calcul",
+};
+
 export const PARTAGE = {
   titre: "Faites circuler",
   texte: "Plus nous serons nombreux, plus ces propositions pèseront auprès des candidats.",
@@ -447,6 +556,20 @@ export const DONNEES = {
       ],
     },
     {
+      titre: "Sur quelle base",
+      texte: [
+        "Vous répondez à la consultation et vous vous inscrivez aux ateliers de votre plein gré. Le traitement repose sur votre consentement.",
+        "La consultation est ouverte à partir de 15 ans. Aucune réponse n'est enregistrée pour une personne de moins de 15 ans.",
+      ],
+    },
+    {
+      titre: "La réponse « personne concernée »",
+      texte: [
+        "Indiquer que vous avez subi des violences sexuelles dans l'enfance est facultatif. Cette information est sensible. Elle n'est enregistrée que si vous cochez la case d'accord qui apparaît à côté. Sans cet accord, rien n'est enregistré.",
+        "Elle sert uniquement aux statistiques de la synthèse. Elle n'est jamais publiée pour un groupe de moins de 10 personnes.",
+      ],
+    },
+    {
       titre: "Qui y a accès",
       texte: [
         "Uniquement l'Institut Rousseau et Face à l'inceste. Rien n'est vendu ni transmis à d'autres.",
@@ -456,7 +579,9 @@ export const DONNEES = {
       titre: "Combien de temps",
       texte: [
         `Les inscriptions aux ateliers et les emails laissés pour connaître la suite sont supprimés le ${formaterJour(SUPPRESSION_DES_DONNEES_ATELIERS, true)}. Les consentements aux actualités transmis avant cette date restent gérés par chaque structure. Vous pouvez vous désinscrire à tout moment.`,
-        "Les réponses anonymes à la consultation sont conservées pour l'analyse.",
+        SUPPRESSION_DES_REPONSES
+          ? `Les réponses anonymes à la consultation sont conservées pour l'analyse. Elles sont supprimées le ${formaterJour(SUPPRESSION_DES_REPONSES, true)}.`
+          : "Les réponses anonymes à la consultation sont conservées pour l'analyse. La date de leur suppression sera indiquée ici dès qu'elle sera fixée.",
         "Une empreinte chiffrée de votre adresse IP est gardée 24 heures pour limiter les envois automatiques. Elle est stockée à part et jamais reliée à vos réponses.",
       ],
     },
@@ -464,7 +589,7 @@ export const DONNEES = {
       titre: "Vos droits",
       texte: [
         "Vous pouvez accéder à vos données, les corriger, les supprimer ou vous opposer à leur usage. Vous pouvez aussi saisir la CNIL.",
-        "Les réponses à la consultation sont anonymes. Nous ne pouvons donc pas retrouver celle d'une personne.",
+        "Les réponses à la consultation sont anonymes. Rien ne relie une réponse à la personne qui l'a envoyée. Nous ne pouvons donc ni la retrouver, ni la modifier, ni la supprimer à votre demande.",
       ],
     },
     {
