@@ -81,7 +81,7 @@ export async function parcoursConsultation(page: Page, mesureManquante = "") {
   await expect(page.getByText("4 étapes. Environ 7 minutes. Anonyme.")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Vos priorités", level: 2 })).toBeVisible();
   await choisirMesures(page);
-  await expect(page.getByText("Vos 5 mesures sont choisies.")).toBeVisible();
+  await expect(page.getByText("Vos 5 priorités sont prêtes.")).toBeVisible();
   await page.getByRole("button", { name: "Continuer" }).click();
   await expect(page.getByRole("heading", { name: "Vos idées", level: 2 })).toBeFocused();
   if (mesureManquante)
@@ -101,9 +101,9 @@ export async function parcoursConsultation(page: Page, mesureManquante = "") {
   await page.getByRole("button", { name: "Continuer" }).click();
   await expect(page.getByRole("heading", { name: "Relecture", level: 2 })).toBeVisible();
   await attendreDelaiMinimum(page, ouvertLe);
-  await page.getByRole("button", { name: "Je valide mes réponses" }).click();
+  await page.getByRole("button", { name: "J'envoie mes réponses" }).click();
   await expect(
-    page.getByRole("heading", { name: "Merci. Vos réponses sont bien enregistrées." }),
+    page.getByRole("heading", { name: "Merci. Votre voix est enregistrée." }),
   ).toBeVisible();
   return Date.now() - debut;
 }

@@ -15,9 +15,9 @@ import {
 test.describe("accueil", () => {
   test("trois entrées qui mènent chacune à sa page", async ({ page }) => {
     for (const [nom, chemin] of [
-      ["Les avancées d'hier et les enjeux de demain", "/contexte"],
-      ["Je veux participer à la consultation citoyenne", "/consultation"],
-      ["Je veux participer aux ateliers", "/ateliers"],
+      ["Où en est la loi", "/contexte"],
+      ["Je choisis mes 5 priorités", "/consultation"],
+      ["Je rejoins un atelier", "/ateliers"],
     ] as const) {
       await page.goto("/");
       await page.getByRole("link", { name: nom }).click();
@@ -56,14 +56,14 @@ test.describe("parcours complets", () => {
     await expect(page.getByRole("link", { name: /Appeler le 116 006/ }).first()).toBeVisible();
     await expect(
       page.getByRole("heading", {
-        name: "Allez plus loin : rejoignez un atelier de réflexion en décembre",
+        name: "Envie d'aller plus loin ? Rejoignez un atelier en décembre.",
       }),
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: "Je découvre les ateliers" })).toHaveAttribute(
+    await expect(page.getByRole("link", { name: "Je choisis mon atelier" })).toHaveAttribute(
       "href",
       "/ateliers",
     );
-    await expect(page.getByRole("heading", { name: "Faites circuler" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Invitez une personne de plus" })).toBeVisible();
     await sansDebordement(page);
 
     await page.getByLabel("Votre email").fill(`suite.${Date.now()}@exemple.fr`);
@@ -128,7 +128,7 @@ test.describe("navigation au clavier", () => {
     await page.goto("/");
     await page.keyboard.press("Tab");
     await expect(page.getByRole("link", { name: "Aller au contenu" })).toBeFocused();
-    const cta = page.getByRole("link", { name: "Je veux participer à la consultation citoyenne" });
+    const cta = page.getByRole("link", { name: "Je choisis mes 5 priorités" });
     await tabJusqua(page, cta);
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/\/consultation$/);
@@ -210,7 +210,7 @@ test.describe("questionnaire v2", () => {
       "tel:119",
     );
     await expect(page.getByRole("button", { name: "Continuer" })).toHaveCount(0);
-    await expect(page.getByRole("button", { name: "Je valide mes réponses" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "J'envoie mes réponses" })).toHaveCount(0);
     expect(envois).toBe(0);
   });
 
@@ -249,12 +249,10 @@ test.describe("dates simulées", () => {
       page.getByText("Les inscriptions aux ateliers sont closes. Merci pour votre intérêt."),
     ).toBeVisible();
     // La consultation ferme le même jour que les inscriptions.
-    await expect(page.getByRole("link", { name: "Je réponds à la consultation" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Je choisis mes 5 priorités" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Je m'inscris" })).toHaveCount(0);
     await page.goto("http://localhost:3201/");
-    await expect(page.getByRole("link", { name: "Je veux participer aux ateliers" })).toHaveCount(
-      0,
-    );
+    await expect(page.getByRole("link", { name: "Je rejoins un atelier" })).toHaveCount(0);
     await expect(page.getByText("Inscriptions closes")).toBeVisible();
   });
 
@@ -300,18 +298,16 @@ test.describe("dates simulées", () => {
     await expect(
       page
         .getByText(
-          "La consultation est close. Merci pour votre participation. La synthèse sera présentée en février 2027.",
+          "La consultation est close. Merci à toutes les personnes qui ont répondu. La synthèse sera remise en février 2027.",
         )
         .first(),
     ).toBeVisible();
     await page.goto("http://localhost:3202/");
-    await expect(
-      page.getByRole("link", { name: "Je veux participer à la consultation citoyenne" }),
-    ).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Je choisis mes 5 priorités" })).toHaveCount(0);
     await expect(
       page
         .getByText(
-          "La consultation est close. Merci pour votre participation. La synthèse sera présentée en février 2027.",
+          "La consultation est close. Merci à toutes les personnes qui ont répondu. La synthèse sera remise en février 2027.",
         )
         .first(),
     ).toBeVisible();
