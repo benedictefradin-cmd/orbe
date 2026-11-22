@@ -71,7 +71,7 @@ function PageAnnulation() {
                         </strong>
                         <br />
                         {formaterCreneau(a.debut, a.fin)}
-                        {d.statut === "liste_attente" ? ", liste d'attente" : ""}
+                        {d.statut === "liste_attente" ? " (liste d'attente)" : ""}
                       </li>
                     ) : null;
                   })}

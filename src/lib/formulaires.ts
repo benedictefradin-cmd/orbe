@@ -18,7 +18,7 @@ z.setErrorMap((issue, ctx) => {
       return {
         message:
           issue.type === "string"
-            ? `Ce champ contient trop de caractères, ${String(issue.maximum)} au maximum.`
+            ? `Ce champ contient trop de caractères (${String(issue.maximum)} au maximum).`
             : "Valeur trop grande.",
       };
     case "invalid_string":
@@ -134,9 +134,9 @@ export const Q = {
   },
   lienSujet: {
     libelle: "Votre lien avec le sujet",
-    aide: "Facultatif, plusieurs choix possibles",
+    aide: "Facultatif (plusieurs choix possibles)",
     options: opts([
-      ["connait-victime", "Je connais une personne victime d'inceste"],
+      ["connait-victime", "Je connais une personne victime de violences dans son enfance"],
       ["concerne", "Je suis personnellement concerné"],
       ["aucun", "Aucun lien connu"],
     ]),
@@ -180,12 +180,12 @@ export const Q = {
 /** Profil, chaque question accepte « Je préfère ne pas répondre ». */
 const avecNsp = (o: readonly Option[]) =>
   z.enum([...valeurs([...o]), NE_PAS_REPONDRE.valeur] as [string, ...string[]], {
-    errorMap: () => ({ message: "Choisissez une réponse, ou « Je préfère ne pas répondre »." }),
+    errorMap: () => ({ message: "Choisissez une réponse ou « Je préfère ne pas répondre »." }),
   });
 const multiAvecNsp = (o: readonly Option[]) =>
   z
     .array(z.enum([...valeurs([...o]), NE_PAS_REPONDRE.valeur] as [string, ...string[]]))
-    .min(1, "Choisissez au moins une réponse, ou « Je préfère ne pas répondre ».")
+    .min(1, "Choisissez au moins une réponse ou « Je préfère ne pas répondre ».")
     .max(o.length + 1)
     .refine(
       (v) => !v.includes(NE_PAS_REPONDRE.valeur) || v.length === 1,
@@ -251,7 +251,7 @@ export const SITUATIONS_ATELIER = opts([
   ["parent", "Vous êtes parent"],
   ["etudes", "Vous êtes en études"],
   ["citoyen", "Vous êtes un citoyen intéressé"],
-  ["autre", "Autre, à préciser"],
+  ["autre", "Autre (à préciser)"],
 ]);
 
 export const LIBELLES_INSCRIPTION = {
@@ -286,7 +286,7 @@ export const inscriptionSchema = z
       .trim()
       .toLowerCase()
       .min(1, "Indiquez votre email.")
-      .email("Indiquez une adresse email valide, par exemple prenom@exemple.fr.")
+      .email("Indiquez une adresse email valide (par exemple prenom@exemple.fr).")
       .max(254),
     departement: z.string().trim().max(60).default(""),
     situations: z

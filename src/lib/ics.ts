@@ -41,10 +41,10 @@ export function genererIcs({
   listeAttente: boolean;
   maintenant?: Date;
 }): string {
-  const titre = `Atelier ${atelier.numero}, ${atelier.titre}`;
+  const titre = `Atelier ${atelier.numero} : ${atelier.titre}`;
   const description = [
-    `${titre}, consultation citoyenne et ateliers, présidentielle 2027.`,
-    `Le ${formaterCreneau(atelier.debut, atelier.fin, true)}, heure de Paris, en visio.`,
+    `${titre}. Consultation citoyenne et ateliers de réflexion sur la protection de l'enfance (Présidentielle 2027).`,
+    `Le ${formaterCreneau(atelier.debut, atelier.fin, true)} (heure de Paris) en visio.`,
     ...(listeAttente
       ? ["Vous êtes sur liste d'attente. Nous vous écrirons si une place se libère."]
       : []),

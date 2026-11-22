@@ -400,7 +400,7 @@ export function OngletAteliers({ donnees, actions }: { donnees: DonneesAdmin; ac
             {s.aPrevenir.map((d) => {
               const a = ATELIERS.find((x) => x.id === d.atelier_id)!;
               const sujet = `Atelier ${a.numero}, une place s'est libérée pour vous`;
-              const corps = `Bonjour ${d.personne.prenom},\n\nUne place s'est libérée pour l'atelier ${a.numero}, ${a.titre}, le ${formaterCreneau(a.debut, a.fin, true)}. Votre inscription est confirmée.\n\nSi vous ne pouvez plus venir, vous pouvez libérer votre place ici ${window.location.origin}/annuler/${d.personne.jeton_annulation}\n\nÀ bientôt,\nL'Institut Rousseau et Face à l'inceste`;
+              const corps = `Bonjour ${d.personne.prenom},\n\nUne place s'est libérée pour l'atelier ${a.numero} « ${a.titre} » le ${formaterCreneau(a.debut, a.fin, true)}. Votre inscription est confirmée.\n\nSi vous ne pouvez plus venir, vous pouvez libérer votre place ici ${window.location.origin}/annuler/${d.personne.jeton_annulation}\n\nÀ bientôt,\nL'Institut Rousseau et Face à l'inceste`;
               return (
                 <li
                   key={`${d.personne.id}${d.atelier_id}`}

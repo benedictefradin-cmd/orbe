@@ -91,7 +91,7 @@ function PageConsultation() {
   const [envoye, setEnvoye] = useState(false);
   return (
     <>
-      <Entete consultationOuverte={false} />
+      <Entete />
       <main id="contenu" className="section pt-10">
         <div className="conteneur conteneur-etroit">
           {etat.consultationClose ? (
@@ -185,7 +185,7 @@ function Formulaire({ onEnvoye }: { onEnvoye: () => void }) {
     } catch {
       montrerErreurs(
         {},
-        "L'enregistrement n'a pas fonctionné. Vos réponses sont toujours là, réessayez dans un instant.",
+        "L'enregistrement n'a pas fonctionné. Vos réponses sont toujours là. Réessayez dans un instant.",
       );
     } finally {
       setEnvoi(false);
@@ -252,7 +252,7 @@ function Formulaire({ onEnvoye }: { onEnvoye: () => void }) {
           </div>
         )}
 
-        <div className="mt-6">
+        <div key={etape} className="etape-contenu mt-6">
           {etape === 0 && (
             <div className="pile">
               <p className="aide">{CONSULTATION.profilIntro}</p>

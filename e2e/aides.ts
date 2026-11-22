@@ -79,7 +79,7 @@ export async function parcoursConsultation(page: Page, mesureManquante = "") {
   await attendreDelaiMinimum(page, ouvertLe);
   await page.getByRole("button", { name: "Je valide mes réponses" }).click();
   await expect(
-    page.getByRole("heading", { name: "Merci, vos réponses sont bien enregistrées." }),
+    page.getByRole("heading", { name: "Merci. Vos réponses sont bien enregistrées." }),
   ).toBeVisible();
   return Date.now() - debut;
 }
@@ -105,6 +105,6 @@ export async function inscrire(
   await attendreDelaiMinimum(page, ouvertLe);
   await page.getByRole("button", { name: "Je m'inscris" }).click();
   await expect(
-    page.getByRole("heading", { name: "C'est noté, votre inscription est enregistrée." }),
+    page.getByRole("heading", { name: "C'est noté. Votre inscription est enregistrée." }),
   ).toBeVisible();
 }

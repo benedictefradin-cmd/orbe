@@ -13,14 +13,14 @@ export const MESURES: readonly Mesure[] = [
     id: "m01",
     axe: "Droit pénal",
     texte:
-      "Créer dans le Code pénal une infraction autonome d'inceste, punissant tous les actes sexuels incestueux commis sur des mineurs.",
+      "Créer dans le Code pénal une infraction autonome pour les violences sexuelles commises sur un enfant au sein de sa famille, punissant tous ces actes commis sur des mineurs.",
     sources: "FAI (1), CIIVISE (20), Commission AN (6)",
   },
   {
     id: "m02",
     axe: "Droit pénal",
     texte:
-      "Étendre la qualification d'inceste aux cousins germains, aux personnes majeures victimes de faits commis pendant leur minorité, et aux enfants des conjoints ou concubins.",
+      "Élargir la notion de violences sexuelles intrafamiliales aux cousins germains, aux personnes majeures victimes de faits commis pendant leur minorité, et aux enfants des conjoints ou concubins.",
     sources: "Commission AN (6), CIIVISE (22, 23)",
   },
   {
@@ -61,7 +61,7 @@ export const MESURES: readonly Mesure[] = [
     id: "m08",
     axe: "Protection immédiate",
     texte:
-      "Suspendre automatiquement l'autorité parentale et les droits de visite du parent poursuivi pour viol ou agression sexuelle incestueuse sur son enfant.",
+      "Suspendre automatiquement l'autorité parentale et les droits de visite du parent poursuivi pour viol ou agression sexuelle sur son enfant.",
     sources: "CIIVISE (52)",
   },
   {
@@ -173,7 +173,7 @@ export const MESURES: readonly Mesure[] = [
     id: "m24",
     axe: "Gouvernance",
     texte:
-      "Créer un ministère de l'Enfance doté d'un budget dédié, récurrent et évalué, pour piloter la lutte contre l'inceste et les violences sexuelles faites aux enfants.",
+      "Créer un ministère de l'Enfance doté d'un budget dédié, récurrent et évalué, pour piloter la protection des enfants contre les violences, notamment sexuelles et intrafamiliales.",
     sources: "FAI (11), Commission AN (49), CIIVISE (82)",
   },
 ];

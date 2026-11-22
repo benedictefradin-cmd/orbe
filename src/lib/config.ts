@@ -35,8 +35,8 @@ export const ATELIERS: readonly [Atelier, Atelier] = [
 /** Nombre de places par atelier, ou "illimité" (pas de liste d'attente dans ce cas). */
 export const CAPACITE_PAR_ATELIER: number | "illimité" = 30;
 
-/** Dernier jour inclus de la consultation. Elle ferme le lendemain à 0 h 00, heure de Paris. */
-export const CLOTURE_CONSULTATION = "2027-01-31";
+/** Dernier jour inclus de la consultation, le même que pour les inscriptions. Elle ferme le lendemain à 0 h 00, heure de Paris. */
+export const CLOTURE_CONSULTATION = "2026-12-11";
 
 /** Reprise de la V1 : moment où la synthèse est présentée. */
 export const RESTITUTION = "en février 2027";
@@ -143,28 +143,37 @@ export function formaterJour(instant: Date | string, avecAnnee = false): string 
   });
 }
 
-/** « 16 h 30 », « 18 h », avec des espaces insécables pour ne jamais couper l'heure */
+/** « 16h30 », « 18h » */
 export function formaterHeure(instant: Date | string): string {
   const [h, m] = new Date(instant)
     .toLocaleTimeString("fr-FR", { timeZone: FUSEAU, hour: "2-digit", minute: "2-digit" })
     .split(":") as [string, string];
-  return `${Number(h)}\u00a0h${m === "00" ? "" : `\u00a0${m}`}`;
+  return `${Number(h)}h${m === "00" ? "" : m}`;
 }
 
-/** « lundi 14 décembre, de 16 h 30 à 18 h » */
+/** « 11 décembre », sans le jour de la semaine */
+export function formaterJourCourt(jour: string): string {
+  return minuitParis(jour).toLocaleDateString("fr-FR", {
+    timeZone: FUSEAU,
+    day: "numeric",
+    month: "long",
+  });
+}
+
+/** « lundi 14 décembre de 16h30 à 18h » */
 export function formaterCreneau(debut: string, fin: string, avecAnnee = false): string {
-  return `${formaterJour(debut, avecAnnee)}, de ${formaterHeure(debut)} à ${formaterHeure(fin)}`;
+  return `${formaterJour(debut, avecAnnee)} de ${formaterHeure(debut)} à ${formaterHeure(fin)}`;
 }
 
 export function dureeMinutes(debut: string, fin: string): number {
   return Math.round((new Date(fin).getTime() - new Date(debut).getTime()) / 60_000);
 }
 
-/** « 1 h 30 » */
+/** « 1h30 » */
 export function formaterDuree(minutes: number): string {
   const h = Math.floor(minutes / 60),
     m = minutes % 60;
-  return h ? `${h} h${m ? ` ${String(m).padStart(2, "0")}` : ""}` : `${m} minutes`;
+  return h ? `${h}h${m ? String(m).padStart(2, "0") : ""}` : `${m} minutes`;
 }
 
 export function atelierParId(id: string): Atelier | undefined {

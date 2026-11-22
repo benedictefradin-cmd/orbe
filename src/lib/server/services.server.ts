@@ -140,8 +140,7 @@ export async function enregistrerInscription(
   if (!inscriptionsOuvertes(now))
     return {
       ok: false,
-      message:
-        "Les inscriptions aux ateliers sont closes. Vous pouvez encore répondre à la consultation.",
+      message: "Les inscriptions aux ateliers sont closes. Merci pour votre intérêt.",
     };
   const v = envoiInscriptionSchema.safeParse(input);
   if (!v.success)

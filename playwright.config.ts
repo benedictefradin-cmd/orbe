@@ -33,6 +33,8 @@ export default defineConfig({
     locale: "fr-FR",
     timezoneId: "Europe/Paris",
     trace: "retain-on-failure",
+    // Captures et contrôles d'accessibilité sans animation en cours.
+    reducedMotion: "reduce",
   },
   projects: [
     { name: "mobile-360", use: { ...devices["Pixel 5"], viewport: { width: 360, height: 780 } } },

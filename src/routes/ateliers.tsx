@@ -51,7 +51,7 @@ function PageAteliers() {
   const [resultat, setResultat] = useState<ResultatInscription | null>(null);
   return (
     <>
-      <Entete consultationOuverte={!etat.consultationClose} />
+      <Entete />
       <main id="contenu" className="section pt-10">
         <div className="conteneur conteneur-etroit">
           {resultat ? (
@@ -75,7 +75,7 @@ function PageAteliers() {
                       <p className="mt-2">{formaterCreneau(a.debut, a.fin)}</p>
                       <p className="mention mt-1 flex items-center gap-1.5">
                         <Video size={15} aria-hidden="true" />
-                        En visio, {formaterDuree(dureeMinutes(a.debut, a.fin))}
+                        En visio ({formaterDuree(dureeMinutes(a.debut, a.fin))})
                       </p>
                     </li>
                   ))}
@@ -255,7 +255,7 @@ function Formulaire({
                     />
                     <span>
                       <strong className="block">
-                        Atelier {a.numero}, {a.titre}
+                        Atelier {a.numero} : {a.titre}
                       </strong>
                       {formaterCreneau(a.debut, a.fin)}
                     </span>
@@ -367,7 +367,7 @@ function Formulaire({
           facultatif
           multiligne
           max={500}
-          aide="Sous titres, interprétation en langue des signes, pauses, ou autre besoin."
+          aide="Sous titres, interprétation en langue des signes, pauses ou autre besoin."
         />
 
         <div className="flex flex-col gap-3">
@@ -464,13 +464,13 @@ function Confirmation({
           {choisis.map((c) => (
             <li key={c.atelier_id} className="rounded-lg bg-fond-alterne p-4">
               <strong>
-                Atelier {c.atelier.numero}, {c.atelier.titre}
+                Atelier {c.atelier.numero} : {c.atelier.titre}
               </strong>
               <br />
               {formaterCreneau(c.atelier.debut, c.atelier.fin)}
               {c.statut === "liste_attente" && (
                 <span className="badge badge-attente mt-2 block w-fit">
-                  Liste d'attente, nous vous écrirons si une place se libère
+                  Liste d'attente. Nous vous écrirons si une place se libère.
                 </span>
               )}
             </li>

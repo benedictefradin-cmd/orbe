@@ -3,6 +3,29 @@ import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { inscrire, pagePrete, parcoursConsultation, sansDebordement, tabJusqua } from "./aides";
 
+test.describe("accueil", () => {
+  test("trois entrées qui mènent chacune à sa page", async ({ page }) => {
+    for (const [nom, chemin] of [
+      ["Les avancées d'hier et les enjeux de demain", "/contexte"],
+      ["Je veux participer à la consultation citoyenne", "/consultation"],
+      ["Je veux participer aux ateliers", "/ateliers"],
+    ] as const) {
+      await page.goto("/");
+      await page.getByRole("link", { name: nom }).click();
+      await expect(page).toHaveURL(new RegExp(`${chemin}$`));
+    }
+  });
+
+  test("messages d'erreur en français sous chaque champ", async ({ page }) => {
+    await page.goto("/ateliers");
+    await page.getByRole("button", { name: "Je m'inscris" }).click();
+    await expect(page.locator("#prenom-erreur")).toHaveText("Indiquez votre prénom.");
+    await expect(page.locator("#champ-prenom")).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#ateliers-erreur")).toHaveText("Choisissez au moins une date.");
+    await expect(page.getByRole("alert").first()).toBeVisible();
+  });
+});
+
 test.describe("parcours complets", () => {
   test("consultation de bout en bout", async ({ page }) => {
     const duree = await parcoursConsultation(
@@ -14,7 +37,9 @@ test.describe("parcours complets", () => {
       description: `${Math.round(duree / 1000)} s, dont 21 s d'attente anti robots`,
     });
     await expect(
-      page.getByRole("heading", { name: "Allez plus loin, rejoignez un atelier en décembre" }),
+      page.getByRole("heading", {
+        name: "Allez plus loin : rejoignez un atelier de réflexion en décembre",
+      }),
     ).toBeVisible();
     await expect(page.getByRole("link", { name: "Je découvre les ateliers" })).toHaveAttribute(
       "href",
@@ -26,8 +51,8 @@ test.describe("parcours complets", () => {
 
   test("ateliers, deux dates, agenda et annulation", async ({ page }) => {
     await inscrire(page, { ateliers: ["Atelier 1", "Atelier 2"] });
-    await expect(page.getByText("lundi 14 décembre, de 16 h 30 à 18 h")).toBeVisible();
-    await expect(page.getByText("vendredi 18 décembre, de 12 h 30 à 14 h")).toBeVisible();
+    await expect(page.getByText("lundi 14 décembre de 16h30 à 18h")).toBeVisible();
+    await expect(page.getByText("vendredi 18 décembre de 12h30 à 14h")).toBeVisible();
     const lien = await page.getByLabel("Votre lien personnel d'annulation").inputValue();
     expect(lien).toMatch(/\/annuler\/[0-9a-f-]{36}$/);
 
@@ -62,15 +87,6 @@ test.describe("parcours complets", () => {
     await expect(page.getByText(/un peu vite/)).toBeVisible();
     await expect(page.getByRole("heading", { name: /C'est noté/ })).toHaveCount(0);
   });
-
-  test("messages d'erreur en français sous chaque champ", async ({ page }) => {
-    await page.goto("/ateliers");
-    await page.getByRole("button", { name: "Je m'inscris" }).click();
-    await expect(page.locator("#prenom-erreur")).toHaveText("Indiquez votre prénom.");
-    await expect(page.locator("#champ-prenom")).toHaveAttribute("aria-invalid", "true");
-    await expect(page.locator("#ateliers-erreur")).toHaveText("Choisissez au moins une date.");
-    await expect(page.getByRole("alert").first()).toBeVisible();
-  });
 });
 
 test.describe("navigation au clavier", () => {
@@ -79,7 +95,7 @@ test.describe("navigation au clavier", () => {
     await page.goto("/");
     await page.keyboard.press("Tab");
     await expect(page.getByRole("link", { name: "Aller au contenu" })).toBeFocused();
-    const cta = page.getByRole("link", { name: "Je réponds à la consultation citoyenne" });
+    const cta = page.getByRole("link", { name: "Je veux participer à la consultation citoyenne" });
     await tabJusqua(page, cta);
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/\/consultation$/);
@@ -105,19 +121,15 @@ test.describe("dates simulées", () => {
   }) => {
     await page.goto("http://localhost:3201/ateliers");
     await expect(
-      page.getByText(
-        "Les inscriptions aux ateliers sont closes. Vous pouvez encore répondre à la consultation.",
-      ),
+      page.getByText("Les inscriptions aux ateliers sont closes. Merci pour votre intérêt."),
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: "Je réponds à la consultation" })).toHaveAttribute(
-      "href",
-      "/consultation",
-    );
+    // La consultation ferme le même jour que les inscriptions.
+    await expect(page.getByRole("link", { name: "Je réponds à la consultation" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Je m'inscris" })).toHaveCount(0);
     await page.goto("http://localhost:3201/");
-    await expect(
-      page.getByRole("link", { name: "Je participe aux ateliers de décembre" }),
-    ).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Je veux participer aux ateliers" })).toHaveCount(
+      0,
+    );
     await expect(page.getByText("Inscriptions closes")).toBeVisible();
   });
 
@@ -162,16 +174,20 @@ test.describe("dates simulées", () => {
     await page.goto("http://localhost:3202/consultation");
     await expect(
       page
-        .getByText("La consultation est close, merci. La synthèse sera présentée en février 2027.")
+        .getByText(
+          "La consultation est close. Merci pour votre participation. La synthèse sera présentée en février 2027.",
+        )
         .first(),
     ).toBeVisible();
     await page.goto("http://localhost:3202/");
     await expect(
-      page.getByRole("link", { name: "Je réponds à la consultation citoyenne" }),
+      page.getByRole("link", { name: "Je veux participer à la consultation citoyenne" }),
     ).toHaveCount(0);
     await expect(
       page
-        .getByText("La consultation est close, merci. La synthèse sera présentée en février 2027.")
+        .getByText(
+          "La consultation est close. Merci pour votre participation. La synthèse sera présentée en février 2027.",
+        )
         .first(),
     ).toBeVisible();
   });
@@ -181,7 +197,14 @@ test.describe("mise en page et accessibilité", () => {
   for (const largeur of [360, 768, 1280]) {
     test(`aucun débordement à ${largeur} px`, async ({ page }) => {
       await page.setViewportSize({ width: largeur, height: 900 });
-      for (const chemin of ["/", "/consultation", "/ateliers", "/donnees-personnelles", "/admin"]) {
+      for (const chemin of [
+        "/",
+        "/contexte",
+        "/consultation",
+        "/ateliers",
+        "/donnees-personnelles",
+        "/admin",
+      ]) {
         await page.goto(chemin);
         await page.waitForLoadState("networkidle");
         await sansDebordement(page);
@@ -190,7 +213,13 @@ test.describe("mise en page et accessibilité", () => {
   }
 
   test("contraste AA et règles WCAG sur les pages principales", async ({ page }) => {
-    for (const chemin of ["/", "/consultation", "/ateliers", "/donnees-personnelles"]) {
+    for (const chemin of [
+      "/",
+      "/contexte",
+      "/consultation",
+      "/ateliers",
+      "/donnees-personnelles",
+    ]) {
       await page.goto(chemin);
       await page.waitForLoadState("networkidle");
       const r = await new AxeBuilder({ page })
@@ -316,9 +345,9 @@ test("liste d'attente, puis montée automatique après annulation", async ({
   }
   const attente = await browser.newPage();
   await attente.goto("/ateliers");
-  await expect(attente.getByText("Complet, liste d'attente")).toBeVisible();
+  await expect(attente.getByText("Complet (liste d'attente)")).toBeVisible();
   await inscrire(attente, { ateliers: ["Atelier 2"], email: "attente@exemple.fr" });
-  await expect(attente.getByText(/Liste d'attente, nous vous écrirons/)).toBeVisible();
+  await expect(attente.getByText(/Liste d'attente\. Nous vous écrirons/)).toBeVisible();
 
   await premiere.goto(new URL(lienPremiere).pathname);
   await premiere.getByRole("button", { name: "J'annule mon inscription" }).click();

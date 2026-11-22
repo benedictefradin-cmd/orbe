@@ -16,7 +16,7 @@ describe("fichier agenda", () => {
   it("contient l'horaire en UTC et le titre", () => {
     expect(ics).toContain("DTSTART:20261214T153000Z");
     expect(ics).toContain("DTEND:20261214T170000Z");
-    expect(deplier(ics)).toContain("SUMMARY:Atelier 1\\, Repérer et protéger");
+    expect(deplier(ics)).toContain("SUMMARY:Atelier 1 : Repérer et protéger");
   });
   it("contient le lien d'annulation, la phrase visio et le contact", () => {
     const d = deplier(ics);

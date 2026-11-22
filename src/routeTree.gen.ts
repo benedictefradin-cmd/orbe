@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AteliersRouteImport } from './routes/ateliers'
 import { Route as ConsultationRouteImport } from './routes/consultation'
+import { Route as ContexteRouteImport } from './routes/contexte'
 import { Route as DonneesPersonnellesRouteImport } from './routes/donnees-personnelles'
 import { Route as AnnulerJetonRouteImport } from './routes/annuler.$jeton'
 import { Route as ApiMaintienRouteImport } from './routes/api.maintien'
@@ -37,6 +38,11 @@ const ConsultationRoute = ConsultationRouteImport.update({
   path: '/consultation',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContexteRoute = ContexteRouteImport.update({
+  id: '/contexte',
+  path: '/contexte',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DonneesPersonnellesRoute = DonneesPersonnellesRouteImport.update({
   id: '/donnees-personnelles',
   path: '/donnees-personnelles',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/ateliers': typeof AteliersRoute
   '/consultation': typeof ConsultationRoute
+  '/contexte': typeof ContexteRoute
   '/donnees-personnelles': typeof DonneesPersonnellesRoute
   '/annuler/$jeton': typeof AnnulerJetonRoute
   '/api/maintien': typeof ApiMaintienRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/ateliers': typeof AteliersRoute
   '/consultation': typeof ConsultationRoute
+  '/contexte': typeof ContexteRoute
   '/donnees-personnelles': typeof DonneesPersonnellesRoute
   '/annuler/$jeton': typeof AnnulerJetonRoute
   '/api/maintien': typeof ApiMaintienRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/ateliers': typeof AteliersRoute
   '/consultation': typeof ConsultationRoute
+  '/contexte': typeof ContexteRoute
   '/donnees-personnelles': typeof DonneesPersonnellesRoute
   '/annuler/$jeton': typeof AnnulerJetonRoute
   '/api/maintien': typeof ApiMaintienRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/ateliers'
     | '/consultation'
+    | '/contexte'
     | '/donnees-personnelles'
     | '/annuler/$jeton'
     | '/api/maintien'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/ateliers'
     | '/consultation'
+    | '/contexte'
     | '/donnees-personnelles'
     | '/annuler/$jeton'
     | '/api/maintien'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/ateliers'
     | '/consultation'
+    | '/contexte'
     | '/donnees-personnelles'
     | '/annuler/$jeton'
     | '/api/maintien'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AteliersRoute: typeof AteliersRoute
   ConsultationRoute: typeof ConsultationRoute
+  ContexteRoute: typeof ContexteRoute
   DonneesPersonnellesRoute: typeof DonneesPersonnellesRoute
   AnnulerJetonRoute: typeof AnnulerJetonRoute
   ApiMaintienRoute: typeof ApiMaintienRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsultationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contexte': {
+      id: '/contexte'
+      path: '/contexte'
+      fullPath: '/contexte'
+      preLoaderRoute: typeof ContexteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/donnees-personnelles': {
       id: '/donnees-personnelles'
       path: '/donnees-personnelles'
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AteliersRoute: AteliersRoute,
   ConsultationRoute: ConsultationRoute,
+  ContexteRoute: ContexteRoute,
   DonneesPersonnellesRoute: DonneesPersonnellesRoute,
   AnnulerJetonRoute: AnnulerJetonRoute,
   ApiMaintienRoute: ApiMaintienRoute,

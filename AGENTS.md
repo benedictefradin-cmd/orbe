@@ -14,7 +14,9 @@ Site autonome (TanStack Start, Supabase), non relié à Lovable.
 
 ## Écriture
 - Phrases courtes, vouvoiement, jamais culpabilisant, formulations épicènes.
-- Aucun deux points ni tiret dans les textes visibles (vérifié par `src/test/contenus.test.ts`).
+- Aucun tiret dans les textes visibles. Deux points seulement à la française, avec une espace avant (vérifié par `src/test/contenus.test.ts`).
+- Pas de petites phrases coupées par une virgule. Préférer deux phrases, ou une précision entre parenthèses (« Anonyme (environ 7 minutes) », « Atelier 1 : Repérer et protéger (lundi 14 décembre de 16h30 à 18h) »).
+- Heures sans espace, « 16h30 », « 18h ».
 
 ## Vérifications
 `npm run typecheck`, `npm run lint`, `npm test`, `npm run test:e2e` doivent passer avant chaque commit.

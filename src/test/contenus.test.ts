@@ -30,9 +30,14 @@ describe("règles d'écriture des textes visibles", () => {
     ...textes(LIBELLES_INSCRIPTION),
   ];
   it.each(tous.map((t) => [t]))("%s", (t) => {
-    expect(t).not.toMatch(/\s:|:\s/);
+    // Deux points autorisés seulement à la française, précédés d'une espace.
+    expect(t).not.toMatch(/[^\s\u00a0]:\s/);
     expect(t).not.toMatch(/[—–]/);
     expect(t).not.toMatch(/\s-\s/);
+  });
+  it.each(tous.map((t) => [t]))("parle de protection de l'enfance, %s", (t) => {
+    // Seul le nom de l'association peut contenir le mot.
+    expect(t.replaceAll("Face à l'inceste", "")).not.toMatch(/incest/i);
   });
   it("contient bien 24 mesures aux identifiants uniques", () => {
     expect(MESURES).toHaveLength(24);

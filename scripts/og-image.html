@@ -1,30 +1,115 @@
 <!doctype html>
 <html lang="fr">
-<head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Source+Sans+3:wght@600;700&family=Spectral:wght@500&display=swap">
-<style>
-  html, body { margin: 0; }
-  body { width: 1200px; height: 630px; background: #FFFFFF; font-family: "Source Sans 3", sans-serif; color: #0F1E3D; position: relative; overflow: hidden; }
-  .bande { position: absolute; inset: 0 auto 0 0; width: 24px; background: #2D5BD7; }
-  .fond { position: absolute; right: -120px; top: -120px; width: 560px; height: 560px; border-radius: 50%; background: #E8EFFE; }
-  .fond2 { position: absolute; right: 120px; bottom: -220px; width: 380px; height: 380px; border-radius: 50%; background: #DCE7FB; }
-  .contenu { position: absolute; left: 96px; top: 84px; right: 96px; bottom: 72px; display: flex; flex-direction: column; }
-  .surtitre { font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #2D5BD7; font-size: 30px; }
-  h1 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; color: #1B2A4A; font-size: 92px; line-height: 1.02; letter-spacing: -0.02em; margin: 22px 0 0; max-width: 900px; }
-  .sous { font-family: "Spectral", serif; font-size: 32px; color: #1B2A4A; margin-top: 22px; max-width: 820px; }
-  .logos { margin-top: auto; display: flex; align-items: center; gap: 22px; }
-  .logos img { height: 56px; }
-  .logos span { font-size: 30px; color: #5A6B85; }
-</style>
-</head>
-<body>
-  <div class="fond"></div><div class="fond2"></div><div class="bande"></div>
-  <div class="contenu">
-    <div class="surtitre">Présidentielle 2027</div>
-    <h1>Consultation citoyenne et ateliers</h1>
-    <div class="sous">Construisons ensemble les mesures contre l'inceste</div>
-    <div class="logos"><img src="../src/assets/img/logo-institut-rousseau.svg" alt=""><span>×</span><img src="../src/assets/img/logo-face-a-l-inceste.svg" alt=""></div>
-  </div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Source+Sans+3:wght@600;700&family=Spectral:wght@500&display=swap"
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+      body {
+        width: 1200px;
+        height: 630px;
+        background: #ffffff;
+        font-family: "Source Sans 3", sans-serif;
+        color: #0f1e3d;
+        position: relative;
+        overflow: hidden;
+      }
+      .bande {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 24px;
+        background: #2d5bd7;
+      }
+      .fond {
+        position: absolute;
+        right: -120px;
+        top: -120px;
+        width: 560px;
+        height: 560px;
+        border-radius: 50%;
+        background: #e8effe;
+      }
+      .fond2 {
+        position: absolute;
+        right: 120px;
+        bottom: -220px;
+        width: 380px;
+        height: 380px;
+        border-radius: 50%;
+        background: #dce7fb;
+      }
+      .contenu {
+        position: absolute;
+        left: 96px;
+        top: 84px;
+        right: 96px;
+        bottom: 72px;
+        display: flex;
+        flex-direction: column;
+      }
+      .surtitre {
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #2d5bd7;
+        font-size: 30px;
+      }
+      h1 {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-weight: 700;
+        color: #1b2a4a;
+        font-size: 76px;
+        line-height: 1.04;
+        letter-spacing: -0.02em;
+        margin: 22px 0 0;
+        max-width: 900px;
+      }
+      .sous {
+        font-family: "Spectral", serif;
+        font-size: 32px;
+        color: #1b2a4a;
+        margin-top: 22px;
+        max-width: 820px;
+      }
+      .logos {
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+      .logos img {
+        height: 56px;
+      }
+      .logos img.fai {
+        height: 84px;
+      }
+      .logos span {
+        font-size: 30px;
+        color: #5a6b85;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fond"></div>
+    <div class="fond2"></div>
+    <div class="bande"></div>
+    <div class="contenu">
+      <div class="surtitre">Présidentielle 2027</div>
+      <h1>Consultation citoyenne et ateliers de réflexion</h1>
+      <div class="sous">
+        Enfance et Présidentielle 2027 : construisons ensemble les mesures qui protègeront nos
+        enfants demain
+      </div>
+      <div class="logos">
+        <img src="../src/assets/img/logo-institut-rousseau.svg" alt="" /><span>×</span
+        ><img src="../src/assets/img/logo-face-a-l-inceste.png" alt="" class="fai" />
+      </div>
+    </div>
+  </body>
 </html>

@@ -27,11 +27,10 @@ describe("calendrier, heure de Paris", () => {
     expect(inscriptionsOuvertes(new Date("2026-12-20T10:00:00+01:00"))).toBe(false);
   });
 
-  it("ferme la consultation indépendamment des ateliers", () => {
-    expect(FERMETURE_CONSULTATION.toISOString()).toBe("2027-01-31T23:00:00.000Z");
-    expect(isClosed(new Date("2026-12-12T00:00:00+01:00"))).toBe(false);
-    expect(isClosed(new Date("2027-01-31T23:59:00+01:00"))).toBe(false);
-    expect(isClosed(new Date("2027-02-01T00:00:00+01:00"))).toBe(true);
+  it("ferme la consultation le même jour que les inscriptions", () => {
+    expect(FERMETURE_CONSULTATION.toISOString()).toBe("2026-12-11T23:00:00.000Z");
+    expect(isClosed(new Date("2026-12-11T23:59:00+01:00"))).toBe(false);
+    expect(isClosed(new Date("2026-12-12T00:00:00+01:00"))).toBe(true);
   });
 
   it("gère le passage à l'heure d'été", () => {
@@ -40,16 +39,12 @@ describe("calendrier, heure de Paris", () => {
     expect(ajouterJours("2027-02-27", 2)).toBe("2027-03-01");
   });
 
-  it("ne coupe jamais une heure en fin de ligne", () => {
-    expect(formaterCreneau(ATELIERS[0].debut, ATELIERS[0].fin)).toContain("16\u00a0h\u00a030");
-  });
-
   it("formate les créneaux en français", () => {
-    expect(formaterCreneau(ATELIERS[0].debut, ATELIERS[0].fin).replace(/\u00a0/g, " ")).toBe(
-      "lundi 14 décembre, de 16 h 30 à 18 h",
+    expect(formaterCreneau(ATELIERS[0].debut, ATELIERS[0].fin)).toBe(
+      "lundi 14 décembre de 16h30 à 18h",
     );
-    expect(formaterCreneau(ATELIERS[1].debut, ATELIERS[1].fin).replace(/\u00a0/g, " ")).toBe(
-      "vendredi 18 décembre, de 12 h 30 à 14 h",
+    expect(formaterCreneau(ATELIERS[1].debut, ATELIERS[1].fin)).toBe(
+      "vendredi 18 décembre de 12h30 à 14h",
     );
   });
 });

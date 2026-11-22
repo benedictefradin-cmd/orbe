@@ -3,16 +3,20 @@ import { Link } from "@tanstack/react-router";
 import {
   Check,
   Copy,
+  Facebook,
+  Instagram,
   Linkedin,
   Menu,
   MessageCircle,
   MessageSquare,
   Phone,
   Share2,
+  Youtube,
+  type LucideIcon,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import logoIr from "@/assets/img/logo-institut-rousseau.svg";
-import logoFai from "@/assets/img/logo-face-a-l-inceste.svg";
+import logoFai from "@/assets/img/logo-face-a-l-inceste.png";
 import { ACCUEIL, AIDE, NAVIGATION, PARTAGE, PIED, STRUCTURES, SUIVRE } from "@/lib/contenus";
 
 export function Logos({ lien = true }: { lien?: boolean }) {
@@ -22,7 +26,7 @@ export function Logos({ lien = true }: { lien?: boolean }) {
       <span className="croix" aria-hidden="true">
         ×
       </span>
-      <img src={logoFai} alt="Face à l'inceste" width={200} height={47} />
+      <img src={logoFai} alt="Face à l'inceste" width={322} height={139} className="logo-fai" />
     </>
   );
   return lien ? (
@@ -34,8 +38,8 @@ export function Logos({ lien = true }: { lien?: boolean }) {
   );
 }
 
-/** En tête : logos, ancres de la page d'accueil, bouton « Je réponds ». Menu en tiroir sur mobile. */
-export function Entete({ consultationOuverte = true }: { consultationOuverte?: boolean }) {
+/** En tête : logos et liens vers les pages dédiées. Menu en tiroir sur mobile. */
+export function Entete() {
   const [ouvert, setOuvert] = useState(false);
   return (
     <header className="entete">
@@ -44,19 +48,14 @@ export function Entete({ consultationOuverte = true }: { consultationOuverte?: b
       </a>
       <div className="conteneur entete-inner">
         <Logos />
-        <nav className="nav-ancres" aria-label="Sections de la page">
+        <nav className="nav-ancres" aria-label="Pages du site">
           {NAVIGATION.map((n) => (
-            <a key={n.ancre} href={`/#${n.ancre}`}>
+            <Link key={n.chemin} to={n.chemin}>
               {n.libelle}
-            </a>
+            </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-2">
-          {consultationOuverte && (
-            <Link to="/consultation" className="bouton bouton-plein bouton-petit entete-cta">
-              {ACCUEIL.boutonEntete}
-            </Link>
-          )}
+        <div className="flex items-center gap-2 lg:hidden">
           <Sheet open={ouvert} onOpenChange={setOuvert}>
             <SheetTrigger asChild>
               <button
@@ -69,27 +68,18 @@ export function Entete({ consultationOuverte = true }: { consultationOuverte?: b
             </SheetTrigger>
             <SheetContent side="right" className="w-[86vw] max-w-sm" aria-describedby={undefined}>
               <SheetTitle className="font-titre text-xl text-primaire">Menu</SheetTitle>
-              <nav className="mt-6 flex flex-col gap-1" aria-label="Sections de la page">
+              <nav className="mt-6 flex flex-col gap-1" aria-label="Pages du site">
                 {NAVIGATION.map((n) => (
-                  <a
-                    key={n.ancre}
-                    href={`/#${n.ancre}`}
+                  <Link
+                    key={n.chemin}
+                    to={n.chemin}
                     onClick={() => setOuvert(false)}
                     className="flex min-h-12 items-center rounded-md px-3 text-lg font-semibold text-texte no-underline hover:bg-accent-pale"
                   >
                     {n.libelle}
-                  </a>
+                  </Link>
                 ))}
               </nav>
-              {consultationOuverte && (
-                <Link
-                  to="/consultation"
-                  onClick={() => setOuvert(false)}
-                  className="bouton bouton-plein mt-6 w-full"
-                >
-                  {ACCUEIL.boutonEntete}
-                </Link>
-              )}
             </SheetContent>
           </Sheet>
         </div>
@@ -102,30 +92,57 @@ function LienExterne({
   href,
   children,
   className,
+  titre,
 }: {
   href: string;
   children: ReactNode;
   className?: string;
+  titre?: string;
 }) {
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+    <a href={href} target="_blank" rel="noopener noreferrer" className={className} title={titre}>
       {children}
       <span className="sr-only"> (nouvel onglet)</span>
     </a>
   );
 }
 
+/** Logos X et Bluesky, absents de lucide, tracés d'après Simple Icons. */
+function LogoPlein({ chemin }: { chemin: string }) {
+  return (
+    <svg viewBox="0 0 24 24" width={18} height={18} fill="currentColor" aria-hidden="true">
+      <path d={chemin} />
+    </svg>
+  );
+}
+const LOGO_X =
+  "M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z";
+const LOGO_BLUESKY =
+  "M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z";
+const ICONES: Record<string, LucideIcon> = {
+  LinkedIn: Linkedin,
+  Instagram,
+  YouTube: Youtube,
+  Facebook,
+};
+
+function IconeReseau({ nom }: { nom: string }) {
+  if (nom === "X") return <LogoPlein chemin={LOGO_X} />;
+  if (nom === "Bluesky") return <LogoPlein chemin={LOGO_BLUESKY} />;
+  const Icone = ICONES[nom];
+  return Icone ? <Icone size={20} aria-hidden="true" /> : null;
+}
+
+/** Réseaux en icônes seules, le nom reste lu par les lecteurs d'écran. */
 export function Reseaux({ structure }: { structure: keyof typeof STRUCTURES }) {
   const s = STRUCTURES[structure];
   return (
-    <ul className="flex flex-wrap gap-2" aria-label={`Réseaux, ${s.nom}`}>
+    <ul className="reseaux" aria-label={`Réseaux, ${s.nom}`}>
       {s.reseaux.map((r) => (
         <li key={r.url}>
-          <LienExterne
-            href={r.url}
-            className="inline-flex min-h-11 items-center rounded-md border border-bordure-forte px-3 text-[15px] font-semibold no-underline hover:border-accent"
-          >
-            {r.nom}
+          <LienExterne href={r.url} className="reseau" titre={r.nom}>
+            <IconeReseau nom={r.nom} />
+            <span className="sr-only">{r.nom}</span>
           </LienExterne>
         </li>
       ))}

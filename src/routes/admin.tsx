@@ -63,7 +63,7 @@ function PageAdmin() {
       await f();
     } catch {
       setErreurAction(
-        "L'action n'a pas abouti. Votre session a peut être expiré, reconnectez vous.",
+        "L'action n'a pas abouti. Votre session a peut être expiré. Reconnectez vous.",
       );
     }
     await rafraichir();
