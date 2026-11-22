@@ -413,6 +413,13 @@ test.describe("tableau de bord", () => {
 
     await page.getByRole("tab", { name: "Consultation" }).click();
     await expect(page.getByText("Classement des 24 mesures, en direct")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Score par thème" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Réponses strictement identiques" }),
+    ).toBeVisible();
+    await page.getByLabel("Version du questionnaire").selectOption("v1");
+    await expect(page.getByText(/^0 réponses retenues sur \d+/)).toBeVisible();
+    await page.getByLabel("Version du questionnaire").selectOption("toutes");
 
     const telechargement = page.waitForEvent("download");
     await page.getByRole("button", { name: "Télécharger les réponses (.xlsx)" }).click();

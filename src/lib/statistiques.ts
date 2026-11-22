@@ -7,7 +7,7 @@ import {
   SEUIL_COMPTEUR,
   SEUIL_DIFFUSION,
 } from "@/lib/config";
-import { agregerClassement } from "@/lib/mesures";
+import { agregerClassement, MESURES, type LigneClassement } from "@/lib/mesures";
 import type { InscriptionAdmin, ReponseAdmin } from "@/lib/server/services.server";
 
 export function parJour(jours: readonly string[]): { jour: string; n: number }[] {
@@ -148,4 +148,118 @@ export function resultatsPublics(
       };
     }),
   };
+}
+
+/* ───────────── Tableau de bord de la consultation ───────────── */
+
+export type FiltresConsultation = {
+  /** « oui » : a coché « personne concernée » ; « non » : ne l'a pas coché. */
+  concernees: "toutes" | "oui" | "non";
+  /** « oui » : au moins un lien avec l'enfance dans son métier ou engagement. */
+  professionnels: "tous" | "oui" | "non";
+  /** Valeur de provenance, « sans-reponse » ou « toutes ». */
+  provenance: string;
+  version: "toutes" | "v1" | "v2";
+  sansDoublons: boolean;
+};
+export const FILTRES_PAR_DEFAUT: FiltresConsultation = {
+  concernees: "toutes",
+  professionnels: "tous",
+  provenance: "toutes",
+  version: "toutes",
+  sansDoublons: false,
+};
+
+export function estConcernee(r: Pick<ReponseAdmin, "lien_sujet">): boolean {
+  return r.lien_sujet.includes("concerne");
+}
+
+export function estProfessionnel(r: Pick<ReponseAdmin, "liens_enfance">): boolean {
+  return r.liens_enfance.some((x) => x !== "aucun" && x !== "nsp");
+}
+
+/** Clé d'une réponse : tout son contenu, sauf le jour. Deux clés égales = réponses strictement identiques. */
+export function cleReponse(r: ReponseAdmin): string {
+  const { jour: _, ...contenu } = r;
+  return JSON.stringify(
+    Object.keys(contenu)
+      .sort()
+      .map((k) => [k, contenu[k as keyof typeof contenu]]),
+  );
+}
+
+/**
+ * Réponses strictement identiques. La première de chaque groupe est gardée, les suivantes
+ * sont des copies : « sansDoublons » les retire.
+ */
+export function repererDoublons(reponses: readonly ReponseAdmin[]) {
+  const vues = new Set<string>();
+  const copie: boolean[] = [];
+  const groupes = new Map<string, number>();
+  for (const r of reponses) {
+    const cle = cleReponse(r);
+    copie.push(vues.has(cle));
+    vues.add(cle);
+    groupes.set(cle, (groupes.get(cle) ?? 0) + 1);
+  }
+  return {
+    /** Vrai pour chaque réponse qui répète une réponse précédente. */
+    copie,
+    /** Nombre de copies (réponses en trop). */
+    copies: copie.filter(Boolean).length,
+    /** Nombre de groupes de réponses identiques (au moins deux). */
+    groupes: [...groupes.values()].filter((n) => n > 1).length,
+    sansDoublons: reponses.filter((_, i) => !copie[i]),
+  };
+}
+
+export function filtrerReponses(
+  reponses: readonly ReponseAdmin[],
+  f: FiltresConsultation,
+): ReponseAdmin[] {
+  const base = f.sansDoublons ? repererDoublons(reponses).sansDoublons : [...reponses];
+  return base.filter(
+    (r) =>
+      (f.concernees === "toutes" || estConcernee(r) === (f.concernees === "oui")) &&
+      (f.professionnels === "tous" || estProfessionnel(r) === (f.professionnels === "oui")) &&
+      (f.provenance === "toutes" || (r.provenance ?? "sans-reponse") === f.provenance) &&
+      (f.version === "toutes" || r.version_questionnaire === f.version),
+  );
+}
+
+/** Classement des 24 mesures sur un ensemble de réponses, rejets comptés sur les seules réponses v2. */
+export function classementReponses(reponses: readonly ReponseAdmin[]): LigneClassement[] {
+  return agregerClassement(
+    reponses.map((r) => r.classement),
+    NOMBRE_MESURES_A_CLASSER,
+    reponses.map((r) => r.mesures_rejetees ?? []),
+  );
+}
+
+/** Score par axe : points de Borda de l'axe divisés par le nombre de mesures de l'axe. */
+export function scoreParAxe(lignes: readonly LigneClassement[]) {
+  const axes = new Map<string, { points: number; mesures: number; selections: number }>();
+  for (const m of MESURES) {
+    const a = axes.get(m.axe) ?? { points: 0, mesures: 0, selections: 0 };
+    a.mesures += 1;
+    axes.set(m.axe, a);
+  }
+  for (const l of lignes) {
+    const a = axes.get(l.mesure.axe)!;
+    a.points += l.points;
+    a.selections += l.selections;
+  }
+  return [...axes.entries()]
+    .map(([axe, a]) => ({
+      axe,
+      mesures: a.mesures,
+      selections: a.selections,
+      score: a.points / a.mesures,
+    }))
+    .sort((x, y) => y.score - x.score || x.axe.localeCompare(y.axe, "fr"));
+}
+
+/** Répartition avec masquage : une valeur de 1 à 9 réponses n'affiche pas son effectif. */
+export function repartitionMasquee(valeurs: readonly string[]) {
+  return repartition(valeurs).map((l) => ({ ...l, masque: aMasquer(l.n) }));
 }

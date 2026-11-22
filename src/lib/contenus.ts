@@ -485,6 +485,7 @@ export const METHODE = {
       titre: "Les réponses en double",
       textes: [
         "La consultation accepte une seule réponse par navigateur. Un cookie technique, sans identifiant, le vérifie.",
+        "Chaque formulaire reçoit un jeton à usage unique. Le même envoi ne peut donc pas être enregistré deux fois. Les jetons utilisés sont gardés à part, sans lien avec les réponses, et supprimés après la clôture.",
         "Les réponses strictement identiques sont repérées. Les résultats sont calculés avec et sans elles.",
       ],
     },
@@ -583,6 +584,7 @@ export const DONNEES = {
           ? `Les réponses anonymes à la consultation sont conservées pour l'analyse. Elles sont supprimées le ${formaterJour(SUPPRESSION_DES_REPONSES, true)}.`
           : "Les réponses anonymes à la consultation sont conservées pour l'analyse. La date de leur suppression sera indiquée ici dès qu'elle sera fixée.",
         "Une empreinte chiffrée de votre adresse IP est gardée 24 heures pour limiter les envois automatiques. Elle est stockée à part et jamais reliée à vos réponses.",
+        "Une empreinte chiffrée du jeton de votre formulaire est gardée jusqu'au lendemain de la clôture. Elle empêche d'enregistrer deux fois le même envoi. Elle est stockée à part et jamais reliée à vos réponses.",
       ],
     },
     {

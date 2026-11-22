@@ -1,9 +1,11 @@
 -- Schéma complet à coller dans Supabase, SQL Editor, si vous n'utilisez pas la CLI Supabase.
--- Généré à partir de supabase/migrations. Fonctions serveur attendues :
+-- Généré à partir de supabase/migrations, dans l'ordre. Sur une base existante, ne collez que les migrations
+-- qui n'y sont pas encore (les migrations après la première sont rejouables). Fonctions serveur attendues :
 --   synchroniser_ateliers, etat_places, promouvoir_liste_attente, inscrire_atelier, annuler_par_jeton,
 --   inscription_par_jeton, enregistrer_reponse, verifier_limite, admin_session_creer, admin_session_valide,
 --   admin_session_revoquer, admin_reponses, admin_inscriptions, admin_cocher, admin_commenter, admin_annuler,
---   purger_donnees_ateliers
+--   purger_donnees_ateliers, inscrire_contact_suite, admin_contacts_suite, nombre_reponses,
+--   purger_jetons_utilises
 
 -- ═════ supabase/migrations/20261121000000_consultation_ateliers.sql
 -- Consultation citoyenne et ateliers · schéma initial
@@ -372,3 +374,183 @@ select cron.schedule(
   $$delete from public.limites_envoi where cree_le < now() - interval '24 hours'$$
 );
 
+-- ═════ supabase/migrations/20261122000000_contacts_suite.sql
+-- Emails des personnes qui veulent connaître la suite (restitution, débat).
+-- Table à part : aucun lien avec les réponses à la consultation, ni identifiant commun, ni heure.
+-- Migration rejouable : en développement local, elle repasse sur une base PGlite existante.
+
+create table if not exists public.contacts_suite (
+  email text primary key,
+  jour date not null
+);
+
+alter table public.contacts_suite enable row level security;
+revoke all on public.contacts_suite from public, anon, authenticated;
+grant all on public.contacts_suite to service_role;
+
+-- Ajoute l'email s'il n'y est pas déjà. Même réponse dans les deux cas, pour ne rien révéler.
+create or replace function public.inscrire_contact_suite(_email text, _jour date)
+returns boolean language plpgsql security definer set search_path = public as $$
+begin
+  insert into contacts_suite (email, jour) values (lower(trim(_email)), _jour)
+  on conflict (email) do nothing;
+  return true;
+end $$;
+
+create or replace function public.admin_contacts_suite()
+returns jsonb language sql stable security definer set search_path = public as $$
+  select coalesce(jsonb_agg(to_jsonb(c) order by c.email), '[]'::jsonb) from contacts_suite c;
+$$;
+
+-- La purge planifiée supprime aussi ces emails à la même date que les inscriptions aux ateliers.
+create or replace function public.purger_donnees_ateliers(_a_partir_du date)
+returns integer language plpgsql security definer set search_path = public as $$
+declare n integer := 0;
+begin
+  delete from limites_envoi where cree_le < now() - interval '24 hours';
+  delete from admin_sessions where expires_at < now() - interval '7 days';
+  if (now() at time zone 'Europe/Paris')::date >= _a_partir_du then
+    delete from inscriptions_ateliers;
+    get diagnostics n = row_count;
+    delete from contacts_suite;
+  end if;
+  return n;
+end $$;
+
+revoke all on function public.inscrire_contact_suite(text, date) from public, anon, authenticated;
+revoke all on function public.admin_contacts_suite() from public, anon, authenticated;
+revoke all on function public.purger_donnees_ateliers(date) from public, anon, authenticated;
+grant execute on function public.inscrire_contact_suite(text, date) to service_role;
+grant execute on function public.admin_contacts_suite() to service_role;
+grant execute on function public.purger_donnees_ateliers(date) to service_role;
+
+-- ═════ supabase/migrations/20261123000000_consultation_v2.sql
+-- Questionnaire v2 : ordre d'affichage des mesures, mesures non soutenues, version du questionnaire.
+-- Les réponses déjà enregistrées ne sont ni modifiées ni supprimées : elles reçoivent la version 'v1',
+-- et les nouvelles colonnes restent vides (null) pour elles, car ces questions n'existaient pas.
+-- Migration rejouable : en développement local, elle repasse sur une base PGlite existante.
+
+alter table public.reponses_consultation
+  add column if not exists version_questionnaire text not null default 'v1',
+  add column if not exists ordre_affichage text[],
+  add column if not exists mesures_rejetees text[];
+
+-- La valeur par défaut ne sert qu'à marquer les réponses existantes. Ensuite, chaque envoi indique sa version.
+alter table public.reponses_consultation alter column version_questionnaire drop default;
+
+create index if not exists reponses_consultation_version on public.reponses_consultation (version_questionnaire);
+
+-- Le type de retour change (jsonb au lieu d'uuid) : la fonction est recréée.
+drop function if exists public.enregistrer_reponse(jsonb);
+create function public.enregistrer_reponse(r jsonb)
+returns jsonb language plpgsql security definer set search_path = public as $$
+begin
+  insert into reponses_consultation (jour, age, genre, region, lieu_vie, situation, parent, liens_enfance, lien_sujet, classement,
+    mesure_manquante, presence_debat, poids_vote, provenance, version_questionnaire, ordre_affichage, mesures_rejetees)
+  values ((r->>'jour')::date, r->>'age', r->>'genre', r->>'region', r->>'lieu_vie', r->>'situation', r->>'parent',
+    array(select jsonb_array_elements_text(r->'liens_enfance')),
+    array(select jsonb_array_elements_text(r->'lien_sujet')),
+    array(select jsonb_array_elements_text(r->'classement')),
+    nullif(r->>'mesure_manquante', ''), r->>'presence_debat', r->>'poids_vote', r->>'provenance',
+    r->>'version_questionnaire',
+    array(select jsonb_array_elements_text(r->'ordre_affichage')),
+    array(select jsonb_array_elements_text(coalesce(r->'mesures_rejetees', '[]'::jsonb))));
+  return jsonb_build_object('statut', 'ok');
+end $$;
+
+revoke all on function public.enregistrer_reponse(jsonb) from public, anon, authenticated;
+grant execute on function public.enregistrer_reponse(jsonb) to service_role;
+
+-- ═════ supabase/migrations/20261123000100_compteur_reponses.sql
+-- Compteur public des réponses et rang de chaque réponse.
+-- Le rang est calculé sous verrou au moment de l'envoi et renvoyé à la seule personne qui répond.
+-- Il n'est stocké nulle part. Migration rejouable.
+
+create or replace function public.nombre_reponses()
+returns integer language sql stable security definer set search_path = public as $$
+  select count(*)::integer from reponses_consultation;
+$$;
+
+drop function if exists public.enregistrer_reponse(jsonb);
+create function public.enregistrer_reponse(r jsonb)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare rang integer;
+begin
+  -- Verrou court : deux envois simultanés ne reçoivent jamais le même rang.
+  perform pg_advisory_xact_lock(hashtext('reponses_consultation'));
+  insert into reponses_consultation (jour, age, genre, region, lieu_vie, situation, parent, liens_enfance, lien_sujet, classement,
+    mesure_manquante, presence_debat, poids_vote, provenance, version_questionnaire, ordre_affichage, mesures_rejetees)
+  values ((r->>'jour')::date, r->>'age', r->>'genre', r->>'region', r->>'lieu_vie', r->>'situation', r->>'parent',
+    array(select jsonb_array_elements_text(r->'liens_enfance')),
+    array(select jsonb_array_elements_text(r->'lien_sujet')),
+    array(select jsonb_array_elements_text(r->'classement')),
+    nullif(r->>'mesure_manquante', ''), r->>'presence_debat', r->>'poids_vote', r->>'provenance',
+    r->>'version_questionnaire',
+    array(select jsonb_array_elements_text(r->'ordre_affichage')),
+    array(select jsonb_array_elements_text(coalesce(r->'mesures_rejetees', '[]'::jsonb))));
+  select count(*)::integer into rang from reponses_consultation;
+  return jsonb_build_object('statut', 'ok', 'rang', rang);
+end $$;
+
+revoke all on function public.nombre_reponses() from public, anon, authenticated;
+revoke all on function public.enregistrer_reponse(jsonb) from public, anon, authenticated;
+grant execute on function public.nombre_reponses() to service_role;
+grant execute on function public.enregistrer_reponse(jsonb) to service_role;
+
+-- ═════ supabase/migrations/20261123000200_jetons_usage_unique.sql
+-- Jeton de formulaire à usage unique : un même envoi ne peut pas être enregistré deux fois.
+-- Table séparée : seulement l'empreinte salée du jeton, ni heure, ni lien avec les réponses.
+-- Elle est vidée après la clôture de la consultation. Migration rejouable.
+
+create table if not exists public.jetons_utilises (
+  empreinte text primary key
+);
+alter table public.jetons_utilises enable row level security;
+revoke all on public.jetons_utilises from public, anon, authenticated;
+grant all on public.jetons_utilises to service_role;
+
+drop function if exists public.enregistrer_reponse(jsonb);
+drop function if exists public.enregistrer_reponse(jsonb, text);
+create function public.enregistrer_reponse(r jsonb, _jeton text default null)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare rang integer; n integer;
+begin
+  perform pg_advisory_xact_lock(hashtext('reponses_consultation'));
+  -- Consommation du jeton dans la même transaction que la réponse : tout ou rien.
+  if _jeton is not null then
+    insert into jetons_utilises (empreinte) values (_jeton) on conflict do nothing;
+    get diagnostics n = row_count;
+    if n = 0 then
+      return jsonb_build_object('statut', 'jeton_deja_utilise');
+    end if;
+  end if;
+  insert into reponses_consultation (jour, age, genre, region, lieu_vie, situation, parent, liens_enfance, lien_sujet, classement,
+    mesure_manquante, presence_debat, poids_vote, provenance, version_questionnaire, ordre_affichage, mesures_rejetees)
+  values ((r->>'jour')::date, r->>'age', r->>'genre', r->>'region', r->>'lieu_vie', r->>'situation', r->>'parent',
+    array(select jsonb_array_elements_text(r->'liens_enfance')),
+    array(select jsonb_array_elements_text(r->'lien_sujet')),
+    array(select jsonb_array_elements_text(r->'classement')),
+    nullif(r->>'mesure_manquante', ''), r->>'presence_debat', r->>'poids_vote', r->>'provenance',
+    r->>'version_questionnaire',
+    array(select jsonb_array_elements_text(r->'ordre_affichage')),
+    array(select jsonb_array_elements_text(coalesce(r->'mesures_rejetees', '[]'::jsonb))));
+  select count(*)::integer into rang from reponses_consultation;
+  return jsonb_build_object('statut', 'ok', 'rang', rang);
+end $$;
+
+-- Vide la table des jetons à partir du lendemain de la clôture (heure de Paris).
+create or replace function public.purger_jetons_utilises(_a_partir_du date)
+returns integer language plpgsql security definer set search_path = public as $$
+declare n integer := 0;
+begin
+  if (now() at time zone 'Europe/Paris')::date >= _a_partir_du then
+    delete from jetons_utilises;
+    get diagnostics n = row_count;
+  end if;
+  return n;
+end $$;
+
+revoke all on function public.enregistrer_reponse(jsonb, text) from public, anon, authenticated;
+revoke all on function public.purger_jetons_utilises(date) from public, anon, authenticated;
+grant execute on function public.enregistrer_reponse(jsonb, text) to service_role;
+grant execute on function public.purger_jetons_utilises(date) to service_role;

@@ -32,7 +32,9 @@ const reponseSqlServeur = {
   classement: ["m03", "m01", "m24", "m07", "m10"],
 };
 const headers = (ip = "203.0.113.7") => new Headers({ "x-forwarded-for": ip });
-const vieux = (f: string) => creerJeton(f, Date.now() - 21_000);
+// Chaque jeton de test est unique (usage unique) : deux appels dans la même milliseconde différeraient sinon pas.
+let decalage = 0;
+const vieux = (f: string) => creerJeton(f, Date.now() - 21_000 - decalage++);
 const personne = (n: number, ateliers = ["atelier-1"]) => ({
   ...inscriptionValide,
   prenom: `P${n}`,
@@ -185,8 +187,8 @@ describe("parcours côté serveur, sur un vrai Postgres", () => {
     expect(d.inscriptions).toHaveLength(0);
   });
 
-  it("limite à 10 envois par heure et par adresse", async () => {
-    for (let i = 0; i < 10; i++)
+  it("limite à 30 envois par heure et par adresse", async () => {
+    for (let i = 0; i < 30; i++)
       expect(
         (
           await enregistrerConsultation(
@@ -212,6 +214,23 @@ describe("parcours côté serveur, sur un vrai Postgres", () => {
         )
       ).ok,
     ).toBe(true);
+  });
+
+  it("un jeton ne sert qu'une fois : l'envoi rejoué n'ajoute rien, la table des jetons est séparée", async () => {
+    const jeton = await vieux("consultation");
+    const envoi = { ...reponseValide, siteWeb: "", jeton };
+    expect((await enregistrerConsultation(envoi, headers("192.0.2.20"), AVANT)).ok).toBe(true);
+    expect(await enregistrerConsultation(envoi, headers("192.0.2.21"), AVANT)).toMatchObject({
+      ok: false,
+      dejaRepondu: true,
+    });
+    expect((await donneesAdmin(AVANT)).reponses).toHaveLength(1);
+    // Rien dans la réponse ne renvoie au jeton.
+    expect(JSON.stringify((await donneesAdmin(AVANT)).reponses)).not.toContain(jeton);
+    // Purge : pas avant le lendemain de la clôture, tout après.
+    expect(await rpc("purger_jetons_utilises", { _a_partir_du: "2099-01-01" })).toBe(0);
+    expect(await rpc("purger_jetons_utilises", { _a_partir_du: "2000-01-01" })).toBe(1);
+    expect((await enregistrerConsultation(envoi, headers("192.0.2.22"), AVANT)).ok).toBe(true);
   });
 
   it("neutralise une saisie commençant par = dans les exports", async () => {

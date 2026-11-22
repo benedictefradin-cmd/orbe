@@ -92,7 +92,10 @@ export const MAX_MESURES_REJETEES = 3;
 export const DELAI_MINIMUM_ENVOI_MS = 20_000;
 /** Formulaire court de l'écran de remerciement (un seul champ email). */
 export const DELAI_MINIMUM_ENVOI_SUITE_MS = 3_000;
-export const ENVOIS_MAX_PAR_HEURE = 10;
+/** 30 envois par heure et par adresse : une connexion partagée (lycée, association) n'est pas bloquée. */
+export const ENVOIS_MAX_PAR_HEURE = 30;
+/** Connexion au tableau de bord : compteur séparé, plus strict. */
+export const CONNEXIONS_ADMIN_MAX_PAR_HEURE = 10;
 
 /* ───────────── Calcul des dates, en heure de Paris ───────────── */
 

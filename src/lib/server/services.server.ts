@@ -1,7 +1,9 @@
 /** Logique serveur des deux parcours, indépendante de TanStack pour être testée directement. */
 import {
+  ajouterJours,
   ATELIERS,
   CAPACITE_PAR_ATELIER,
+  CLOTURE_CONSULTATION,
   DELAI_MINIMUM_ENVOI_SUITE_MS,
   inscriptionsOuvertes,
   isClosed,
@@ -16,7 +18,12 @@ import {
   envoiSuiteSchema,
   erreursParChamp,
 } from "@/lib/formulaires";
-import { MESSAGES_REFUS, verifierEnvoi, verifierQuota } from "@/lib/server/anti-robot.server";
+import {
+  empreinteJeton,
+  MESSAGES_REFUS,
+  verifierEnvoi,
+  verifierQuota,
+} from "@/lib/server/anti-robot.server";
 import { rpc } from "@/lib/server/db.server";
 import { aDejaRepondu } from "@/lib/server/participation.server";
 import { compteurPublic, rangPublic, resultatsPublics } from "@/lib/statistiques";
@@ -72,9 +79,17 @@ export async function lirePlaces(): Promise<Place[]> {
  * Appelée chaque jour par la tâche Vercel. Écrit réellement en base (mise à jour des ateliers, purge des
  * empreintes expirées) car Supabase met en pause un projet gratuit dont la base reste peu sollicitée 7 jours.
  */
+/** Les jetons consommés sont supprimés à partir du lendemain de la clôture. */
+export function purgerJetons() {
+  return rpc<number>("purger_jetons_utilises", {
+    _a_partir_du: ajouterJours(CLOTURE_CONSULTATION, 1),
+  });
+}
+
 export async function entretenirBase(): Promise<number> {
   await synchroniserAteliers(true);
   await rpc("purger_donnees_ateliers", { _a_partir_du: SUPPRESSION_DES_DONNEES_ATELIERS });
+  await purgerJetons();
   return (await lirePlaces()).length;
 }
 
@@ -154,7 +169,11 @@ export async function enregistrerConsultation(
         ordre_affichage: d.ordreAffichage,
         mesures_rejetees: d.mesuresRejetees,
       },
+      _jeton: await empreinteJeton(v.data.jeton),
     });
+    // Le même envoi rejoué : la réponse est déjà enregistrée, rien n'est ajouté.
+    if (r.statut === "jeton_deja_utilise")
+      return { ok: false, message: MESSAGE_DEJA_REPONDU, dejaRepondu: true };
     if (r.statut !== "ok") return { ok: false, message: ERREUR_TECHNIQUE };
     // Le rang n'est renvoyé qu'à la personne qui répond, et seulement si le compteur public s'affiche.
     return { ok: true, rang: rangPublic(r.rang) };
@@ -345,6 +364,7 @@ export type DonneesAdmin = {
 
 export async function donneesAdmin(now: Date): Promise<DonneesAdmin> {
   await rpc("purger_donnees_ateliers", { _a_partir_du: SUPPRESSION_DES_DONNEES_ATELIERS });
+  await purgerJetons();
   const [reponses, inscriptions, places, contactsSuite] = await Promise.all([
     rpc<ReponseAdmin[]>("admin_reponses"),
     rpc<InscriptionAdmin[]>("admin_inscriptions"),

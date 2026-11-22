@@ -87,3 +87,14 @@ Fichier : `DONNEES` dans `src/lib/contenus.ts`.
 - [ ] **Durée de conservation des réponses anonymes.** `SUPPRESSION_DES_REPONSES` est vide dans `src/lib/config.ts`. En attendant, le site dit que la date sera indiquée dès qu'elle sera fixée. Proposition à arbitrer : une date après la remise de la synthèse (par exemple fin 2027).
 - [ ] **Réponse « personne concernée ».** Nouveau paragraphe : facultative, enregistrée seulement avec l'accord, jamais publiée pour un groupe de moins de 10 personnes.
 - [ ] **Impossible de retrouver une réponse.** Paragraphe renforcé dans « Vos droits » : une réponse ne peut être ni retrouvée, ni modifiée, ni supprimée, car rien ne la relie à la personne.
+
+## Lot D · Fiabilité et analyse
+
+- [ ] **Quota relevé à 30 envois par heure et par connexion** (`ENVOIS_MAX_PAR_HEURE`), pour ne pas bloquer un lycée ou une association qui répond depuis la même connexion. La connexion au tableau de bord reste limitée à 10 tentatives par heure.
+- [ ] **Réponses strictement identiques.** Elles sont repérées (tout le contenu identique, jour excepté) et le tableau de bord montre le classement avec et sans elles. Depuis la v2, l'ordre d'affichage tiré au hasard fait partie du contenu : deux personnes différentes n'ont pratiquement jamais le même. À décider : quelle version retenir pour la synthèse.
+- [ ] **Masquage dans le tableau de bord.** Les effectifs de 1 à 9 réponses sont masqués, y compris pour l'organisatrice (les exports restent complets). À confirmer.
+
+## Points de vigilance pour la mise en production
+
+- Appliquer les nouvelles migrations sur Supabase, dans l'ordre : `20261122000000_contacts_suite.sql` (prompt 1), `20261123000000_consultation_v2.sql`, `20261123000100_compteur_reponses.sql`, `20261123000200_jetons_usage_unique.sql`. Elles sont rejouables. Le fichier `docs/schema-a-appliquer.sql` les contient toutes.
+- **Réponses déjà reçues.** Impossible de le vérifier depuis le poste de développement (aucune clé Supabase en local). La migration v2 ne modifie ni ne supprime aucune ligne : elle ajoute des colonnes et marque toute réponse existante en `v1`. Un test le vérifie (`src/test/sql.test.ts`). Pour contrôler après déploiement, dans l'éditeur SQL : `select version_questionnaire, count(*) from reponses_consultation group by 1;`

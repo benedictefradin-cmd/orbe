@@ -2,6 +2,7 @@
 import { ATELIERS, FUSEAU, jourParis } from "@/lib/config";
 import { libelle, Q, SITUATIONS_ATELIER, type Option } from "@/lib/formulaires";
 import { mesureParId } from "@/lib/mesures";
+import { repererDoublons } from "@/lib/statistiques";
 import { neutraliser, serializeCsv } from "@/lib/csv";
 import type { ContactSuite, InscriptionAdmin, ReponseAdmin } from "@/lib/server/services.server";
 
@@ -42,8 +43,10 @@ export function tableauReponses(reponses: readonly ReponseAdmin[], n: number): T
     Q.provenance.libelle,
     "Version du questionnaire",
     "Ordre d'affichage des mesures",
+    "Identique à une réponse précédente",
   ];
-  const lignes = reponses.map((r) => [
+  const { copie } = repererDoublons(reponses);
+  const lignes = reponses.map((r, k) => [
     r.jour,
     libelle(Q.age.options, r.age),
     libelle(Q.genre.options, r.genre),
@@ -66,6 +69,7 @@ export function tableauReponses(reponses: readonly ReponseAdmin[], n: number): T
     libelle(Q.provenance.options, r.provenance),
     r.version_questionnaire,
     (r.ordre_affichage ?? []).map((id) => id.toUpperCase()).join(" "),
+    copie[k] ? "Oui" : "",
   ]);
   return { nom: "Réponses", entetes, lignes };
 }
