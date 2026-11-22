@@ -5,10 +5,12 @@ Site autonome (TanStack Start, Supabase), non relié à Lovable.
 ## Architecture
 - Toutes les valeurs à faire évoluer sont dans `src/lib/config.ts` (dates, capacité, contact) et tous les textes visibles dans `src/lib/contenus.ts` (les 24 mesures dans `src/lib/mesures.ts`, les questions dans `src/lib/formulaires.ts`).
 - Règles de calendrier calculées en heure de Paris dans `config.ts`, appliquées côté serveur (`src/lib/server/services.server.ts`) et affichées côté site. `DATE_SIMULEE` permet de les tester, hors production uniquement.
-- Base de données : uniquement via des fonctions SQL (`supabase/migrations`), appelées avec la clé service_role. Aucune table ni fonction accessible aux rôles anon et authenticated.
+- Base de données : uniquement via des fonctions SQL (`supabase/migrations`), appelées avec la clé service_role. Les migrations après la première doivent être rejouables (PGlite local les repasse). Aucune table ni fonction accessible aux rôles anon et authenticated.
 - Capacité et liste d'attente sous verrou dans `inscrire_atelier`. Annuler ne supprime jamais, passe le statut à `annule` et fait monter la liste d'attente.
 - Consultation anonyme : ni IP, ni email, ni heure, seulement le jour. L'empreinte salée de l'IP vit dans `limites_envoi`, jamais reliée aux réponses, purgée après 24 h.
-- Jamais de succès simulé, jamais de stockage de données dans le navigateur, aucun email automatique.
+- Une réponse par navigateur : après un envoi réussi, le serveur pose le cookie HttpOnly `consultation_envoyee=1` (marqueur fixe, sans identifiant, expire à la clôture), vérifié au chargement et à l'envoi (`src/lib/server/participation.server.ts`).
+- Email pour connaître la suite : envoyé séparément depuis l'écran de remerciement, stocké dans `contacts_suite` (email et jour seulement), jamais relié aux réponses, purgé avec les inscriptions.
+- Jamais de succès simulé, jamais de stockage de données dans le navigateur (seule exception, le cookie technique ci dessus), aucun email automatique.
 - Admin : identifiant et mot de passe en variables d'environnement, cookie signé de 12 h, session révocable en base. Aucun accès de démonstration.
 - Exports : passer par `src/lib/csv.ts` (`neutraliser`) pour toute cellule issue d'une saisie.
 

@@ -4,11 +4,13 @@ import {
   annulerInscription,
   donneesAdmin,
   enregistrerConsultation,
+  enregistrerContactSuite,
   enregistrerInscription,
   synchroniserAteliers,
   type ResultatInscription,
 } from "@/lib/server/services.server";
-import { tableauInscriptions, tableauReponses, versCsv } from "@/lib/exports";
+import { tableauContactsSuite, tableauInscriptions, tableauReponses, versCsv } from "@/lib/exports";
+import { COOKIE_PARTICIPATION, cookieParticipation } from "@/lib/server/participation.server";
 import { statsAteliers, adressesInscrits } from "@/lib/statistiques";
 import { CAPACITE_PAR_ATELIER } from "@/lib/config";
 import { nouvelleBase } from "./base-de-test";
@@ -225,5 +227,52 @@ describe("parcours côté serveur, sur un vrai Postgres", () => {
     const ateliers = versCsv(tableauInscriptions(d.inscriptions, "https://exemple.fr"));
     expect(ateliers).toContain(`"'@SUM(1)"`);
     expect(ateliers).toContain(`"'+33 attaque"`);
+  });
+
+  it("refuse une deuxième réponse depuis un navigateur qui a déjà répondu", async () => {
+    const c = cookieParticipation(AVANT);
+    expect(c.valeur).toBe("1");
+    expect(c.options).toMatchObject({ httpOnly: true, path: "/" });
+    expect(c.options.maxAge).toBeGreaterThan(14 * 86_400);
+    const avecCookie = new Headers({
+      "x-forwarded-for": "203.0.113.8",
+      cookie: `autre=x; ${COOKIE_PARTICIPATION}=1`,
+    });
+    const r = await enregistrerConsultation(
+      { ...reponseValide, siteWeb: "", jeton: await vieux("consultation") },
+      avecCookie,
+      AVANT,
+    );
+    expect(r).toMatchObject({ ok: false, dejaRepondu: true });
+    expect((await donneesAdmin(AVANT)).reponses).toHaveLength(0);
+  });
+
+  it("garde les emails pour la suite à part, sans doublon et sans lien avec les réponses", async () => {
+    await enregistrerConsultation(
+      { ...reponseValide, siteWeb: "", jeton: await vieux("consultation") },
+      headers(),
+      AVANT,
+    );
+    const suite = async (email: string, jeton?: string) =>
+      enregistrerContactSuite(
+        { email, siteWeb: "", jeton: jeton ?? (await creerJeton("suite", Date.now() - 4_000)) },
+        headers(),
+        AVANT,
+      );
+    expect(await suite("Camille@Exemple.fr")).toEqual({ ok: true });
+    expect(await suite("camille@exemple.fr ")).toEqual({ ok: true });
+    expect(await suite("pas-un-email")).toMatchObject({
+      ok: false,
+      erreurs: { email: expect.any(String) },
+    });
+    expect(await suite("robot@exemple.fr", await creerJeton("suite", Date.now()))).toMatchObject({
+      ok: false,
+      message: expect.stringMatching(/vite/),
+    });
+    const d = await donneesAdmin(AVANT);
+    expect(d.contactsSuite).toEqual([{ email: "camille@exemple.fr", jour: "2026-11-25" }]);
+    expect(Object.keys(d.reponses[0]!)).not.toContain("email");
+    expect(versCsv(tableauReponses(d.reponses, 5))).not.toContain("camille@exemple.fr");
+    expect(versCsv(tableauContactsSuite(d.contactsSuite))).toContain("camille@exemple.fr");
   });
 });

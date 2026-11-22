@@ -118,8 +118,11 @@ describe("fonctions SQL", () => {
   it("purge les inscriptions à la date prévue, pas avant", async () => {
     await rpc("synchroniser_ateliers", { _ateliers: ateliers(30) });
     await rpc("inscrire_atelier", { r: personne(1) });
+    await rpc("inscrire_contact_suite", { _email: "suite@exemple.fr", _jour: "2026-11-25" });
     expect(await rpc("purger_donnees_ateliers", { _a_partir_du: "2099-01-01" })).toBe(0);
+    expect(await rpc<unknown[]>("admin_contacts_suite")).toHaveLength(1);
     expect(await rpc("purger_donnees_ateliers", { _a_partir_du: "2000-01-01" })).toBe(1);
     expect(await rpc("admin_inscriptions")).toEqual([]);
+    expect(await rpc("admin_contacts_suite")).toEqual([]);
   });
 });

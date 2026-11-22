@@ -47,6 +47,21 @@ test.describe("parcours complets", () => {
     );
     await expect(page.getByRole("heading", { name: "Faites circuler" })).toBeVisible();
     await sansDebordement(page);
+
+    await page.getByLabel("Votre email").fill(`suite.${Date.now()}@exemple.fr`);
+    await page.waitForTimeout(3_500);
+    await page.getByRole("button", { name: "Je veux connaître la suite" }).click();
+    await expect(
+      page.getByText("C'est noté. Nous vous écrirons pour la restitution."),
+    ).toBeVisible();
+
+    // Une seule réponse par navigateur : en revenant, le formulaire ne s'affiche plus.
+    await page.goto("/consultation");
+    await expect(
+      page.getByRole("heading", { name: "Merci pour votre participation" }),
+    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Continuer" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Je veux connaître la suite" })).toBeVisible();
   });
 
   test("ateliers, deux dates, agenda et annulation", async ({ page }) => {

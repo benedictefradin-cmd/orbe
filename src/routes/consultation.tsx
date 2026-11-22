@@ -17,14 +17,24 @@ import {
 } from "@/lib/formulaires";
 import { mesureParId } from "@/lib/mesures";
 import { getRequestOrigin } from "@/lib/origin.functions";
-import { envoyerConsultation, getEtatSite, getJetonFormulaire } from "@/lib/site.functions";
+import {
+  envoyerConsultation,
+  envoyerContactSuite,
+  getDejaRepondu,
+  getEtatSite,
+  getJetonFormulaire,
+} from "@/lib/site.functions";
 import { metaPage } from "@/lib/partage";
 import { usePret } from "@/lib/use-pret";
 
 export const Route = createFileRoute("/consultation")({
   loader: async () => {
-    const [origine, etat] = await Promise.all([getRequestOrigin(), getEtatSite()]);
-    return { origine, etat };
+    const [origine, etat, dejaRepondu] = await Promise.all([
+      getRequestOrigin(),
+      getEtatSite(),
+      getDejaRepondu(),
+    ]);
+    return { origine, etat, dejaRepondu };
   },
   head: ({ loaderData }) => ({
     meta: metaPage({
@@ -87,8 +97,9 @@ const LIBELLES: Record<string, string> = {
 };
 
 function PageConsultation() {
-  const { etat } = Route.useLoaderData();
+  const { etat, dejaRepondu } = Route.useLoaderData();
   const [envoye, setEnvoye] = useState(false);
+  const [refuse, setRefuse] = useState(false);
   return (
     <>
       <Entete />
@@ -106,8 +117,10 @@ function PageConsultation() {
             </div>
           ) : envoye ? (
             <Merci inscriptionsOuvertes={etat.inscriptionsOuvertes} />
+          ) : dejaRepondu || refuse ? (
+            <DejaRepondu />
           ) : (
-            <Formulaire onEnvoye={() => setEnvoye(true)} />
+            <Formulaire onEnvoye={() => setEnvoye(true)} onDejaRepondu={() => setRefuse(true)} />
           )}
         </div>
       </main>
@@ -116,7 +129,13 @@ function PageConsultation() {
   );
 }
 
-function Formulaire({ onEnvoye }: { onEnvoye: () => void }) {
+function Formulaire({
+  onEnvoye,
+  onDejaRepondu,
+}: {
+  onEnvoye: () => void;
+  onDejaRepondu: () => void;
+}) {
   const obtenirJeton = useServerFn(getJetonFormulaire);
   const envoyer = useServerFn(envoyerConsultation);
   const pret = usePret();
@@ -178,6 +197,7 @@ function Formulaire({ onEnvoye }: { onEnvoye: () => void }) {
     try {
       const r = await envoyer({ data: { ...d, siteWeb: piege, jeton: jeton.current } });
       if (r.ok) return onEnvoye();
+      if ("dejaRepondu" in r && r.dejaRepondu) return onDejaRepondu();
       const e = r.erreurs ?? {};
       const etapeErreur = CHAMPS_ETAPE.findIndex((champs) => champs.some((c) => e[c]));
       if (etapeErreur >= 0) setEtape(etapeErreur);
@@ -593,8 +613,129 @@ function Merci({ inscriptionsOuvertes }: { inscriptionsOuvertes: boolean }) {
           </Link>
         </section>
       )}
+      <ConnaitreLaSuite />
       <SuivreNosTravaux />
       <Partage />
     </div>
+  );
+}
+
+function DejaRepondu() {
+  const titre = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    titre.current?.focus();
+  }, []);
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="carte">
+        <h1 ref={titre} tabIndex={-1} className="titre-section outline-none">
+          {CONSULTATION.dejaRepondu.titre}
+        </h1>
+        <p className="texte-long mt-4" role="status">
+          {CONSULTATION.dejaRepondu.texte}
+        </p>
+      </div>
+      <ConnaitreLaSuite />
+      <Partage />
+    </div>
+  );
+}
+
+/** Email facultatif pour connaître la suite. Envoyé à part, jamais avec les réponses. */
+function ConnaitreLaSuite() {
+  const obtenirJeton = useServerFn(getJetonFormulaire);
+  const envoyer = useServerFn(envoyerContactSuite);
+  const pret = usePret();
+  const [email, setEmail] = useState("");
+  const [piege, setPiege] = useState("");
+  const [erreur, setErreur] = useState("");
+  const [envoi, setEnvoi] = useState(false);
+  const [fait, setFait] = useState(false);
+  const jeton = useRef("");
+  const champ = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    void obtenirJeton({ data: { formulaire: "suite" } }).then((j) => {
+      jeton.current = j;
+    });
+  }, [obtenirJeton]);
+
+  const valider = async () => {
+    setEnvoi(true);
+    setErreur("");
+    try {
+      const r = await envoyer({ data: { email, siteWeb: piege, jeton: jeton.current } });
+      if (r.ok) return setFait(true);
+      setErreur(r.erreurs?.["email"] ?? r.message);
+    } catch {
+      setErreur("L'enregistrement n'a pas fonctionné. Réessayez dans un instant.");
+    } finally {
+      setEnvoi(false);
+    }
+    requestAnimationFrame(() => champ.current?.focus());
+  };
+
+  return (
+    <section className="carte" aria-labelledby="suite-titre">
+      <h2 id="suite-titre" className="text-2xl">
+        {CONSULTATION.suite.titre}
+      </h2>
+      <p className="texte-long mt-3">{CONSULTATION.suite.texte}</p>
+      {fait ? (
+        <p className="mt-4 flex items-center gap-2 font-semibold" role="status">
+          <CheckCircle2 size={20} className="text-accent" aria-hidden="true" />
+          {CONSULTATION.suite.merci}
+        </p>
+      ) : (
+        <form
+          noValidate
+          method="post"
+          className="mt-4 flex flex-col gap-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void valider();
+          }}
+        >
+          <ChampPiege valeur={piege} onChange={setPiege} />
+          <div className="champ">
+            <label htmlFor="champ-email-suite" className="etiquette">
+              {CONSULTATION.suite.libelle}
+            </label>
+            <input
+              ref={champ}
+              id="champ-email-suite"
+              name="email"
+              type="email"
+              autoComplete="email"
+              className="saisie"
+              value={email}
+              maxLength={254}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setErreur("");
+              }}
+              aria-invalid={erreur ? true : undefined}
+              aria-describedby={erreur ? "suite-separe suite-erreur" : "suite-separe"}
+            />
+            <p id="suite-separe" className="aide">
+              {CONSULTATION.suite.separe}
+            </p>
+            {erreur && (
+              <p id="suite-erreur" className="erreur" role="alert">
+                {erreur}
+              </p>
+            )}
+          </div>
+          <button
+            type="submit"
+            className="bouton bouton-plein self-start"
+            disabled={envoi || !pret}
+            aria-busy={envoi}
+          >
+            {envoi ? CONSULTATION.suite.envoi : CONSULTATION.suite.bouton}
+          </button>
+        </form>
+      )}
+    </section>
   );
 }

@@ -17,6 +17,7 @@ import {
 import { FUSEAU, NOMBRE_MESURES_A_CLASSER, type AtelierId } from "@/lib/config";
 import {
   nomFichier,
+  tableauContactsSuite,
   tableauInscriptions,
   tableauReponses,
   telecharger,
@@ -95,7 +96,7 @@ function PageAdmin() {
 
   const exporter = async (
     t: Tableau,
-    base: "reponses-consultation" | "inscriptions-ateliers",
+    base: "reponses-consultation" | "inscriptions-ateliers" | "contacts-suite",
     format: "xlsx" | "csv",
   ) => {
     if (format === "csv")
@@ -104,6 +105,7 @@ function PageAdmin() {
   };
   const reponses = () => tableauReponses(data.reponses, NOMBRE_MESURES_A_CLASSER);
   const inscriptions = () => tableauInscriptions(data.inscriptions, window.location.origin);
+  const contactsSuite = () => tableauContactsSuite(data.contactsSuite);
   const heure = new Date(dataUpdatedAt).toLocaleTimeString("fr-FR", {
     timeZone: FUSEAU,
     hour: "2-digit",
@@ -148,7 +150,7 @@ function PageAdmin() {
           </button>
         </div>
 
-        <section className="mt-6 grid gap-3 md:grid-cols-2" aria-label="Exports">
+        <section className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3" aria-label="Exports">
           <div className="dash-carte">
             <div className="dash-libelle">Consultation, {data.reponses.length} réponses</div>
             <div className="mt-3 flex flex-wrap gap-2">
@@ -184,6 +186,28 @@ function PageAdmin() {
                 type="button"
                 className="bouton bouton-contour bouton-petit"
                 onClick={() => void exporter(inscriptions(), "inscriptions-ateliers", "csv")}
+              >
+                .csv
+              </button>
+            </div>
+          </div>
+          <div className="dash-carte">
+            <div className="dash-libelle">
+              Suite, {data.contactsSuite.length} emails (liste séparée des réponses)
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="bouton bouton-plein bouton-petit"
+                onClick={() => void exporter(contactsSuite(), "contacts-suite", "xlsx")}
+              >
+                <Download size={16} aria-hidden="true" />
+                Télécharger les emails (.xlsx)
+              </button>
+              <button
+                type="button"
+                className="bouton bouton-contour bouton-petit"
+                onClick={() => void exporter(contactsSuite(), "contacts-suite", "csv")}
               >
                 .csv
               </button>

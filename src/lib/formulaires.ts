@@ -236,6 +236,18 @@ export const consultationSchema = profilSchema
 export const envoiConsultationSchema = consultationSchema.merge(antiRobotSchema);
 export type ReponseConsultation = z.infer<typeof consultationSchema>;
 
+/** Email facultatif laissé après la consultation, enregistré à part des réponses. */
+export const suiteSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(1, "Indiquez votre email.")
+    .email("Indiquez une adresse email valide (par exemple prenom@exemple.fr).")
+    .max(254),
+});
+export const envoiSuiteSchema = suiteSchema.merge(antiRobotSchema);
+
 /* ───────────── Inscription aux ateliers ───────────── */
 
 export const SITUATIONS_ATELIER = opts([

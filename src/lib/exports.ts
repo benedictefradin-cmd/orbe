@@ -1,9 +1,9 @@
-/** Construction des deux exports, séparés : réponses à la consultation et inscriptions aux ateliers. */
+/** Construction des exports, séparés : réponses à la consultation, inscriptions aux ateliers, emails pour la suite. */
 import { ATELIERS, FUSEAU, jourParis } from "@/lib/config";
 import { libelle, Q, SITUATIONS_ATELIER, type Option } from "@/lib/formulaires";
 import { mesureParId } from "@/lib/mesures";
 import { neutraliser, serializeCsv } from "@/lib/csv";
-import type { InscriptionAdmin, ReponseAdmin } from "@/lib/server/services.server";
+import type { ContactSuite, InscriptionAdmin, ReponseAdmin } from "@/lib/server/services.server";
 
 export type Tableau = { nom: string; entetes: string[]; lignes: string[][] };
 
@@ -123,8 +123,17 @@ export function tableauInscriptions(
   return { nom: "Inscriptions", entetes, lignes };
 }
 
+/** Emails laissés pour connaître la suite, sans aucun lien avec les réponses. */
+export function tableauContactsSuite(contacts: readonly ContactSuite[]): Tableau {
+  return {
+    nom: "Suite",
+    entetes: ["Email", "Laissé le"],
+    lignes: contacts.map((c) => [c.email, c.jour]),
+  };
+}
+
 export function nomFichier(
-  base: "reponses-consultation" | "inscriptions-ateliers",
+  base: "reponses-consultation" | "inscriptions-ateliers" | "contacts-suite",
   extension: "xlsx" | "csv",
   maintenant = new Date(),
 ): string {

@@ -14,6 +14,7 @@ import {
   formaterJour,
   formaterJourCourt,
   CLOTURE_CONSULTATION,
+  RESTITUTION,
   RESTITUTION_ATELIERS,
   SUPPRESSION_DES_DONNEES_ATELIERS,
   RESPONSABLE_DES_DONNEES,
@@ -247,7 +248,11 @@ export const AIDE = {
 export const FAQ = [
   {
     q: "Mes réponses sont elles anonymes ?",
-    r: "Oui. La consultation ne demande ni nom, ni email, ni code postal. Nous ne conservons ni votre adresse IP ni l'heure de votre réponse. Seul le jour est gardé. Les questions sur votre profil proposent toutes « Je préfère ne pas répondre ».",
+    r: "Oui. La consultation ne demande ni nom, ni email, ni code postal. Nous ne conservons ni votre adresse IP ni l'heure de votre réponse. Seul le jour est gardé. Les questions sur votre profil proposent toutes « Je préfère ne pas répondre ». À la fin, vous pouvez laisser votre email pour connaître la suite. Il est enregistré à part et jamais relié à vos réponses.",
+  },
+  {
+    q: "Puis je répondre plusieurs fois ?",
+    r: "Non. La consultation accepte une seule réponse par personne. Relisez vos réponses avant de valider. Vous pouvez revenir en arrière jusqu'au dernier moment.",
   },
   {
     q: "Combien de temps faut il ?",
@@ -279,7 +284,8 @@ export const CONSULTATION = {
     "Le texte n'est pas encore définitif. La présidentielle approche.",
   ],
   accroche: "Votre avis compte. Ensemble nous pouvons changer les choses.",
-  anonymat: "Cette consultation est anonyme. Nous ne vous demandons ni nom ni email.",
+  anonymat:
+    "Cette consultation est anonyme. Nous ne vous demandons ni nom ni email pour répondre. Une seule réponse par personne.",
   etapes: ["Qui êtes vous", "Vos priorités", "Pour aller plus loin", "Récapitulatif"],
   profilIntro:
     "Ces questions nous aident à savoir qui a répondu. Chacune propose « Je préfère ne pas répondre ».",
@@ -306,6 +312,20 @@ export const CONSULTATION = {
     "Merci. Vos réponses sont bien enregistrées. Inscrivez vous aux ateliers pour en discuter.",
   rebondTitre: "Allez plus loin : rejoignez un atelier de réflexion en décembre",
   rebondBouton: "Je découvre les ateliers",
+  dejaRepondu: {
+    titre: "Merci pour votre participation",
+    texte:
+      "Une réponse a déjà été envoyée depuis ce navigateur. La consultation accepte une seule réponse par personne.",
+  },
+  suite: {
+    titre: "Connaître la suite",
+    texte: `Laissez votre email si vous souhaitez recevoir la synthèse présentée ${RESTITUTION} et l'invitation au débat.`,
+    separe: `Votre email est enregistré à part. Il n'est jamais relié à vos réponses. Il est supprimé le ${formaterJour(SUPPRESSION_DES_DONNEES_ATELIERS, true)}.`,
+    libelle: "Votre email",
+    bouton: "Je veux connaître la suite",
+    envoi: "Enregistrement…",
+    merci: "C'est noté. Nous vous écrirons pour la restitution.",
+  },
 };
 
 /* ───────────── Ateliers ───────────── */
@@ -381,6 +401,7 @@ export const DONNEES = {
         "La consultation est anonyme. Nous n'enregistrons ni nom, ni email, ni adresse IP, ni l'heure de réponse, seulement le jour. Les réponses servent à préparer une synthèse présentée aux candidats.",
         "L'inscription aux ateliers demande vos coordonnées pour organiser l'atelier et vous envoyer le lien de la visio.",
         "Si vous l'avez accepté, votre email sert aussi à vous envoyer les actualités de l'Institut Rousseau ou de Face à l'inceste, selon vos choix.",
+        "Après la consultation, vous pouvez laisser votre email pour connaître la suite (synthèse et débat). Il est enregistré dans une liste à part, sans lien avec vos réponses. Il sert uniquement à vous écrire pour la restitution.",
       ],
     },
     {
@@ -392,7 +413,7 @@ export const DONNEES = {
     {
       titre: "Combien de temps",
       texte: [
-        `Les inscriptions aux ateliers sont supprimées le ${formaterJour(SUPPRESSION_DES_DONNEES_ATELIERS, true)}. Les consentements aux actualités transmis avant cette date restent gérés par chaque structure. Vous pouvez vous désinscrire à tout moment.`,
+        `Les inscriptions aux ateliers et les emails laissés pour connaître la suite sont supprimés le ${formaterJour(SUPPRESSION_DES_DONNEES_ATELIERS, true)}. Les consentements aux actualités transmis avant cette date restent gérés par chaque structure. Vous pouvez vous désinscrire à tout moment.`,
         "Les réponses anonymes à la consultation sont conservées pour l'analyse.",
         "Une empreinte chiffrée de votre adresse IP est gardée 24 heures pour limiter les envois automatiques. Elle est stockée à part et jamais reliée à vos réponses.",
       ],
@@ -407,7 +428,9 @@ export const DONNEES = {
     {
       titre: "Cookies",
       texte: [
-        "Ce site n'utilise aucun traceur publicitaire ni mesure d'audience. Le seul cookie sert à la connexion de l'organisatrice au tableau de bord.",
+        "Ce site n'utilise aucun traceur publicitaire ni mesure d'audience.",
+        "Après votre réponse, un cookie technique indique seulement qu'une réponse a été envoyée depuis ce navigateur. Il évite les réponses en double. Il ne contient aucun identifiant et ne permet pas de retrouver vos réponses. Il expire à la clôture de la consultation.",
+        "Un autre cookie sert à la connexion de l'organisatrice au tableau de bord.",
       ],
     },
   ],

@@ -18,13 +18,14 @@ export async function verifierEnvoi(
   jeton: string,
   siteWeb: string,
   maintenantMs = Date.now(),
+  delaiMinimumMs = DELAI_MINIMUM_ENVOI_MS,
 ): Promise<RefusRobot | null> {
   if (siteWeb.trim() !== "") return "piege";
   const [t = "", sig = ""] = jeton.split(".");
   if (!/^\d{13}$/.test(t) || !egaliteSure(sig, await signer(`formulaire:${formulaire}`, t)))
     return "jeton";
   const age = maintenantMs - Number(t);
-  if (age < DELAI_MINIMUM_ENVOI_MS) return "trop_rapide";
+  if (age < delaiMinimumMs) return "trop_rapide";
   if (age > DUREE_MAX_JETON_MS) return "jeton";
   return null;
 }

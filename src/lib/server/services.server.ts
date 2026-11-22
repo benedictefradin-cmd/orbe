@@ -2,6 +2,7 @@
 import {
   ATELIERS,
   CAPACITE_PAR_ATELIER,
+  DELAI_MINIMUM_ENVOI_SUITE_MS,
   inscriptionsOuvertes,
   isClosed,
   jourParis,
@@ -10,10 +11,12 @@ import {
 import {
   envoiConsultationSchema,
   envoiInscriptionSchema,
+  envoiSuiteSchema,
   erreursParChamp,
 } from "@/lib/formulaires";
 import { MESSAGES_REFUS, verifierEnvoi, verifierQuota } from "@/lib/server/anti-robot.server";
 import { rpc } from "@/lib/server/db.server";
+import { aDejaRepondu } from "@/lib/server/participation.server";
 
 export type Place = {
   atelier_id: string;
@@ -82,13 +85,17 @@ export async function etatSite(now: Date, avecPlaces = true): Promise<EtatSite> 
 const ERREUR_TECHNIQUE =
   "L'enregistrement n'a pas fonctionné. Vos réponses sont toujours là, réessayez dans un instant.";
 
+export const MESSAGE_DEJA_REPONDU =
+  "Une réponse a déjà été envoyée depuis ce navigateur. La consultation accepte une seule réponse par personne.";
+
 export async function enregistrerConsultation(
   input: unknown,
   headers: Headers,
   now: Date,
-): Promise<{ ok: true } | Echec> {
+): Promise<{ ok: true } | (Echec & { dejaRepondu?: true })> {
   if (isClosed(now))
     return { ok: false, message: "La consultation est close, merci pour votre intérêt." };
+  if (aDejaRepondu(headers)) return { ok: false, message: MESSAGE_DEJA_REPONDU, dejaRepondu: true };
   const v = envoiConsultationSchema.safeParse(input);
   if (!v.success)
     return {
@@ -123,6 +130,40 @@ export async function enregistrerConsultation(
   } catch (e) {
     console.error(e);
     return { ok: false, message: ERREUR_TECHNIQUE };
+  }
+}
+
+/** Email laissé pour connaître la suite. Enregistré à part, sans lien avec une réponse. */
+export async function enregistrerContactSuite(
+  input: unknown,
+  headers: Headers,
+  now: Date,
+): Promise<{ ok: true } | Echec> {
+  const v = envoiSuiteSchema.safeParse(input);
+  if (!v.success)
+    return {
+      ok: false,
+      message: "Votre email est à vérifier.",
+      erreurs: erreursParChamp(v.error),
+    };
+  const refus = await verifierEnvoi(
+    "suite",
+    v.data.jeton,
+    v.data.siteWeb,
+    Date.now(),
+    DELAI_MINIMUM_ENVOI_SUITE_MS,
+  );
+  if (refus) return { ok: false, message: MESSAGES_REFUS[refus] };
+  try {
+    if (!(await verifierQuota(headers))) return { ok: false, message: MESSAGES_REFUS.quota };
+    await rpc("inscrire_contact_suite", { _email: v.data.email, _jour: jourParis(now) });
+    return { ok: true };
+  } catch (e) {
+    console.error(e);
+    return {
+      ok: false,
+      message: "L'enregistrement n'a pas fonctionné. Réessayez dans un instant.",
+    };
   }
 }
 
@@ -255,8 +296,10 @@ export type ReponseAdmin = {
   poids_vote: string | null;
   provenance: string | null;
 };
+export type ContactSuite = { email: string; jour: string };
 export type DonneesAdmin = {
   reponses: ReponseAdmin[];
+  contactsSuite: ContactSuite[];
   inscriptions: InscriptionAdmin[];
   places: Place[];
   misAJour: string;
@@ -265,13 +308,15 @@ export type DonneesAdmin = {
 
 export async function donneesAdmin(now: Date): Promise<DonneesAdmin> {
   await rpc("purger_donnees_ateliers", { _a_partir_du: SUPPRESSION_DES_DONNEES_ATELIERS });
-  const [reponses, inscriptions, places] = await Promise.all([
+  const [reponses, inscriptions, places, contactsSuite] = await Promise.all([
     rpc<ReponseAdmin[]>("admin_reponses"),
     rpc<InscriptionAdmin[]>("admin_inscriptions"),
     lirePlaces(),
+    rpc<ContactSuite[]>("admin_contacts_suite"),
   ]);
   return {
     reponses,
+    contactsSuite,
     inscriptions,
     places,
     misAJour: new Date().toISOString(),
