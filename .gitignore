@@ -35,5 +35,7 @@ test-results
 playwright-report
 .env
 
+.vercel
+
 # Captures de la refonte (npm run captures)
 captures/
