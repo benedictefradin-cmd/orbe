@@ -46,7 +46,7 @@ function PageAnnulation() {
       <Entete />
       <main id="contenu" className="section">
         <div className="conteneur conteneur-etroit">
-          <h1 className="titre-section">{ANNULATION.titre}</h1>
+          <h1 className="titre-principal">{ANNULATION.titre}</h1>
           <div className="carte mt-6" aria-live="polite">
             {!inscription ? (
               <p className="texte-long">{ANNULATION.introuvable}</p>
@@ -65,7 +65,7 @@ function PageAnnulation() {
                   {actives.map((d) => {
                     const a = atelierParId(d.atelier_id);
                     return a ? (
-                      <li key={d.atelier_id} className="rounded-lg bg-fond-alterne p-3">
+                      <li key={d.atelier_id} className="border-b border-filet py-3">
                         <strong>
                           Atelier {a.numero}, {a.titre}
                         </strong>

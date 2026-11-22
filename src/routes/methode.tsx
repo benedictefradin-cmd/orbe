@@ -23,11 +23,11 @@ function PageMethode() {
       <Entete />
       <main id="contenu" className="section">
         <div className="conteneur conteneur-etroit">
-          <h1 className="titre-section">{METHODE.titre}</h1>
+          <h1 className="titre-principal">{METHODE.titre}</h1>
           <p className="texte-long mt-4">{METHODE.intro}</p>
           {METHODE.sections.map((s) => (
             <section key={s.titre} className="mt-10">
-              <h2 className="text-2xl">{s.titre}</h2>
+              <h2 className="titre-bloc">{s.titre}</h2>
               {s.textes.map((t) => (
                 <p key={t} className="texte-long mt-3">
                   {t}

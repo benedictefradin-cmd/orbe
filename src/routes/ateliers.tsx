@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { CalendarPlus, Check, CheckCircle2, Copy, Video } from "lucide-react";
-import { BesoinDeParler, Entete, Partage, PiedDePage, SuivreNosTravaux } from "@/components/site";
+import { AideCourte, Entete, Partage, PiedDePage, SuivreNosTravaux } from "@/components/site";
+import { Marque } from "@/components/ui/trait";
 import { CaseACocher, ChampPiege, ChoixMultiple, ResumeErreurs, Texte } from "@/components/champs";
-import { ATELIERS_PAGE, META, STRUCTURES } from "@/lib/contenus";
+import { ATELIERS_PAGE, DATE_LIMITE_INSCRIPTION, META, STRUCTURES } from "@/lib/contenus";
 import {
   ATELIERS,
   CAPACITE_PAR_ATELIER,
@@ -82,59 +82,84 @@ export const Route = createFileRoute("/ateliers")({
 
 const T = ATELIERS_PAGE;
 
+/** Échéance soulignée du trait corail. */
+function Echeance({ className = "" }: { className?: string }) {
+  const [avant, apres] = T.ouvertes.split(DATE_LIMITE_INSCRIPTION);
+  return (
+    <p className={`echeance-date ${className}`}>
+      {avant}
+      <Marque geste="souligner">{DATE_LIMITE_INSCRIPTION}</Marque>
+      {apres}
+    </p>
+  );
+}
+
+/** Description d'un atelier : créneau et format. Portée par la case à cocher quand les inscriptions sont ouvertes. */
+function DescriptionAtelier({ atelier }: { atelier: (typeof ATELIERS)[number] }) {
+  return (
+    <>
+      <span className="choix-titre">
+        Atelier {atelier.numero} : {atelier.titre}
+      </span>
+      <span className="block">{formaterCreneau(atelier.debut, atelier.fin)}</span>
+      <span className="choix-detail">
+        En visio ({formaterDuree(dureeMinutes(atelier.debut, atelier.fin))})
+      </span>
+    </>
+  );
+}
+
 function PageAteliers() {
   const { etat } = Route.useLoaderData();
   const [resultat, setResultat] = useState<ResultatInscription | null>(null);
   return (
     <>
       <Entete />
-      <main id="contenu" className="section pt-10">
-        <div className="conteneur conteneur-etroit">
-          {resultat ? (
+      <main id="contenu" className="section">
+        {resultat ? (
+          <div className="conteneur conteneur-etroit">
             <Confirmation resultat={resultat} consultationOuverte={!etat.consultationClose} />
-          ) : (
-            <>
+          </div>
+        ) : (
+          <div className="conteneur grille-formulaire">
+            <div className="colonne-reperes">
+              {etat.inscriptionsOuvertes && <Echeance />}
+              <AideCourte />
+            </div>
+            <div className="min-w-0">
               <header>
-                <h1 className="titre-section">{T.titre}</h1>
+                <h1 className="titre-principal">{T.titre}</h1>
                 <ul className="texte-long mt-4 flex flex-col gap-2">
                   {T.intro.map((l) => (
                     <li key={l}>{l}</li>
                   ))}
                 </ul>
-                <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-                  {ATELIERS.map((a) => (
-                    <li key={a.id} className="carte p-4">
-                      <p className="surtitre">Atelier {a.numero}</p>
-                      <p className="mt-1 font-titre text-xl font-semibold text-primaire">
-                        {a.titre}
-                      </p>
-                      <p className="mt-2">{formaterCreneau(a.debut, a.fin)}</p>
-                      <p className="mention mt-1 flex items-center gap-1.5">
-                        <Video size={15} aria-hidden="true" />
-                        En visio ({formaterDuree(dureeMinutes(a.debut, a.fin))})
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-                {etat.inscriptionsOuvertes && (
-                  <p className="mt-6 rounded-lg bg-accent-pale p-4 font-semibold">{T.ouvertes}</p>
-                )}
+                {etat.inscriptionsOuvertes && <Echeance className="mt-5 lg:hidden" />}
               </header>
               {etat.inscriptionsOuvertes ? (
                 <Formulaire places={etat.places} onInscrit={setResultat} />
               ) : (
-                <div className="carte mt-8" role="status">
-                  <p className="text-lg font-semibold">{T.closes}</p>
-                  {!etat.consultationClose && (
-                    <Link to="/consultation" className="bouton bouton-plein mt-5">
-                      {T.boutonConsultation}
-                    </Link>
-                  )}
+                <div className="mt-8">
+                  <ul className="etapes-liste">
+                    {ATELIERS.map((a) => (
+                      <li key={a.id} className="flex-col gap-0">
+                        <DescriptionAtelier atelier={a} />
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="carte mt-8" role="status">
+                    <p className="font-titre text-lg font-semibold text-navy">{T.closes}</p>
+                    {!etat.consultationClose && (
+                      <Link to="/consultation" className="bouton bouton-plein mt-5">
+                        {T.boutonConsultation}
+                      </Link>
+                    )}
+                  </div>
                 </div>
               )}
-            </>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
       </main>
       <PiedDePage />
     </>
@@ -244,7 +269,7 @@ function Formulaire({
       }}
       aria-labelledby="form-titre"
     >
-      <h2 id="form-titre" className="text-3xl">
+      <h2 id="form-titre" className="titre-section">
         Je m'inscris
       </h2>
       <p className="aide mt-2">Les ateliers sont ouverts aux personnes de 18 ans et plus.</p>
@@ -271,36 +296,31 @@ function Formulaire({
           <legend>
             {LIBELLES_INSCRIPTION.ateliers} <span className="aide font-normal">(obligatoire)</span>
           </legend>
-          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+          <div className="choix-liste deux-colonnes">
             {ATELIERS.map((a) => {
               const p = places.find((x) => x.atelier_id === a.id);
               const complet = p?.restantes === 0;
               return (
-                <label key={a.id} className="choix flex-col gap-1 p-4">
-                  <span className="flex items-start gap-3">
-                    <input
-                      type="checkbox"
-                      checked={s.ateliers.includes(a.id)}
-                      onChange={(e) =>
-                        maj("ateliers")(
-                          e.target.checked
-                            ? [...s.ateliers, a.id]
-                            : s.ateliers.filter((x) => x !== a.id),
-                        )
-                      }
-                    />
-                    <span>
-                      <strong className="block">
-                        Atelier {a.numero} : {a.titre}
-                      </strong>
-                      {formaterCreneau(a.debut, a.fin)}
-                    </span>
+                <label key={a.id} className="choix">
+                  <input
+                    type="checkbox"
+                    checked={s.ateliers.includes(a.id)}
+                    onChange={(e) =>
+                      maj("ateliers")(
+                        e.target.checked
+                          ? [...s.ateliers, a.id]
+                          : s.ateliers.filter((x) => x !== a.id),
+                      )
+                    }
+                  />
+                  <span>
+                    <DescriptionAtelier atelier={a} />
+                    {CAPACITE_PAR_ATELIER !== "illimité" && p && (
+                      <span className={`badge mt-2 ${complet ? "badge-attente" : ""}`}>
+                        {complet ? T.complet : T.placesRestantes(p.restantes ?? 0)}
+                      </span>
+                    )}
                   </span>
-                  {CAPACITE_PAR_ATELIER !== "illimité" && p && (
-                    <span className={`badge ml-8 self-start ${complet ? "badge-attente" : ""}`}>
-                      {complet ? T.complet : T.placesRestantes(p.restantes ?? 0)}
-                    </span>
-                  )}
                 </label>
               );
             })}
@@ -393,7 +413,7 @@ function Formulaire({
           facultatif
           multiligne
           max={1000}
-          apres={<p className="mt-2 rounded-lg bg-fond-alterne p-4 text-[15px]">{T.concerne}</p>}
+          apres={<p className="encart mt-2">{T.concerne}</p>}
         />
         <Texte
           nom="accessibilite"
@@ -441,7 +461,7 @@ function Formulaire({
           </p>
         </div>
 
-        <BesoinDeParler compact id="aide-ateliers" />
+        <AideCourte className="lg:hidden" />
 
         <button
           type="submit"
@@ -490,19 +510,17 @@ function Confirmation({
     }
   };
   return (
-    <div className="flex flex-col gap-6">
-      <div className="carte carte-accent">
-        <CheckCircle2 size={40} className="text-accent" aria-hidden="true" />
-        <h1 ref={titre} tabIndex={-1} className="titre-section mt-3 outline-none">
+    <div className="flex flex-col gap-10">
+      <div>
+        <h1 ref={titre} tabIndex={-1} className="titre-principal outline-none">
           {T.merci}
         </h1>
-        <ul className="mt-5 flex flex-col gap-3">
+        <ul className="etapes-liste mt-6">
           {choisis.map((c) => (
-            <li key={c.atelier_id} className="rounded-lg bg-fond-alterne p-4">
-              <strong>
+            <li key={c.atelier_id} className="flex-col gap-0 text-encre">
+              <strong className="text-navy">
                 Atelier {c.atelier.numero} : {c.atelier.titre}
               </strong>
-              <br />
               {formaterCreneau(c.atelier.debut, c.atelier.fin)}
               {c.statut === "liste_attente" && (
                 <span className="badge badge-attente mt-2 block w-fit">
@@ -520,7 +538,6 @@ function Confirmation({
             onClick={agenda}
             disabled={!lien}
           >
-            <CalendarPlus size={18} aria-hidden="true" />
             {T.agenda}
           </button>
           <p className="mention">{T.agendaAide}</p>
@@ -532,7 +549,7 @@ function Confirmation({
           <div className="mt-2 flex flex-col gap-2 sm:flex-row">
             <input
               id="lien-annulation"
-              className="saisie text-[15px]"
+              className="saisie"
               readOnly
               value={lien}
               onFocus={(e) => e.target.select()}
@@ -550,11 +567,6 @@ function Confirmation({
                 }
               }}
             >
-              {copie ? (
-                <Check size={18} aria-hidden="true" />
-              ) : (
-                <Copy size={18} aria-hidden="true" />
-              )}
               {copie ? T.copie : T.copier}
             </button>
           </div>
@@ -565,7 +577,7 @@ function Confirmation({
       </div>
       {consultationOuverte && (
         <section className="carte" aria-labelledby="rebond">
-          <h2 id="rebond" className="text-2xl">
+          <h2 id="rebond" className="titre-bloc">
             {T.rebond}
           </h2>
           <Link to="/consultation" className="bouton bouton-plein mt-4">

@@ -15,8 +15,8 @@ import { STRUCTURES } from "@/lib/contenus";
 
 function PageIntrouvable() {
   return (
-    <main id="contenu" className="conteneur conteneur-etroit section text-center">
-      <h1 className="titre-section">Cette page n'existe pas</h1>
+    <main id="contenu" className="conteneur conteneur-etroit section">
+      <h1 className="titre-principal">Cette page n'existe pas</h1>
       <p className="mt-4">Le lien est peut être incomplet, ou la page a été déplacée.</p>
       <Link to="/" className="bouton bouton-plein mt-8">
         Retour à l'accueil
@@ -29,12 +29,12 @@ function PageErreur({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   return (
-    <main id="contenu" className="conteneur conteneur-etroit section text-center">
-      <h1 className="titre-section">La page ne s'est pas chargée</h1>
+    <main id="contenu" className="conteneur conteneur-etroit section">
+      <h1 className="titre-principal">La page ne s'est pas chargée</h1>
       <p className="mt-4">
         Un problème est survenu de notre côté. Vous pouvez réessayer dans un instant.
       </p>
-      <div className="mt-8 flex flex-wrap justify-center gap-3">
+      <div className="mt-8 flex flex-wrap gap-3">
         <button
           type="button"
           className="bouton bouton-plein"

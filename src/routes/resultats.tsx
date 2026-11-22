@@ -34,7 +34,7 @@ function PageResultats() {
       <Entete />
       <main id="contenu" className="section">
         <div className="conteneur">
-          <h1 className="titre-section">{RESULTATS.titre}</h1>
+          <h1 className="titre-principal">{RESULTATS.titre}</h1>
           <p className="texte-long mt-4">{RESULTATS.total(r.total)}</p>
           <p className="aide mt-2">{RESULTATS.avertissement}</p>
           <div className="mt-8 overflow-x-auto">

@@ -1,23 +1,19 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import {
-  Check,
-  Copy,
-  Facebook,
-  Instagram,
-  Linkedin,
-  Menu,
-  MessageCircle,
-  MessageSquare,
-  Phone,
-  Share2,
-  Youtube,
-  type LucideIcon,
-} from "lucide-react";
+import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import logoIr from "@/assets/img/logo-institut-rousseau.svg";
 import logoFai from "@/assets/img/logo-face-a-l-inceste.png";
-import { ACCUEIL, AIDE, NAVIGATION, PARTAGE, PIED, STRUCTURES, SUIVRE } from "@/lib/contenus";
+import {
+  ACCUEIL,
+  AIDE,
+  METHODE,
+  NAVIGATION,
+  PARTAGE,
+  PIED,
+  STRUCTURES,
+  SUIVRE,
+} from "@/lib/contenus";
 
 export function Logos({ lien = true }: { lien?: boolean }) {
   const contenu = (
@@ -38,7 +34,7 @@ export function Logos({ lien = true }: { lien?: boolean }) {
   );
 }
 
-/** En tête : logos et liens vers les pages dédiées. Menu en tiroir sur mobile. */
+/** En tête : logos et liens vers les pages dédiées. Menu en tiroir sous 1024 px. */
 export function Entete() {
   const [ouvert, setOuvert] = useState(false);
   return (
@@ -55,27 +51,22 @@ export function Entete() {
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex items-center lg:hidden">
           <Sheet open={ouvert} onOpenChange={setOuvert}>
             <SheetTrigger asChild>
               <button
                 type="button"
-                className="burger bouton bouton-discret bouton-petit"
+                className="bouton bouton-discret bouton-petit bouton-icone -mr-2"
                 aria-label="Ouvrir le menu"
               >
                 <Menu aria-hidden="true" />
               </button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[86vw] max-w-sm" aria-describedby={undefined}>
-              <SheetTitle className="font-titre text-xl text-primaire">Menu</SheetTitle>
-              <nav className="mt-6 flex flex-col gap-1" aria-label="Pages du site">
+              <SheetTitle className="surtitre">Menu</SheetTitle>
+              <nav className="menu-tiroir mt-4 border-t-2 border-navy" aria-label="Pages du site">
                 {NAVIGATION.map((n) => (
-                  <Link
-                    key={n.chemin}
-                    to={n.chemin}
-                    onClick={() => setOuvert(false)}
-                    className="flex min-h-12 items-center rounded-md px-3 text-lg font-semibold text-texte no-underline hover:bg-accent-pale"
-                  >
+                  <Link key={n.chemin} to={n.chemin} onClick={() => setOuvert(false)}>
                     {n.libelle}
                   </Link>
                 ))}
@@ -107,137 +98,134 @@ function LienExterne({
   );
 }
 
-/** Logos X et Bluesky, absents de lucide, tracés d'après Simple Icons. */
-function LogoPlein({ chemin }: { chemin: string }) {
-  return (
-    <svg viewBox="0 0 24 24" width={18} height={18} fill="currentColor" aria-hidden="true">
-      <path d={chemin} />
-    </svg>
-  );
-}
-const LOGO_X =
-  "M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z";
-const LOGO_BLUESKY =
-  "M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z";
-const ICONES: Record<string, LucideIcon> = {
-  LinkedIn: Linkedin,
-  Instagram,
-  YouTube: Youtube,
-  Facebook,
-};
-
-function IconeReseau({ nom }: { nom: string }) {
-  if (nom === "X") return <LogoPlein chemin={LOGO_X} />;
-  if (nom === "Bluesky") return <LogoPlein chemin={LOGO_BLUESKY} />;
-  const Icone = ICONES[nom];
-  return Icone ? <Icone size={20} aria-hidden="true" /> : null;
-}
-
-/** Réseaux en icônes seules, le nom reste lu par les lecteurs d'écran. */
+/** Réseaux en liens texte, sans pastille ni icône. */
 export function Reseaux({ structure }: { structure: keyof typeof STRUCTURES }) {
   const s = STRUCTURES[structure];
   return (
-    <ul className="reseaux" aria-label={`Réseaux, ${s.nom}`}>
+    <ul className="liens-texte" aria-label={`Réseaux, ${s.nom}`}>
       {s.reseaux.map((r) => (
         <li key={r.url}>
-          <LienExterne href={r.url} className="reseau" titre={r.nom}>
-            <IconeReseau nom={r.nom} />
-            <span className="sr-only">{r.nom}</span>
-          </LienExterne>
+          <LienExterne href={r.url}>{r.nom}</LienExterne>
         </li>
       ))}
     </ul>
   );
 }
 
+/** Colophon. Le bloc « Besoin de parler » le précède sur toutes les pages. */
 export function PiedDePage() {
   return (
-    <footer className="border-t border-bordure bg-fond-alterne">
-      <div className="conteneur grid gap-8 py-12 md:grid-cols-[1.2fr_1fr_1fr]">
-        <div className="flex flex-col gap-4">
-          <Logos lien={false} />
-          <p className="mention">Une démarche commune pour la présidentielle 2027.</p>
+    <>
+      <BesoinDeParler id="aide" />
+      <footer className="pied">
+        <div className="conteneur pied-grille">
+          <div className="pied-colophon">
+            <Logos lien={false} />
+            <p className="meta">Une démarche commune pour la présidentielle 2027.</p>
+          </div>
+          <div>
+            <h2>{STRUCTURES.ir.nom}</h2>
+            <Reseaux structure="ir" />
+          </div>
+          <div>
+            <h2>{STRUCTURES.fai.nom}</h2>
+            <Reseaux structure="fai" />
+          </div>
+          <ul className="liens-texte pied-liens md:flex-col" aria-label="Informations">
+            <li>
+              <Link to="/donnees-personnelles">{PIED.donnees}</Link>
+            </li>
+            <li>
+              <Link to="/methode">{METHODE.lienPied}</Link>
+            </li>
+            <li>
+              <LienExterne href={PIED.contactUrl}>{PIED.contact}</LienExterne>
+            </li>
+          </ul>
         </div>
-        <div className="flex flex-col gap-3">
-          <h2 className="font-sans text-base font-bold">{STRUCTURES.ir.nom}</h2>
-          <Reseaux structure="ir" />
-        </div>
-        <div className="flex flex-col gap-3">
-          <h2 className="font-sans text-base font-bold">{STRUCTURES.fai.nom}</h2>
-          <Reseaux structure="fai" />
-        </div>
-      </div>
-      <div className="conteneur flex flex-wrap gap-x-6 gap-y-2 border-t border-bordure py-6">
-        <Link to="/donnees-personnelles" className="inline-flex min-h-11 items-center">
-          {PIED.donnees}
-        </Link>
-        <LienExterne href={PIED.contactUrl} className="inline-flex min-h-11 items-center">
-          {PIED.contact}
-        </LienExterne>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 }
 
-/** Numéros d'aide, discrets mais visibles, repris dans les deux formulaires. */
-export function BesoinDeParler({ compact = false, id }: { compact?: boolean; id?: string }) {
+const appeler = (numero: string) => `tel:${numero.replace(/\s/g, "")}`;
+const URGENCE = "17";
+
+/** Numéros d'aide, identiques sur toutes les pages, pleine largeur, jamais repliés. */
+export function BesoinDeParler({ id }: { id: string }) {
+  const titre = `${id}-titre`;
   return (
-    <aside
-      id={id}
-      className={`rounded-xl border border-ciel bg-accent-pale ${compact ? "p-4" : "p-6"}`}
-      aria-labelledby={`${id ?? "aide"}-titre`}
-    >
-      <h2
-        id={`${id ?? "aide"}-titre`}
-        className={`font-sans font-bold text-primaire ${compact ? "text-base" : "text-xl"}`}
-      >
-        {AIDE.titre}
-      </h2>
-      {!compact && <p className="mt-2">{AIDE.intro}</p>}
-      <ul className={`grid gap-3 ${compact ? "mt-3" : "mt-4 sm:grid-cols-3"}`}>
-        {AIDE.numeros
-          .filter((n) => !compact || n.numero !== "17")
-          .map((n) => (
-            <li key={n.numero} className="flex items-start gap-3">
+    <section id={id} className="aide-bande" aria-labelledby={titre}>
+      <div className="conteneur aide-bande-grille">
+        <div>
+          <h2 id={titre} className="titre-section">
+            {AIDE.titre}
+          </h2>
+          <p className="texte-long mt-3">{AIDE.intro}</p>
+        </div>
+        <ul className="numeros">
+          {AIDE.numeros.map((n) => (
+            <li key={n.numero} className={n.numero === URGENCE ? "numero-urgence" : undefined}>
               <a
-                href={`tel:${n.numero.replace(/\s/g, "")}`}
-                className="inline-flex min-h-11 min-w-16 items-center justify-center gap-1 rounded-md bg-white px-3 font-display text-xl font-bold text-primaire no-underline hover:text-accent-survol"
+                href={appeler(n.numero)}
+                className="numero-appel"
                 aria-label={`Appeler le ${n.numero}, ${n.nom}`}
               >
-                <Phone size={16} aria-hidden="true" />
                 {n.numero}
               </a>
-              <span className="text-[15px] leading-snug">
-                <strong>{n.nom}</strong>
-                <br />
-                {n.texte}
+              <span>
+                <span className="numero-nom">{n.nom}</span>
+                <span className={n.numero === URGENCE ? "text-texte-2" : undefined}>{n.texte}</span>
               </span>
             </li>
           ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/** Rappel court des numéros, pour la colonne de repères et le fil des formulaires. */
+export function AideCourte({ className = "" }: { className?: string }) {
+  return (
+    <div className={`aide-courte ${className}`}>
+      <p className="font-titre font-semibold text-navy">{AIDE.titre}</p>
+      <ul>
+        {AIDE.numeros
+          .filter((n) => n.numero !== URGENCE)
+          .map((n) => (
+            <li key={n.numero}>
+              <a
+                href={appeler(n.numero)}
+                className="numero-appel"
+                aria-label={`Appeler le ${n.numero}, ${n.nom}`}
+              >
+                {n.numero}
+              </a>
+              <span className="numero-nom">{n.nom}</span>
+            </li>
+          ))}
       </ul>
-    </aside>
+    </div>
   );
 }
 
 export function SuivreNosTravaux() {
   return (
     <section className="carte" aria-labelledby="suivre-titre">
-      <h2 id="suivre-titre" className="text-2xl">
+      <h2 id="suivre-titre" className="titre-bloc">
         {SUIVRE.titre}
       </h2>
-      <div className="mt-4 grid gap-6 md:grid-cols-2">
-        <div className="flex flex-col gap-3">
-          <h3 className="font-sans text-base font-bold">{STRUCTURES.ir.nom}</h3>
+      <div className="mt-4 grid gap-6 sm:grid-cols-2">
+        <div>
+          <h3 className="text-base font-semibold">{STRUCTURES.ir.nom}</h3>
           <Reseaux structure="ir" />
-          <LienExterne
-            href={STRUCTURES.ir.newsletter}
-            className="inline-flex min-h-11 items-center font-semibold"
-          >
+          <LienExterne href={STRUCTURES.ir.newsletter} className="lien-fort">
             {SUIVRE.newsletter}
           </LienExterne>
         </div>
-        <div className="flex flex-col gap-3">
-          <h3 className="font-sans text-base font-bold">{STRUCTURES.fai.nom}</h3>
+        <div>
+          <h3 className="text-base font-semibold">{STRUCTURES.fai.nom}</h3>
           <Reseaux structure="fai" />
         </div>
       </div>
@@ -267,28 +255,24 @@ export function Partage() {
   const classe = "bouton bouton-contour bouton-petit";
   return (
     <section className="carte" aria-labelledby="partage-titre">
-      <h2 id="partage-titre" className="text-2xl">
+      <h2 id="partage-titre" className="titre-bloc">
         {PARTAGE.titre}
       </h2>
-      <p className="mt-2">{PARTAGE.texte}</p>
+      <p className="texte-long mt-2">{PARTAGE.texte}</p>
       <div className="mt-4 flex flex-wrap gap-2">
         <button type="button" className={classe} onClick={copier}>
-          {copie ? <Check size={18} aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
           {copie ? PARTAGE.copie : PARTAGE.copier}
         </button>
         <LienExterne className={classe} href={`https://wa.me/?text=${encodeURIComponent(texte)}`}>
-          <MessageCircle size={18} aria-hidden="true" />
           WhatsApp
         </LienExterne>
         <a className={classe} href={`sms:?&body=${encodeURIComponent(texte)}`}>
-          <MessageSquare size={18} aria-hidden="true" />
           SMS
         </a>
         <LienExterne
           className={classe}
           href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}
         >
-          <Linkedin size={18} aria-hidden="true" />
           LinkedIn
         </LienExterne>
         {natif && (
@@ -301,7 +285,6 @@ export function Partage() {
                 .catch(() => {});
             }}
           >
-            <Share2 size={18} aria-hidden="true" />
             {PARTAGE.natif}
           </button>
         )}

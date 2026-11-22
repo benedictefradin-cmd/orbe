@@ -10,6 +10,13 @@ export function Erreur({ id, message }: { id: string; message?: string | undefin
   );
 }
 
+/** Choix courts en grille automatique, choix longs sur une ou deux colonnes. */
+const LONGUEUR_COURTE = 22;
+function classeListe(options: readonly Option[], colonnes: boolean) {
+  if (options.every((o) => o.libelle.length <= LONGUEUR_COURTE)) return "choix-liste courts";
+  return colonnes ? "choix-liste deux-colonnes" : "choix-liste";
+}
+
 const decrit = (...ids: (string | false | undefined)[]) =>
   ids.filter(Boolean).join(" ") || undefined;
 
@@ -55,7 +62,7 @@ export function ChoixUnique({
           {aide}
         </p>
       )}
-      <div className={`choix-liste ${colonnes ? "deux-colonnes" : ""}`}>
+      <div className={classeListe(options, colonnes)}>
         {liste.map((o) => (
           <label
             key={o.valeur}
@@ -123,7 +130,7 @@ export function ChoixMultiple({
           {aide}
         </p>
       )}
-      <div className={`choix-liste ${colonnes ? "deux-colonnes" : ""}`}>
+      <div className={classeListe(options, colonnes)}>
         {liste.map((o) => (
           <label
             key={o.valeur}

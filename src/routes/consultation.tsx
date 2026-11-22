@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, ArrowRight, CheckCircle2, Phone } from "lucide-react";
-import { BesoinDeParler, Entete, Partage, PiedDePage, SuivreNosTravaux } from "@/components/site";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { AideCourte, Entete, Partage, PiedDePage, SuivreNosTravaux } from "@/components/site";
 import {
   CaseACocher,
   ChampPiege,
@@ -12,15 +12,8 @@ import {
   Texte,
 } from "@/components/champs";
 import { Classement } from "@/components/classement";
-import {
-  CONSULTATION,
-  CRENEAU_1,
-  CRENEAU_2,
-  DATE_LIMITE_INSCRIPTION,
-  META,
-  METHODE,
-} from "@/lib/contenus";
-import { ATELIERS } from "@/lib/config";
+import { CONSULTATION, META, METHODE } from "@/lib/contenus";
+import { NOMBRE_MESURES_A_CLASSER } from "@/lib/config";
 import {
   AGE_MOINS_15,
   classementSchema,
@@ -139,14 +132,16 @@ function PageConsultation() {
   const { etat, dejaRepondu } = Route.useLoaderData();
   const [envoi, setEnvoi] = useState<Envoi | null>(null);
   const [refuse, setRefuse] = useState(false);
+  // Le formulaire prend toute la largeur (colonne de repères, classement), les autres écrans une seule colonne.
+  const formulaire = !etat.consultationClose && !envoi && !(dejaRepondu || refuse);
   return (
     <>
       <Entete />
-      <main id="contenu" className="section pt-10">
-        <div className="conteneur conteneur-etroit">
+      <main id="contenu" className="section">
+        <div className={formulaire ? "conteneur" : "conteneur conteneur-etroit"}>
           {etat.consultationClose ? (
-            <div className="carte">
-              <h1 className="titre-section">{CONSULTATION.titre}</h1>
+            <div>
+              <h1 className="titre-principal">{CONSULTATION.titre}</h1>
               <p className="texte-long mt-4" role="status">
                 {CONSULTATION.close}
               </p>
@@ -288,308 +283,345 @@ function Formulaire({
     .map((id) => ({ valeur: id, libelle: mesureParId(id)?.texte ?? id }));
 
   const total = CONSULTATION.etapes.length;
+  const T = CONSULTATION.priorites;
   return (
-    <div>
-      {etape === 0 && (
-        <header className="mb-8">
-          <h1 className="titre-section">{CONSULTATION.titre}</h1>
-          <ul className="texte-long mt-4 flex list-disc flex-col gap-1 pl-5">
-            {CONSULTATION.recap.map((l) => (
-              <li key={l}>{l}</li>
+    // Étape des priorités : le classement prend toute la largeur. Ensuite, une colonne de repères collante.
+    <div className={etape === 0 ? undefined : "grille-formulaire"}>
+      {etape > 0 && (
+        <div className="colonne-reperes">
+          <ol className="etapes-liste">
+            {CONSULTATION.etapes.map((e, i) => (
+              <li key={e} aria-current={i === etape ? "step" : undefined}>
+                <span className="folio">{folio(i + 1)}</span>
+                {e}
+              </li>
             ))}
-            <li>{CONSULTATION.ouverture}</li>
-          </ul>
-          <p className="mt-4 font-titre text-xl text-primaire">{CONSULTATION.accroche}</p>
-          <p className="mt-4 rounded-lg bg-accent-pale p-4 font-semibold">
-            {CONSULTATION.anonymat}
-          </p>
-          <p className="mt-4">
-            <Link to="/methode">{METHODE.lienConsultation}</Link>
-          </p>
-        </header>
-      )}
-
-      <div className="mb-6">
-        <p className="mention" id="progression-libelle">
-          Étape {etape + 1} sur {total} ({CONSULTATION.etapes[etape]})
-        </p>
-        <div
-          className="progression mt-2"
-          role="progressbar"
-          aria-labelledby="progression-libelle"
-          aria-valuemin={1}
-          aria-valuemax={total}
-          aria-valuenow={etape + 1}
-        >
-          <div style={{ width: `${((etape + 1) / total) * 100}%` }} />
+          </ol>
+          <p className="encart">{CONSULTATION.anonymat}</p>
+          <AideCourte />
         </div>
-      </div>
-
-      <form
-        noValidate
-        method="post"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (moinsDe15) return;
-          if (etape < DERNIERE_ETAPE) suivant();
-          else void valider();
-        }}
-      >
-        <ChampPiege valeur={piege} onChange={setPiege} />
-        <h2 ref={titreEtape} tabIndex={-1} className="text-3xl outline-none">
-          {CONSULTATION.etapes[etape]}
-        </h2>
-        {message && (
-          <div className="mt-4">
-            <ResumeErreurs
-              message={message}
-              erreurs={erreurs}
-              libelles={LIBELLES}
-              refFocus={(el) => {
-                resume.current = el;
-              }}
-            />
-          </div>
+      )}
+      <div className="min-w-0">
+        {etape === 0 && (
+          <header className="mb-8">
+            <h1 className="titre-principal">{CONSULTATION.titre}</h1>
+            <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-titre text-texte-2">
+              {CONSULTATION.recap.map((l) => (
+                <li key={l}>{l}</li>
+              ))}
+              <li>{CONSULTATION.ouverture}</li>
+            </ul>
+            <p className="mt-3 font-titre text-lg font-semibold text-navy">
+              {CONSULTATION.accroche}
+            </p>
+            <p className="encart texte-long mt-3">{CONSULTATION.anonymat}</p>
+            <p className="mt-1">
+              <Link to="/methode" className="lien-fort">
+                {METHODE.lienConsultation}
+              </Link>
+            </p>
+          </header>
         )}
 
-        <div key={etape} className="etape-contenu mt-6">
-          {etape === 0 && (
-            <Classement
-              ordre={ordre}
-              valeur={d.classement}
-              onChange={majClassement}
-              erreur={erreurs["classement"]}
-            />
-          )}
+        <div className="mb-4">
+          <p className="surtitre">
+            <span className="folio" aria-hidden="true">
+              {folio(etape + 1)} / {folio(total)}
+            </span>
+            <span className="sr-only" id="progression-libelle">
+              Étape {etape + 1} sur {total} ({CONSULTATION.etapes[etape]})
+            </span>
+          </p>
+          <div
+            className="progression mt-2"
+            role="progressbar"
+            aria-labelledby="progression-libelle"
+            aria-valuemin={1}
+            aria-valuemax={total}
+            aria-valuenow={etape + 1}
+          >
+            <div style={{ width: `${((etape + 1) / total) * 100}%` }} />
+          </div>
+        </div>
 
-          {etape === 1 && (
-            <div className="pile">
-              <p className="aide">{CONSULTATION.ideesIntro}</p>
-              <Texte
-                nom="mesureManquante"
-                libelle={Q.mesureManquante.libelle}
-                aide={Q.mesureManquante.aide}
-                valeur={d.mesureManquante}
-                onChange={maj("mesureManquante")}
-                erreur={erreurs["mesureManquante"]}
-                facultatif
-                multiligne
-                max={Q.mesureManquante.max}
-              />
-              <ChoixMultiple
-                nom="mesuresRejetees"
-                libelle={Q.mesuresRejetees.libelle}
-                aide={Q.mesuresRejetees.aide}
-                options={optionsRejet}
-                valeurs={d.mesuresRejetees}
-                onChange={maj("mesuresRejetees")}
-                erreur={erreurs["mesuresRejetees"]}
-                max={Q.mesuresRejetees.max}
-              />
-              <ChoixUnique
-                nom="presenceDebat"
-                libelle={Q.presenceDebat.libelle}
-                options={Q.presenceDebat.options}
-                valeur={d.presenceDebat}
-                onChange={maj("presenceDebat")}
-                facultatif
-                colonnes
-              />
-              <ChoixUnique
-                nom="poidsVote"
-                libelle={Q.poidsVote.libelle}
-                options={Q.poidsVote.options}
-                valeur={d.poidsVote}
-                onChange={maj("poidsVote")}
-                facultatif
-                colonnes
-              />
-              <ChoixUnique
-                nom="provenance"
-                libelle={Q.provenance.libelle}
-                options={Q.provenance.options}
-                valeur={d.provenance}
-                onChange={maj("provenance")}
-                facultatif
+        <form
+          noValidate
+          method="post"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (moinsDe15) return;
+            if (etape < DERNIERE_ETAPE) suivant();
+            else void valider();
+          }}
+        >
+          <ChampPiege valeur={piege} onChange={setPiege} />
+          <h2 ref={titreEtape} tabIndex={-1} className="titre-section outline-none">
+            {CONSULTATION.etapes[etape]}
+          </h2>
+          {message && (
+            <div className="mt-4">
+              <ResumeErreurs
+                message={message}
+                erreurs={erreurs}
+                libelles={LIBELLES}
+                refFocus={(el) => {
+                  resume.current = el;
+                }}
               />
             </div>
           )}
 
-          {etape === 2 && (
-            <div className="pile">
-              <p className="aide">{CONSULTATION.profilIntro}</p>
-              <ChoixUnique
-                nom="age"
-                libelle={Q.age.libelle}
-                options={Q.age.options}
-                valeur={d.age}
-                onChange={maj("age")}
-                erreur={moinsDe15 ? undefined : erreurs["age"]}
-                nsp
-                colonnes
+          <div key={etape} className="etape-contenu mt-6">
+            {etape === 0 && (
+              <Classement
+                ordre={ordre}
+                valeur={d.classement}
+                onChange={majClassement}
+                erreur={erreurs["classement"]}
               />
-              {moinsDe15 ? (
-                <MessageMoinsDe15 />
-              ) : (
-                <>
-                  <ChoixUnique
-                    nom="genre"
-                    libelle={Q.genre.libelle}
-                    options={Q.genre.options}
-                    valeur={d.genre}
-                    onChange={maj("genre")}
-                    erreur={erreurs["genre"]}
-                    nsp
-                    colonnes
-                  />
-                  <div className="champ">
-                    <label htmlFor="champ-region" className="etiquette">
-                      {Q.region.libelle}
-                    </label>
-                    <select
-                      id="champ-region"
-                      className="saisie"
-                      value={d.region ?? ""}
-                      onChange={(e) => maj("region")(e.target.value || null)}
-                      aria-invalid={erreurs["region"] ? true : undefined}
-                      aria-describedby={erreurs["region"] ? "region-erreur" : undefined}
-                    >
-                      <option value="">Choisissez votre région</option>
-                      {Q.region.options.map((o) => (
-                        <option key={o.valeur} value={o.valeur}>
-                          {o.libelle}
-                        </option>
-                      ))}
-                      <option value="nsp">Je préfère ne pas répondre</option>
-                    </select>
-                    {erreurs["region"] && (
-                      <p id="region-erreur" className="erreur" role="alert">
-                        {erreurs["region"]}
-                      </p>
-                    )}
-                  </div>
-                  <ChoixUnique
-                    nom="lieuVie"
-                    libelle={Q.lieuVie.libelle}
-                    options={Q.lieuVie.options}
-                    valeur={d.lieuVie}
-                    onChange={maj("lieuVie")}
-                    erreur={erreurs["lieuVie"]}
-                    nsp
-                  />
-                  <ChoixUnique
-                    nom="situation"
-                    libelle={Q.situation.libelle}
-                    options={Q.situation.options}
-                    valeur={d.situation}
-                    onChange={maj("situation")}
-                    erreur={erreurs["situation"]}
-                    nsp
-                    colonnes
-                  />
-                  <ChoixUnique
-                    nom="parent"
-                    libelle={Q.parent.libelle}
-                    options={Q.parent.options}
-                    valeur={d.parent}
-                    onChange={maj("parent")}
-                    erreur={erreurs["parent"]}
-                    nsp
-                    colonnes
-                  />
-                  <ChoixMultiple
-                    nom="liensEnfance"
-                    libelle={Q.liensEnfance.libelle}
-                    aide={Q.liensEnfance.aide}
-                    options={Q.liensEnfance.options}
-                    valeurs={d.liensEnfance}
-                    onChange={maj("liensEnfance")}
-                    erreur={erreurs["liensEnfance"]}
-                    nsp
-                    colonnes
-                  />
-                  <ChoixMultiple
-                    nom="lienSujet"
-                    libelle={Q.lienSujet.libelle}
-                    aide={Q.lienSujet.aide}
-                    options={Q.lienSujet.options}
-                    valeurs={d.lienSujet}
-                    onChange={majLienSujet}
-                    erreur={erreurs["lienSujet"]}
-                    apres={
-                      <>
-                        {d.lienSujet.includes("concerne") && (
-                          <div className="mt-3">
-                            <CaseACocher
-                              nom="consentementConcerne"
-                              libelle={Q.consentementConcerne.libelle}
-                              coche={d.consentementConcerne}
-                              onChange={maj("consentementConcerne")}
-                              erreur={erreurs["consentementConcerne"]}
-                            />
-                          </div>
-                        )}
-                        <div className="mt-4">
-                          <BesoinDeParler compact id="aide-profil" />
-                        </div>
-                      </>
-                    }
-                  />
-                </>
-              )}
-            </div>
-          )}
+            )}
 
-          {etape === 3 && <Recapitulatif d={d} allerA={setEtape} />}
-        </div>
+            {etape === 1 && (
+              <div className="pile">
+                <p className="aide">{CONSULTATION.ideesIntro}</p>
+                <Texte
+                  nom="mesureManquante"
+                  libelle={Q.mesureManquante.libelle}
+                  aide={Q.mesureManquante.aide}
+                  valeur={d.mesureManquante}
+                  onChange={maj("mesureManquante")}
+                  erreur={erreurs["mesureManquante"]}
+                  facultatif
+                  multiligne
+                  max={Q.mesureManquante.max}
+                />
+                <ChoixMultiple
+                  nom="mesuresRejetees"
+                  libelle={Q.mesuresRejetees.libelle}
+                  aide={Q.mesuresRejetees.aide}
+                  options={optionsRejet}
+                  valeurs={d.mesuresRejetees}
+                  onChange={maj("mesuresRejetees")}
+                  erreur={erreurs["mesuresRejetees"]}
+                  max={Q.mesuresRejetees.max}
+                />
+                <ChoixUnique
+                  nom="presenceDebat"
+                  libelle={Q.presenceDebat.libelle}
+                  options={Q.presenceDebat.options}
+                  valeur={d.presenceDebat}
+                  onChange={maj("presenceDebat")}
+                  facultatif
+                  colonnes
+                />
+                <ChoixUnique
+                  nom="poidsVote"
+                  libelle={Q.poidsVote.libelle}
+                  options={Q.poidsVote.options}
+                  valeur={d.poidsVote}
+                  onChange={maj("poidsVote")}
+                  facultatif
+                  colonnes
+                />
+                <ChoixUnique
+                  nom="provenance"
+                  libelle={Q.provenance.libelle}
+                  options={Q.provenance.options}
+                  valeur={d.provenance}
+                  onChange={maj("provenance")}
+                  facultatif
+                />
+              </div>
+            )}
 
-        <div className="mt-10 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-          {etape > 0 ? (
-            <button
-              type="button"
-              className="bouton bouton-contour"
-              onClick={() => {
-                setErreurs({});
-                setMessage("");
-                setEtape(etape - 1);
-              }}
-            >
-              <ArrowLeft size={18} aria-hidden="true" />
-              {CONSULTATION.retour}
-            </button>
-          ) : (
-            <span />
-          )}
-          {moinsDe15 ? null : etape < DERNIERE_ETAPE ? (
-            <button type="submit" className="bouton bouton-plein" disabled={!pret}>
-              {CONSULTATION.suivant}
-              <ArrowRight size={18} aria-hidden="true" />
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="bouton bouton-plein"
-              disabled={envoi || !pret}
-              aria-busy={envoi}
-            >
-              {envoi ? CONSULTATION.envoi : CONSULTATION.valider}
-            </button>
-          )}
-        </div>
-      </form>
+            {etape === 2 && (
+              <div className="pile">
+                <p className="aide">{CONSULTATION.profilIntro}</p>
+                <ChoixUnique
+                  nom="age"
+                  libelle={Q.age.libelle}
+                  options={Q.age.options}
+                  valeur={d.age}
+                  onChange={maj("age")}
+                  erreur={moinsDe15 ? undefined : erreurs["age"]}
+                  nsp
+                  colonnes
+                />
+                {moinsDe15 ? (
+                  <MessageMoinsDe15 />
+                ) : (
+                  <>
+                    <ChoixUnique
+                      nom="genre"
+                      libelle={Q.genre.libelle}
+                      options={Q.genre.options}
+                      valeur={d.genre}
+                      onChange={maj("genre")}
+                      erreur={erreurs["genre"]}
+                      nsp
+                      colonnes
+                    />
+                    <div className="champ">
+                      <label htmlFor="champ-region" className="etiquette">
+                        {Q.region.libelle}
+                      </label>
+                      <select
+                        id="champ-region"
+                        className="saisie"
+                        value={d.region ?? ""}
+                        onChange={(e) => maj("region")(e.target.value || null)}
+                        aria-invalid={erreurs["region"] ? true : undefined}
+                        aria-describedby={erreurs["region"] ? "region-erreur" : undefined}
+                      >
+                        <option value="">Choisissez votre région</option>
+                        {Q.region.options.map((o) => (
+                          <option key={o.valeur} value={o.valeur}>
+                            {o.libelle}
+                          </option>
+                        ))}
+                        <option value="nsp">Je préfère ne pas répondre</option>
+                      </select>
+                      {erreurs["region"] && (
+                        <p id="region-erreur" className="erreur" role="alert">
+                          {erreurs["region"]}
+                        </p>
+                      )}
+                    </div>
+                    <ChoixUnique
+                      nom="lieuVie"
+                      libelle={Q.lieuVie.libelle}
+                      options={Q.lieuVie.options}
+                      valeur={d.lieuVie}
+                      onChange={maj("lieuVie")}
+                      erreur={erreurs["lieuVie"]}
+                      nsp
+                    />
+                    <ChoixUnique
+                      nom="situation"
+                      libelle={Q.situation.libelle}
+                      options={Q.situation.options}
+                      valeur={d.situation}
+                      onChange={maj("situation")}
+                      erreur={erreurs["situation"]}
+                      nsp
+                      colonnes
+                    />
+                    <ChoixUnique
+                      nom="parent"
+                      libelle={Q.parent.libelle}
+                      options={Q.parent.options}
+                      valeur={d.parent}
+                      onChange={maj("parent")}
+                      erreur={erreurs["parent"]}
+                      nsp
+                      colonnes
+                    />
+                    <ChoixMultiple
+                      nom="liensEnfance"
+                      libelle={Q.liensEnfance.libelle}
+                      aide={Q.liensEnfance.aide}
+                      options={Q.liensEnfance.options}
+                      valeurs={d.liensEnfance}
+                      onChange={maj("liensEnfance")}
+                      erreur={erreurs["liensEnfance"]}
+                      nsp
+                      colonnes
+                    />
+                    <ChoixMultiple
+                      nom="lienSujet"
+                      libelle={Q.lienSujet.libelle}
+                      aide={Q.lienSujet.aide}
+                      options={Q.lienSujet.options}
+                      valeurs={d.lienSujet}
+                      onChange={majLienSujet}
+                      erreur={erreurs["lienSujet"]}
+                      apres={
+                        <>
+                          {d.lienSujet.includes("concerne") && (
+                            <div className="mt-3">
+                              <CaseACocher
+                                nom="consentementConcerne"
+                                libelle={Q.consentementConcerne.libelle}
+                                coche={d.consentementConcerne}
+                                onChange={maj("consentementConcerne")}
+                                erreur={erreurs["consentementConcerne"]}
+                              />
+                            </div>
+                          )}
+                          <AideCourte className="mt-4 lg:hidden" />
+                        </>
+                      }
+                    />
+                  </>
+                )}
+              </div>
+            )}
+
+            {etape === 3 && <Recapitulatif d={d} allerA={setEtape} />}
+          </div>
+
+          <div className={`navigation-etapes ${etape === 0 ? "barre-basse" : ""}`}>
+            {etape > 0 ? (
+              <button
+                type="button"
+                className="bouton bouton-contour"
+                onClick={() => {
+                  setErreurs({});
+                  setMessage("");
+                  setEtape(etape - 1);
+                }}
+              >
+                <ArrowLeft size={18} aria-hidden="true" />
+                {CONSULTATION.retour}
+              </button>
+            ) : (
+              // Barre basse en mobile : les 5 rangs, qui mènent au classement.
+              <a
+                href="#mon-classement"
+                className="barre-rangs"
+                aria-label={`${T.resume(d.classement.length, NOMBRE_MESURES_A_CLASSER)}, ${T.voirClassement}`}
+              >
+                {Array.from({ length: NOMBRE_MESURES_A_CLASSER }, (_, i) => (
+                  <span
+                    key={i}
+                    className={`case-rang ${i < d.classement.length ? "remplie" : ""}`}
+                    aria-hidden="true"
+                  >
+                    {i + 1}
+                  </span>
+                ))}
+              </a>
+            )}
+            {moinsDe15 ? null : etape < DERNIERE_ETAPE ? (
+              <button type="submit" className="bouton bouton-plein sm:ml-auto" disabled={!pret}>
+                {CONSULTATION.suivant}
+                <ArrowRight size={18} aria-hidden="true" />
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="bouton bouton-plein sm:ml-auto"
+                disabled={envoi || !pret}
+                aria-busy={envoi}
+              >
+                {envoi ? CONSULTATION.envoi : CONSULTATION.valider}
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
 
+/** « 2 » → « 02 », pour les folios d'étape. */
+const folio = (n: number) => String(n).padStart(2, "0");
+
 /** Moins de 15 ans : rien n'est enregistré, le formulaire s'arrête, l'aide est proposée. */
 function MessageMoinsDe15() {
   return (
-    <section
-      className="rounded-xl border border-ciel bg-accent-pale p-5"
-      aria-labelledby="moins15-titre"
-      role="status"
-    >
-      <h3 id="moins15-titre" className="font-sans text-lg font-bold text-primaire">
+    <section className="aide-courte" aria-labelledby="moins15-titre" role="status">
+      <h3 id="moins15-titre" className="titre-bloc">
         {CONSULTATION.moins15.titre}
       </h3>
       {CONSULTATION.moins15.textes.map((t) => (
@@ -598,7 +630,6 @@ function MessageMoinsDe15() {
         </p>
       ))}
       <a href="tel:119" className="bouton bouton-plein mt-4">
-        <Phone size={18} aria-hidden="true" />
         {CONSULTATION.moins15.appeler}
       </a>
     </section>
@@ -607,7 +638,7 @@ function MessageMoinsDe15() {
 
 function Ligne({ titre, valeur }: { titre: string; valeur: string }) {
   return (
-    <div className="flex flex-col gap-0.5 border-b border-bordure py-3 sm:flex-row sm:gap-4">
+    <div className="flex flex-col gap-0.5 border-b border-filet py-3 sm:flex-row sm:gap-4">
       <dt className="font-semibold sm:w-2/5">{titre}</dt>
       <dd className="m-0 sm:w-3/5">{valeur || CONSULTATION.relecture.pasDeReponse}</dd>
     </div>
@@ -733,25 +764,27 @@ function Merci({ envoi, inscriptionsOuvertes }: { envoi: Envoi; inscriptionsOuve
     window.scrollTo({ top: 0 });
   }, []);
   return (
-    <div className="flex flex-col gap-6">
-      <div className="carte carte-accent">
-        <CheckCircle2 size={40} className="text-accent" aria-hidden="true" />
-        <h1 ref={titre} tabIndex={-1} className="titre-section mt-3 outline-none">
+    <div className="flex flex-col gap-10">
+      <div>
+        <h1 ref={titre} tabIndex={-1} className="titre-principal outline-none">
           {CONSULTATION.merci}
         </h1>
-        {envoi.rang !== null && <p className="mt-3 font-semibold">{F.rang(envoi.rang)}</p>}
+        <p className="lead">{F.confirmation}</p>
+        {envoi.rang !== null && (
+          <p className="mt-3 font-titre font-semibold text-navy">{F.rang(envoi.rang)}</p>
+        )}
       </div>
       <section className="carte" aria-labelledby="vos-priorites">
-        <h2 id="vos-priorites" className="text-2xl">
+        <h2 id="vos-priorites" className="titre-bloc">
           {F.vosPriorites}
         </h2>
-        <ol className="mt-4 flex flex-col gap-2">
+        <ol className="rangs">
           {envoi.classement.map((id, i) => (
-            <li key={id} className="flex gap-3">
+            <li key={id}>
               <span className="rang" aria-hidden="true">
                 {i + 1}
               </span>
-              <span>
+              <span className="rangs-texte">
                 <span className="sr-only">{i + 1}, </span>
                 {mesureParId(id)?.texte}
               </span>
@@ -760,7 +793,7 @@ function Merci({ envoi, inscriptionsOuvertes }: { envoi: Envoi; inscriptionsOuve
         </ol>
       </section>
       <section className="carte" aria-labelledby="ensuite-titre">
-        <h2 id="ensuite-titre" className="text-2xl">
+        <h2 id="ensuite-titre" className="titre-bloc">
           {F.ensuiteTitre}
         </h2>
         {F.ensuite.map((t) => (
@@ -769,26 +802,19 @@ function Merci({ envoi, inscriptionsOuvertes }: { envoi: Envoi; inscriptionsOuve
           </p>
         ))}
         {F.resultats && <p className="texte-long mt-3">{F.resultats}</p>}
-        <p className="mt-3">
-          <Link to="/methode">{F.methode}</Link>
+        <p className="mt-2">
+          <Link to="/methode" className="lien-fort">
+            {F.methode}
+          </Link>
         </p>
       </section>
-      <BesoinDeParler compact id="aide-fin" />
       {inscriptionsOuvertes && (
         <section className="carte" aria-labelledby="rebond-titre">
-          <h2 id="rebond-titre" className="text-2xl">
+          <h2 id="rebond-titre" className="titre-bloc">
             {CONSULTATION.rebondTitre}
           </h2>
-          <ul className="mt-4 flex flex-col gap-1">
-            <li>
-              Atelier 1 : {ATELIERS[0].titre} ({CRENEAU_1})
-            </li>
-            <li>
-              Atelier 2 : {ATELIERS[1].titre} ({CRENEAU_2})
-            </li>
-          </ul>
-          <p className="mention mt-3">Inscriptions jusqu'au {DATE_LIMITE_INSCRIPTION} inclus</p>
-          <Link to="/ateliers" className="bouton bouton-plein mt-5">
+          <p className="texte-long mt-2">{CONSULTATION.rebondTexte}</p>
+          <Link to="/ateliers" className="bouton bouton-plein mt-4">
             {CONSULTATION.rebondBouton}
             <ArrowRight size={18} aria-hidden="true" />
           </Link>
@@ -807,12 +833,12 @@ function DejaRepondu() {
     titre.current?.focus();
   }, []);
   return (
-    <div className="flex flex-col gap-6">
-      <div className="carte">
-        <h1 ref={titre} tabIndex={-1} className="titre-section outline-none">
+    <div className="flex flex-col gap-10">
+      <div>
+        <h1 ref={titre} tabIndex={-1} className="titre-principal outline-none">
           {CONSULTATION.dejaRepondu.titre}
         </h1>
-        <p className="texte-long mt-4" role="status">
+        <p className="lead" role="status">
           {CONSULTATION.dejaRepondu.texte}
         </p>
       </div>
@@ -858,13 +884,12 @@ function ConnaitreLaSuite() {
 
   return (
     <section className="carte" aria-labelledby="suite-titre">
-      <h2 id="suite-titre" className="text-2xl">
+      <h2 id="suite-titre" className="titre-bloc">
         {CONSULTATION.suite.titre}
       </h2>
       <p className="texte-long mt-3">{CONSULTATION.suite.texte}</p>
       {fait ? (
         <p className="mt-4 flex items-center gap-2 font-semibold" role="status">
-          <CheckCircle2 size={20} className="text-accent" aria-hidden="true" />
           {CONSULTATION.suite.merci}
         </p>
       ) : (

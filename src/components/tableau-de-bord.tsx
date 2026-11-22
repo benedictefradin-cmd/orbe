@@ -124,7 +124,7 @@ function Jauge({
       </div>
       <div className="dash-nombre">
         {n}
-        <span className="text-xl text-secondaire"> {max !== null ? `sur ${max}` : "inscrits"}</span>
+        <span className="text-xl text-texte-2"> {max !== null ? `sur ${max}` : "inscrits"}</span>
       </div>
       {max !== null && (
         <div
@@ -233,7 +233,7 @@ function CourbeParJour({
       )}
       {donnees.length > 0 && (
         <details className="mt-3 text-sm">
-          <summary className="cursor-pointer text-accent">Voir les chiffres</summary>
+          <summary className="cursor-pointer text-bleu">Voir les chiffres</summary>
           <table className="tableau mt-2">
             <thead>
               <tr>
@@ -408,8 +408,8 @@ export function OngletAteliers({ donnees, actions }: { donnees: DonneesAdmin; ac
       </div>
 
       {s.aPrevenir.length > 0 && (
-        <section className="dash-carte border-2 border-accent" aria-labelledby="a-prevenir">
-          <h2 id="a-prevenir" className="dash-libelle text-accent-survol">
+        <section className="dash-carte border-2 border-bleu" aria-labelledby="a-prevenir">
+          <h2 id="a-prevenir" className="dash-libelle text-bleu-survol">
             <BellRing size={14} aria-hidden="true" />À prévenir, sorties de la liste d'attente
           </h2>
           <ul className="mt-3 flex flex-col gap-2">
@@ -420,7 +420,7 @@ export function OngletAteliers({ donnees, actions }: { donnees: DonneesAdmin; ac
               return (
                 <li
                   key={`${d.personne.id}${d.atelier_id}`}
-                  className="flex flex-col gap-2 rounded-lg bg-accent-pale p-3 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-2 rounded-lg bg-bleu-pale p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <span>
                     <strong>
@@ -901,7 +901,7 @@ export function OngletConsultation({ donnees }: { donnees: DonneesAdmin }) {
                 const netMasque = aMasquer(retenuesV2) || aMasquer(c.rejets);
                 return (
                   <tr key={c.mesure.id}>
-                    <td className="font-display text-lg font-bold text-primaire">
+                    <td className="font-display text-lg font-bold text-navy">
                       {c.rang}
                       {c.exAequo && <span className="dash-sous block">ex aequo</span>}
                     </td>
@@ -1092,10 +1092,7 @@ export function OngletConsultation({ donnees }: { donnees: DonneesAdmin }) {
               .slice()
               .reverse()
               .map((t, k) => (
-                <li
-                  key={k}
-                  className="whitespace-pre-line rounded-lg bg-fond-alterne p-3 text-[15px]"
-                >
+                <li key={k} className="whitespace-pre-line rounded-lg bg-papier p-3 text-[15px]">
                   {t}
                 </li>
               ))}

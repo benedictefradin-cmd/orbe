@@ -8,6 +8,7 @@ import { ArrowDown, ArrowUp, X } from "lucide-react";
 import { CONSULTATION } from "@/lib/contenus";
 import { AXES, formaterSource, mesureParId, type Mesure } from "@/lib/mesures";
 import { NOMBRE_MESURES_A_CLASSER } from "@/lib/config";
+import { Marque } from "@/components/ui/trait";
 
 const T = CONSULTATION.priorites;
 const N = NOMBRE_MESURES_A_CLASSER;
@@ -85,49 +86,38 @@ export function Classement({
   return (
     <div
       id="champ-classement"
+      className="classement"
       tabIndex={-1}
       aria-describedby={erreur ? "classement-erreur" : undefined}
     >
-      <p className="texte-long">{T.intro}</p>
-      <p className="aide mt-2">{T.aide}</p>
+      <div className="classement-intro">
+        <p className="texte-long">{T.intro}</p>
+        <p className="aide mt-2">{T.aide}</p>
+      </div>
 
-      <section
-        className="mt-6 rounded-xl border border-bordure-forte bg-fond-alterne p-4"
-        aria-labelledby="mon-classement"
-      >
-        <h3
-          id="mon-classement"
-          ref={titre}
-          tabIndex={-1}
-          className="font-sans text-lg font-bold outline-none"
-        >
+      <section className="classement-choix" aria-labelledby="mon-classement">
+        <h3 id="mon-classement" ref={titre} tabIndex={-1} className="classement-titre outline-none">
           {T.titreClassement(valeur.length, N)}
         </h3>
-        {valeur.length === 0 && <p className="aide mt-2">{T.vide}</p>}
-        <ol className="mt-3 flex flex-col gap-2">
+        <ol className="rangs">
           {valeur.map((id, i) => {
             const m = mesureParId(id)!;
             const premier = i === 0;
             const dernier = i === valeur.length - 1;
             return (
-              <li
-                key={id}
-                className="flex flex-col gap-2 rounded-lg border border-accent bg-white p-3 sm:flex-row sm:items-center"
-              >
-                <div className="flex flex-1 items-start gap-3">
-                  <span className="rang" aria-hidden="true">
-                    {i + 1}
-                  </span>
-                  <span>
-                    <span className="sr-only">Position {i + 1}, </span>
-                    {m.texte}
-                  </span>
-                </div>
-                <div className="flex flex-none gap-1 self-end sm:self-auto">
+              <li key={id}>
+                <span className="rang" aria-hidden="true">
+                  <Marque geste="entourer">{i + 1}</Marque>
+                </span>
+                <span className="rangs-texte">
+                  <span className="sr-only">Position {i + 1}, </span>
+                  {m.texte}
+                </span>
+                <div className="rangs-actions">
                   <button
                     ref={ref(`monter-${id}`)}
                     type="button"
-                    className="bouton bouton-discret bouton-petit"
+                    className="bouton bouton-discret bouton-petit bouton-icone"
                     onClick={() => deplacer(i, -1, "monter")}
                     aria-disabled={premier || undefined}
                     aria-label={`${T.monter}, ${m.texte}`}
@@ -137,7 +127,7 @@ export function Classement({
                   <button
                     ref={ref(`descendre-${id}`)}
                     type="button"
-                    className="bouton bouton-discret bouton-petit"
+                    className="bouton bouton-discret bouton-petit bouton-icone"
                     onClick={() => deplacer(i, 1, "descendre")}
                     aria-disabled={dernier || undefined}
                     aria-label={`${T.descendre}, ${m.texte}`}
@@ -147,7 +137,7 @@ export function Classement({
                   <button
                     ref={ref(`retirer-${id}`)}
                     type="button"
-                    className="bouton bouton-discret bouton-petit"
+                    className="bouton bouton-discret bouton-petit bouton-icone"
                     onClick={() => retirer(i)}
                     aria-label={`${T.retirer}, ${m.texte}`}
                   >
@@ -157,123 +147,130 @@ export function Classement({
               </li>
             );
           })}
-          {Array.from({ length: N - valeur.length }, (_, k) => (
-            <li
-              key={`vide${k}`}
-              className="flex items-center gap-3 rounded-lg border border-dashed border-bordure-forte p-3 text-secondaire"
-              aria-hidden="true"
-            >
-              <span className="rang rang-vide">{valeur.length + k + 1}</span>
-              <span className="text-[15px]">{T.aChoisir}</span>
-            </li>
-          ))}
         </ol>
-        {plein && <p className="mt-3 font-semibold text-accent-survol">{T.complet}</p>}
+        {/* Les rangs encore libres : une ligne de cases réglées, comme sur un bulletin. */}
+        {valeur.length < N && (
+          <div className="cases-vides">
+            {Array.from({ length: N - valeur.length }, (_, k) => (
+              <span key={k} className="case-rang" aria-hidden="true">
+                {valeur.length + k + 1}
+              </span>
+            ))}
+            {valeur.length === 0 && <p className="meta ml-1 self-center">{T.vide}</p>}
+          </div>
+        )}
+        {plein && <p className="mt-3 font-titre font-semibold text-navy">{T.complet}</p>}
+        {erreur && (
+          <p id="classement-erreur" className="erreur mt-3" role="alert">
+            {erreur}
+          </p>
+        )}
       </section>
 
-      {erreur && (
-        <p id="classement-erreur" className="erreur mt-4" role="alert">
-          {erreur}
-        </p>
-      )}
+      <div className="classement-liste">
+        <h3 className="titre-bloc">{T.titreListe}</h3>
+        <p className="aide mt-1">{T.ordre}</p>
 
-      <h3 className="mt-8 font-sans text-lg font-bold">{T.titreListe}</h3>
-      <p className="aide mt-1">{T.ordre}</p>
-
-      {/* Filtres : ils masquent des mesures sans jamais changer l'ordre tiré. */}
-      <div className="mt-4" role="group" aria-labelledby="filtres-axes">
-        <p id="filtres-axes" className="etiquette">
-          {T.filtres}
-        </p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {[null, ...AXES].map((a) => (
-            <button
-              key={a ?? "tous"}
-              type="button"
-              className="bouton bouton-contour bouton-petit"
-              aria-pressed={axe === a}
-              onClick={() => {
-                setAxe(a);
-                const n = a ? mesures.filter((m) => m.axe === a).length : mesures.length;
-                setAnnonce(T.affichees(n));
-              }}
-            >
-              {a ?? T.tousLesAxes}
-            </button>
-          ))}
+        {/* Filtres : ils masquent des mesures sans jamais changer l'ordre tiré. */}
+        <div className="mt-3" role="group" aria-labelledby="filtres-axes">
+          <p id="filtres-axes" className="meta">
+            {T.filtres}
+          </p>
+          <div className="filtres">
+            {[null, ...AXES].map((a) => (
+              <button
+                key={a ?? "tous"}
+                type="button"
+                className="filtre"
+                aria-pressed={axe === a}
+                onClick={() => {
+                  setAxe(a);
+                  const n = a ? mesures.filter((m) => m.axe === a).length : mesures.length;
+                  setAnnonce(T.affichees(n));
+                }}
+              >
+                {a ?? T.tousLesAxes}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {ordre === null ? (
-        <p className="aide mt-4">{T.chargement}</p>
-      ) : (
-        <ul className="mt-4 flex flex-col gap-2">
-          {visibles.map((m) => {
-            const rang = valeur.indexOf(m.id);
-            const choisie = rang >= 0;
-            const ouvert = ouverts.has(m.id);
-            return (
-              <li key={m.id} className="flex flex-col gap-1">
-                <button
-                  type="button"
-                  className="mesure"
-                  aria-pressed={choisie}
-                  aria-disabled={(!choisie && plein) || undefined}
-                  onClick={() => basculer(m.id)}
-                >
-                  <span className={`rang ${choisie ? "" : "rang-vide"}`} aria-hidden="true">
-                    {choisie ? rang + 1 : "+"}
-                  </span>
-                  <span className="flex flex-col gap-1">
-                    <span className="axe">{m.axe}</span>
-                    <span>{m.texte}</span>
-                    <span className="text-[13px] text-secondaire">
-                      <span className="sr-only">{T.sources}, </span>
-                      {m.sources.map((s) => (
-                        <span key={s.organisme} className="block">
-                          {formaterSource(s)}
-                        </span>
-                      ))}
+        {ordre === null ? (
+          <p className="aide mt-4">{T.chargement}</p>
+        ) : (
+          <ul className="mesures">
+            {visibles.map((m) => {
+              const rang = valeur.indexOf(m.id);
+              const choisie = rang >= 0;
+              const ouvert = ouverts.has(m.id);
+              // Numéro de bulletin, d'après l'ordre tiré : il ne change pas quand on filtre.
+              const numero = String(mesures.indexOf(m) + 1).padStart(2, "0");
+              return (
+                <li key={m.id} className="mesure-carte">
+                  <button
+                    type="button"
+                    className="mesure"
+                    aria-pressed={choisie}
+                    aria-disabled={(!choisie && plein) || undefined}
+                    onClick={() => basculer(m.id)}
+                  >
+                    <span className="mesure-meta">
+                      <span className="mesure-num" aria-hidden="true">
+                        {numero}
+                      </span>
+                      <span className="axe">{m.axe}</span>
+                      <span className="mesure-case" aria-hidden="true">
+                        {choisie ? (
+                          <span className="rang">
+                            <Marque geste="entourer">{rang + 1}</Marque>
+                          </span>
+                        ) : (
+                          <span className="mesure-case-vide" />
+                        )}
+                      </span>
                     </span>
-                  </span>
-                </button>
-                {m.detail && (
-                  <>
-                    <button
-                      type="button"
-                      className="bouton bouton-discret bouton-petit self-start"
-                      aria-expanded={ouvert}
-                      aria-controls={`detail-${m.id}`}
-                      onClick={() =>
-                        setOuverts((o) => {
-                          const n = new Set(o);
-                          if (n.has(m.id)) n.delete(m.id);
-                          else n.add(m.id);
-                          return n;
-                        })
-                      }
-                    >
-                      {T.details}
+                    <span className="mesure-texte">{m.texte}</span>
+                  </button>
+                  <details className="sources">
+                    <summary>
+                      {T.sources}
                       <span className="sr-only">, {m.texte}</span>
-                    </button>
-                    <p id={`detail-${m.id}`} className="aide px-3" hidden={!ouvert}>
-                      {m.detail}
-                    </p>
-                  </>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      )}
-      <div className="sticky bottom-0 z-10 -mx-4 mt-4 border-t border-bordure-forte bg-white/95 px-4 py-3 backdrop-blur sm:hidden">
-        <a
-          href="#mon-classement"
-          className="flex min-h-11 items-center justify-between gap-3 font-semibold no-underline"
-        >
-          <span>{T.resume(valeur.length, N)}</span>
-          <span className="text-accent">{T.voirClassement}</span>
-        </a>
+                    </summary>
+                    <div className="sources-contenu">
+                      {m.sources.map((s) => (
+                        <p key={s.organisme}>{formaterSource(s)}</p>
+                      ))}
+                    </div>
+                  </details>
+                  {m.detail && (
+                    <div className="px-3 pb-2">
+                      <button
+                        type="button"
+                        className="bouton bouton-discret bouton-petit -ml-3"
+                        aria-expanded={ouvert}
+                        aria-controls={`detail-${m.id}`}
+                        onClick={() =>
+                          setOuverts((o) => {
+                            const n = new Set(o);
+                            if (n.has(m.id)) n.delete(m.id);
+                            else n.add(m.id);
+                            return n;
+                          })
+                        }
+                      >
+                        {T.details}
+                        <span className="sr-only">, {m.texte}</span>
+                      </button>
+                      <p id={`detail-${m.id}`} className="aide" hidden={!ouvert}>
+                        {m.detail}
+                      </p>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
       <p className="sr-only" role="status" aria-live="polite">
         {annonce}

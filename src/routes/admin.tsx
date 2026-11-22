@@ -114,8 +114,8 @@ function PageAdmin() {
   });
 
   return (
-    <main className="min-h-screen bg-fond-alterne pb-16">
-      <header className="border-b border-bordure bg-white">
+    <main className="min-h-screen bg-papier pb-16">
+      <header className="border-b border-filet bg-white">
         <div className="conteneur flex flex-wrap items-center justify-between gap-3 py-3">
           <Logos lien={false} />
           <button
@@ -222,16 +222,16 @@ function PageAdmin() {
         )}
 
         <Tabs defaultValue="ateliers" className="mt-8">
-          <TabsList className="inline-flex gap-1 rounded-lg border border-bordure bg-white p-1">
+          <TabsList className="inline-flex gap-1 rounded-lg border border-filet bg-white p-1">
             <TabsTrigger
               value="ateliers"
-              className="min-h-11 rounded-md px-5 font-semibold data-[state=active]:bg-accent data-[state=active]:text-white"
+              className="min-h-11 rounded-md px-5 font-semibold data-[state=active]:bg-bleu data-[state=active]:text-white"
             >
               Ateliers
             </TabsTrigger>
             <TabsTrigger
               value="consultation"
-              className="min-h-11 rounded-md px-5 font-semibold data-[state=active]:bg-accent data-[state=active]:text-white"
+              className="min-h-11 rounded-md px-5 font-semibold data-[state=active]:bg-bleu data-[state=active]:text-white"
             >
               Consultation
             </TabsTrigger>
