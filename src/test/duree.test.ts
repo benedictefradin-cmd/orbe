@@ -1,9 +1,9 @@
 /**
- * Chronométrage d'un parcours complet de consultation, sur un modèle de lecture et de saisie :
+ * Chronométrage d'un parcours complet de consultation (questionnaire v2), sur un modèle de lecture et de saisie :
  * tout le texte affiché est lu à 200 mots par minute, chaque clic compte 2 secondes,
- * la relecture du récapitulatif 45 secondes. Le parcours modèle répond à toutes
- * les questions du profil, choisit et ordonne 5 mesures, remplit les questions facultatives
- * sauf la mesure manquante, relit le récapitulatif et valide.
+ * la relecture 45 secondes. Le parcours modèle choisit et ordonne 5 mesures, remplit les questions
+ * facultatives sauf la mesure manquante (une mesure non soutenue, déjà lue à l'étape précédente),
+ * répond à toutes les questions du profil, relit et valide.
  * Le test Playwright (e2e/parcours.spec.ts) mesure aussi la durée machine, qui reste très inférieure.
  */
 import { describe, expect, it } from "vitest";
@@ -21,8 +21,19 @@ const texteQuestion = (q: {
 export function dureeParcoursSecondes() {
   const lecture = [
     ...CONSULTATION.recap,
+    CONSULTATION.ouverture,
     CONSULTATION.accroche,
     CONSULTATION.anonymat,
+    CONSULTATION.priorites.intro,
+    CONSULTATION.priorites.aide,
+    CONSULTATION.priorites.ordre,
+    ...MESURES.map((m) => `${m.axe} ${m.texte}`),
+    CONSULTATION.ideesIntro,
+    texteQuestion(Q.mesureManquante),
+    texteQuestion(Q.mesuresRejetees),
+    texteQuestion(Q.presenceDebat),
+    texteQuestion(Q.poidsVote),
+    texteQuestion(Q.provenance),
     CONSULTATION.profilIntro,
     texteQuestion(Q.age),
     texteQuestion(Q.genre),
@@ -32,15 +43,6 @@ export function dureeParcoursSecondes() {
     texteQuestion(Q.parent),
     texteQuestion(Q.liensEnfance),
     texteQuestion(Q.lienSujet),
-    CONSULTATION.priorites.intro,
-    CONSULTATION.priorites.aide,
-    CONSULTATION.priorites.ordre,
-    ...MESURES.map((m) => `${m.axe} ${m.texte}`),
-    CONSULTATION.plusLoinIntro,
-    texteQuestion(Q.mesureManquante),
-    texteQuestion(Q.presenceDebat),
-    texteQuestion(Q.poidsVote),
-    texteQuestion(Q.provenance),
   ].join(" ");
   const relectureSecondes = 45; // récapitulatif
   const clics =
@@ -48,7 +50,7 @@ export function dureeParcoursSecondes() {
     2 /* région, liste */ +
     5 +
     3 /* choix et réordonnancement */ +
-    3 /* facultatives */ +
+    4 /* facultatives, dont une mesure non soutenue */ +
     4 /* continuer */ +
     1;
   return (mots(lecture) / 200) * 60 + relectureSecondes + clics * 2;

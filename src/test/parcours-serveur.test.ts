@@ -247,6 +247,38 @@ describe("parcours côté serveur, sur un vrai Postgres", () => {
     expect((await donneesAdmin(AVANT)).reponses).toHaveLength(0);
   });
 
+  it("questionnaire v2 : enregistre les mesures non soutenues, refuse moins de 15 ans et « concernée » sans accord", async () => {
+    const envoi = async (extra: Record<string, unknown>, ip: string) =>
+      enregistrerConsultation(
+        { ...reponseValide, ...extra, siteWeb: "", jeton: await vieux("consultation") },
+        headers(ip),
+        AVANT,
+      );
+    expect((await envoi({ age: "moins-15" }, "192.0.2.1")).ok).toBe(false);
+    expect(await envoi({ lienSujet: ["concerne"] }, "192.0.2.2")).toMatchObject({
+      ok: false,
+      erreurs: { consentementConcerne: expect.any(String) },
+    });
+    expect((await donneesAdmin(AVANT)).reponses).toHaveLength(0);
+
+    expect(
+      (
+        await envoi(
+          { lienSujet: ["concerne"], consentementConcerne: true, mesuresRejetees: ["m02"] },
+          "192.0.2.3",
+        )
+      ).ok,
+    ).toBe(true);
+    const [r] = (await donneesAdmin(AVANT)).reponses;
+    expect(r).toMatchObject({
+      version_questionnaire: "v2",
+      lien_sujet: ["concerne"],
+      mesures_rejetees: ["m02"],
+      ordre_affichage: reponseValide.ordreAffichage,
+    });
+    expect(Object.keys(r!)).not.toContain("consentement_concerne");
+  });
+
   it("garde les emails pour la suite à part, sans doublon et sans lien avec les réponses", async () => {
     await enregistrerConsultation(
       { ...reponseValide, siteWeb: "", jeton: await vieux("consultation") },

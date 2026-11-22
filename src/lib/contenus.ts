@@ -283,9 +283,33 @@ export const CONSULTATION = {
   accroche: "Votre avis compte. Ensemble nous pouvons changer les choses.",
   anonymat:
     "Cette consultation est anonyme. Nous ne vous demandons ni nom ni email pour répondre. Une seule réponse par personne.",
-  etapes: ["Qui êtes vous", "Vos priorités", "Pour aller plus loin", "Récapitulatif"],
+  ouverture: "Ouvert à partir de 15 ans.",
+  /** Questionnaire v2 : le cœur du sujet d'abord, les questions sur la personne ensuite. */
+  etapes: ["Vos priorités", "Vos idées", "Quelques mots sur vous", "Relecture"] as const,
   profilIntro:
     "Ces questions nous aident à savoir qui a répondu. Chacune propose « Je préfère ne pas répondre ».",
+  moins15: {
+    titre: "Merci pour votre intérêt",
+    textes: [
+      "Cette consultation est ouverte à partir de 15 ans. Vos réponses ne seront pas enregistrées.",
+      "Si quelque chose vous inquiète ou vous fait du mal, vous pouvez en parler. Le 119 est gratuit et joignable 24h sur 24. Vous pouvez aussi vous confier à un adulte de confiance.",
+    ],
+    appeler: "Appeler le 119",
+  },
+  erreurs: {
+    aCompleter: "Certaines réponses sont à compléter.",
+    technique:
+      "L'enregistrement n'a pas fonctionné. Vos réponses sont toujours là. Réessayez dans un instant.",
+    suiteTechnique: "L'enregistrement n'a pas fonctionné. Réessayez dans un instant.",
+  },
+  relecture: {
+    modifier: "Modifier",
+    modifierPriorites: " vos priorités",
+    modifierIdees: " vos idées",
+    modifierProfil: " vos réponses sur vous",
+    pasDeReponse: "Pas de réponse",
+    consentementDonne: "Accord donné pour les statistiques",
+  },
   priorites: {
     intro:
       "Choisissez parmi ces 24 mesures les 5 qui comptent le plus pour vous. Classez les par ordre d'importance.",
@@ -318,7 +342,7 @@ export const CONSULTATION = {
       dejaDerniere: "Cette mesure est déjà en dernière position.",
     },
   },
-  plusLoinIntro: "Tout est facultatif.",
+  ideesIntro: "Tout est facultatif.",
   recapIntro: "Relisez vos réponses avant de valider. Vous pouvez revenir en arrière.",
   valider: "Je valide mes réponses",
   suivant: "Continuer",

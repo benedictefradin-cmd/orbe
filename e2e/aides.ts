@@ -45,12 +45,30 @@ export async function remplirProfil(page: Page) {
 }
 
 let adresse = 0;
-/** Chaque envoi de test vient d'une adresse différente, pour ne pas buter sur la limite de 10 envois par heure. */
-async function nouvelleAdresse(page: Page) {
+/** Chaque envoi de test vient d'une adresse différente, pour ne pas buter sur la limite d'envois par heure. */
+export async function nouvelleAdresse(page: Page) {
   adresse++;
   await page.setExtraHTTPHeaders({
     "x-forwarded-for": `198.18.${Math.floor(adresse / 250) % 250}.${(adresse % 250) + 1}`,
   });
+}
+
+/** Étape 1 du questionnaire v2 : choisit des mesures dans l'ordre tiré pour cette visite. */
+export async function choisirMesures(page: Page, n = 5) {
+  const mesures = page.locator("button.mesure");
+  await expect(mesures).toHaveCount(24);
+  for (let i = 0; i < n; i++) await mesures.nth(i * 3).click();
+}
+
+/** Va jusqu'à l'étape « Quelques mots sur vous », sans rien remplir de facultatif. */
+export async function allerAuProfil(page: Page) {
+  await choisirMesures(page);
+  await page.getByRole("button", { name: "Continuer" }).click();
+  await expect(page.getByRole("heading", { name: "Vos idées", level: 2 })).toBeFocused();
+  await page.getByRole("button", { name: "Continuer" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Quelques mots sur vous", level: 2 }),
+  ).toBeFocused();
 }
 
 export async function parcoursConsultation(page: Page, mesureManquante = "") {
@@ -59,23 +77,29 @@ export async function parcoursConsultation(page: Page, mesureManquante = "") {
   await page.goto("/consultation");
   await pagePrete(page, "Continuer");
   const ouvertLe = Date.now();
-  await expect(
-    page.getByText("Cette consultation est anonyme. Nous ne vous demandons ni nom ni email."),
-  ).toBeVisible();
-  await remplirProfil(page);
-  await page.getByRole("button", { name: "Continuer" }).click();
-  await expect(page.getByRole("heading", { name: "Vos priorités", level: 2 })).toBeFocused();
-  const mesures = page.locator("button.mesure");
-  for (let i = 0; i < 5; i++) await mesures.nth(i * 3).click();
+  await expect(page.getByText("Cette consultation est anonyme.")).toBeVisible();
+  await expect(page.getByText("4 étapes. Environ 7 minutes. Anonyme.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Vos priorités", level: 2 })).toBeVisible();
+  await choisirMesures(page);
   await expect(page.getByText("Vos 5 mesures sont choisies.")).toBeVisible();
   await page.getByRole("button", { name: "Continuer" }).click();
+  await expect(page.getByRole("heading", { name: "Vos idées", level: 2 })).toBeFocused();
   if (mesureManquante)
     await page.getByLabel("Une mesure manque selon vous ?").fill(mesureManquante);
+  await groupe(page, /ne soutenez pas/)
+    .getByRole("checkbox")
+    .first()
+    .check();
   await groupe(page, /débat public/)
     .getByLabel("Peu")
     .check();
   await page.getByRole("button", { name: "Continuer" }).click();
-  await expect(page.getByRole("heading", { name: "Récapitulatif", level: 2 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Quelques mots sur vous", level: 2 }),
+  ).toBeFocused();
+  await remplirProfil(page);
+  await page.getByRole("button", { name: "Continuer" }).click();
+  await expect(page.getByRole("heading", { name: "Relecture", level: 2 })).toBeVisible();
   await attendreDelaiMinimum(page, ouvertLe);
   await page.getByRole("button", { name: "Je valide mes réponses" }).click();
   await expect(

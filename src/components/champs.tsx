@@ -89,6 +89,7 @@ export function ChoixMultiple({
   colonnes = false,
   facultatif,
   apres,
+  max,
 }: Base & {
   options: readonly Option[];
   valeurs: readonly string[];
@@ -96,10 +97,14 @@ export function ChoixMultiple({
   nsp?: boolean;
   colonnes?: boolean;
   apres?: ReactNode;
+  /** Nombre de choix au plus. Au delà, les cases restent focalisables (aria-disabled) mais ne se cochent pas. */
+  max?: number;
 }) {
   const liste = nsp ? [...options, NE_PAS_REPONDRE] : options;
+  const plein = max !== undefined && valeurs.length >= max;
   const basculer = (v: string) => {
     if (v === NE_PAS_REPONDRE.valeur) return onChange(valeurs.includes(v) ? [] : [v]);
+    if (plein && !valeurs.includes(v)) return;
     const sans = valeurs.filter((x) => x !== NE_PAS_REPONDRE.valeur);
     onChange(sans.includes(v) ? sans.filter((x) => x !== v) : [...sans, v]);
   };
@@ -129,6 +134,7 @@ export function ChoixMultiple({
               name={nom}
               value={o.valeur}
               checked={valeurs.includes(o.valeur)}
+              aria-disabled={(plein && !valeurs.includes(o.valeur)) || undefined}
               onChange={() => basculer(o.valeur)}
             />
             <span>{o.libelle}</span>

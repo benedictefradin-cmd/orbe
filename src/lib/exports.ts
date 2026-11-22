@@ -36,6 +36,7 @@ export function tableauReponses(reponses: readonly ReponseAdmin[], n: number): T
     Q.lienSujet.libelle,
     ...Array.from({ length: n }, (_, i) => `Mesure classée ${i + 1}`),
     Q.mesureManquante.libelle,
+    "Mesures non soutenues",
     Q.presenceDebat.libelle,
     Q.poidsVote.libelle,
     Q.provenance.libelle,
@@ -57,6 +58,9 @@ export function tableauReponses(reponses: readonly ReponseAdmin[], n: number): T
       return m ? `${m.id.toUpperCase()} · ${m.texte}` : "";
     }),
     r.mesure_manquante ?? "",
+    r.mesures_rejetees === null
+      ? "Question absente (v1)"
+      : r.mesures_rejetees.map((id) => id.toUpperCase()).join(" "),
     libelle(Q.presenceDebat.options, r.presence_debat),
     libelle(Q.poidsVote.options, r.poids_vote),
     libelle(Q.provenance.options, r.provenance),

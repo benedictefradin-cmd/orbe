@@ -21,7 +21,7 @@ const r: ReponseAdmin = {
   provenance: null,
   version_questionnaire: "v2",
   ordre_affichage: ["m03", "m01"],
-  mesures_rejetees: [],
+  mesures_rejetees: ["m02", "m11"],
 };
 
 describe("export Excel", () => {

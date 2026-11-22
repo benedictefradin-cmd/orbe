@@ -84,6 +84,37 @@ describe("validation de la consultation", () => {
     ])
       expect(envoiConsultationSchema.safeParse({ ...envoi, ordreAffichage }).success).toBe(false);
   });
+  it("n'enregistre jamais une réponse de moins de 15 ans", () => {
+    const e = erreursParChamp(
+      consultationSchema.safeParse({ ...reponseValide, age: "moins-15" }).error!,
+    );
+    expect(e["age"]).toMatch(/à partir de 15 ans/);
+  });
+  it("exige un accord explicite pour « personne concernée », jamais pour les autres réponses", () => {
+    const sans = consultationSchema.safeParse({ ...reponseValide, lienSujet: ["concerne"] });
+    expect(erreursParChamp(sans.error!)["consentementConcerne"]).toMatch(/case d'accord/);
+    const envoi = { ...reponseValide, lienSujet: ["concerne"], siteWeb: "", jeton: "x" };
+    expect(envoiConsultationSchema.safeParse(envoi).success).toBe(false);
+    expect(
+      envoiConsultationSchema.safeParse({ ...envoi, consentementConcerne: true }).success,
+    ).toBe(true);
+    expect(
+      consultationSchema.safeParse({ ...reponseValide, lienSujet: ["connait-victime"] }).success,
+    ).toBe(true);
+  });
+  it("accepte 3 mesures non soutenues au plus, jamais une mesure du classement", () => {
+    const ok = consultationSchema.safeParse({ ...reponseValide, mesuresRejetees: ["m02", "m05"] });
+    expect(ok.success && ok.data.mesuresRejetees).toEqual(["m02", "m05"]);
+    expect(consultationSchema.parse(reponseValide).mesuresRejetees).toEqual([]);
+    expect(
+      consultationSchema.safeParse({
+        ...reponseValide,
+        mesuresRejetees: ["m02", "m04", "m05", "m06"],
+      }).success,
+    ).toBe(false);
+    const croise = consultationSchema.safeParse({ ...reponseValide, mesuresRejetees: ["m03"] });
+    expect(erreursParChamp(croise.error!)["mesuresRejetees"]).toMatch(/classement/);
+  });
   it("limite la mesure manquante à 500 caractères", () => {
     expect(
       consultationSchema.safeParse({ ...reponseValide, mesureManquante: "a".repeat(501) }).success,

@@ -67,6 +67,9 @@ export const NOMBRE_MESURES_A_CLASSER = 5;
  */
 export const VERSION_QUESTIONNAIRE = "v2";
 
+/** Nombre maximal de mesures que l'on peut signaler comme non soutenues (question facultative). */
+export const MAX_MESURES_REJETEES = 3;
+
 /** Anti robots : délai minimal entre l'ouverture d'un formulaire et son envoi, et quota horaire par adresse. */
 export const DELAI_MINIMUM_ENVOI_MS = 20_000;
 /** Formulaire court de l'écran de remerciement (un seul champ email). */

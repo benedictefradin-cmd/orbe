@@ -127,6 +127,7 @@ export async function enregistrerConsultation(
         provenance: d.provenance,
         version_questionnaire: VERSION_QUESTIONNAIRE,
         ordre_affichage: d.ordreAffichage,
+        mesures_rejetees: d.mesuresRejetees,
       },
     });
     return { ok: true };

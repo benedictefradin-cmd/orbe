@@ -45,3 +45,26 @@ Propositions de reformulation à un seul objet :
 | **m23** Garantir des soins spécialisés en psychotraumatisme pris en charge à 100 %, une juste réparation des préjudices, et pérenniser la CIIVISE. | **m40** Garantir des soins spécialisés en psychotraumatisme pris en charge à 100 %.<br>**m41** Garantir une juste réparation des préjudices subis.<br>**m42** Pérenniser la CIIVISE. |
 
 Pour m17, l'office des mineurs et la cyberpédocriminalité peuvent aussi être séparés (deux mesures de moyens).
+
+## Lot B · Parcours et données sensibles
+
+### B1. Libellés « Votre lien avec le sujet » (à faire valider par Face à l'inceste)
+
+Fichier : `src/lib/formulaires.ts` (`Q.lienSujet`, `Q.consentementConcerne`). Libellés provisoires :
+
+- [ ] « Je suis une personne concernée (violences sexuelles subies dans l'enfance) »
+- [ ] « Je connais une personne qui a subi des violences sexuelles dans son enfance »
+- [ ] Case d'accord, qui n'apparaît que si la première réponse est cochée : « J'accepte que cette information, anonyme, soit utilisée pour les statistiques de la synthèse »
+- [ ] Message si la case n'est pas cochée : « Pour que cette réponse soit comptée, cochez la case d'accord. Vous pouvez aussi décocher « personne concernée ». Les deux choix sont possibles. » Sans accord, rien n'est enregistré (vérifié côté navigateur et côté serveur).
+
+### B2. Réponses v1 « personnellement concerné »
+
+- [ ] Les réponses v1 (avant le 23 novembre 2026) ont pu cocher « Je suis personnellement concerné » **sans case d'accord explicite**. Elles sont conservées telles quelles. À décider : les compter ou non dans les statistiques « personnes concernées » de la synthèse. Le tableau de bord permet de filtrer par version.
+
+### B3. Âge minimum et mineurs de 15 à 17 ans (vérification juridique)
+
+À faire vérifier par la personne en charge des données à l'Institut Rousseau :
+
+- [ ] **Base légale du traitement pour les 15 à 17 ans.** L'article 8 du règlement (UE) 2016/679 (RGPD) et l'article 45 de la loi n° 78‑17 du 6 janvier 1978 fixent en France à 15 ans l'âge à partir duquel une personne mineure peut consentir seule à un traitement de ses données dans le cadre des services de la société de l'information. Vérifier que cela couvre la consultation, en particulier la réponse « personne concernée » (donnée sensible, article 9 du RGPD).
+- [ ] **Moins de 15 ans.** Le site affiche un message bienveillant avec le 119 et n'enregistre rien (vérifié côté serveur). Texte dans `CONSULTATION.moins15` (`src/lib/contenus.ts`), à relire.
+- [ ] La mention « Ouvert à partir de 15 ans » s'affiche dans l'introduction de la consultation.
