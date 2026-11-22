@@ -34,6 +34,7 @@ export function dureeParcoursSecondes() {
     texteQuestion(Q.lienSujet),
     CONSULTATION.priorites.intro,
     CONSULTATION.priorites.aide,
+    CONSULTATION.priorites.ordre,
     ...MESURES.map((m) => `${m.axe} ${m.texte}`),
     CONSULTATION.plusLoinIntro,
     texteQuestion(Q.mesureManquante),

@@ -4,15 +4,15 @@ import { PGlite } from "@electric-sql/pglite";
 import { preparerPglite, rpcDepuisPglite, utiliserRpc } from "@/lib/server/db.server";
 
 const dossier = path.resolve(__dirname, "../../supabase/migrations");
-const migrations = readdirSync(dossier)
+export const migrations = readdirSync(dossier)
   .filter((f) => f.endsWith(".sql") && !f.includes("planifiees"))
   .sort()
   .map((f) => readFileSync(path.join(dossier, f), "utf8"));
 
 /** Base Postgres en mémoire, avec les vraies migrations, branchée sur la couche d'accès. */
-export async function nouvelleBase() {
+export async function nouvelleBase(liste: string[] = migrations) {
   const db = new PGlite();
-  await preparerPglite(db, migrations);
+  await preparerPglite(db, liste);
   utiliserRpc(rpcDepuisPglite(db));
   return db;
 }

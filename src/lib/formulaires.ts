@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MESURE_IDS } from "@/lib/mesures";
+import { estPermutationDesMesures, MESURE_IDS } from "@/lib/mesures";
 import { NOMBRE_MESURES_A_CLASSER } from "@/lib/config";
 
 /** Messages zod en français : aucun message anglais par défaut ne doit s'afficher. */
@@ -233,7 +233,15 @@ export const antiRobotSchema = z.object({
 export const consultationSchema = profilSchema
   .merge(classementSchema)
   .merge(pourAllerPlusLoinSchema);
-export const envoiConsultationSchema = consultationSchema.merge(antiRobotSchema);
+/** Ordre dans lequel les 24 mesures ont été présentées, tiré une fois par visite. */
+export const ordreAffichageSchema = z.object({
+  ordreAffichage: z
+    .array(z.enum(MESURE_IDS))
+    .refine(estPermutationDesMesures, "L'ordre d'affichage des mesures est invalide."),
+});
+export const envoiConsultationSchema = consultationSchema
+  .merge(ordreAffichageSchema)
+  .merge(antiRobotSchema);
 export type ReponseConsultation = z.infer<typeof consultationSchema>;
 
 /** Email facultatif laissé après la consultation, enregistré à part des réponses. */

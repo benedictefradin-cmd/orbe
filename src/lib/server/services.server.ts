@@ -7,6 +7,7 @@ import {
   isClosed,
   jourParis,
   SUPPRESSION_DES_DONNEES_ATELIERS,
+  VERSION_QUESTIONNAIRE,
 } from "@/lib/config";
 import {
   envoiConsultationSchema,
@@ -124,6 +125,8 @@ export async function enregistrerConsultation(
         presence_debat: d.presenceDebat,
         poids_vote: d.poidsVote,
         provenance: d.provenance,
+        version_questionnaire: VERSION_QUESTIONNAIRE,
+        ordre_affichage: d.ordreAffichage,
       },
     });
     return { ok: true };
@@ -295,6 +298,12 @@ export type ReponseAdmin = {
   presence_debat: string | null;
   poids_vote: string | null;
   provenance: string | null;
+  /** « v1 » pour les réponses antérieures au questionnaire actuel. */
+  version_questionnaire: string;
+  /** Ordre de présentation des 24 mesures (null en v1). */
+  ordre_affichage: string[] | null;
+  /** Mesures non soutenues, 3 au plus (null en v1, question absente). */
+  mesures_rejetees: string[] | null;
 };
 export type ContactSuite = { email: string; jour: string };
 export type DonneesAdmin = {

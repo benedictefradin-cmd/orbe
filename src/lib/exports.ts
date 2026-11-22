@@ -39,6 +39,8 @@ export function tableauReponses(reponses: readonly ReponseAdmin[], n: number): T
     Q.presenceDebat.libelle,
     Q.poidsVote.libelle,
     Q.provenance.libelle,
+    "Version du questionnaire",
+    "Ordre d'affichage des mesures",
   ];
   const lignes = reponses.map((r) => [
     r.jour,
@@ -58,6 +60,8 @@ export function tableauReponses(reponses: readonly ReponseAdmin[], n: number): T
     libelle(Q.presenceDebat.options, r.presence_debat),
     libelle(Q.poidsVote.options, r.poids_vote),
     libelle(Q.provenance.options, r.provenance),
+    r.version_questionnaire,
+    (r.ordre_affichage ?? []).map((id) => id.toUpperCase()).join(" "),
   ]);
   return { nom: "Réponses", entetes, lignes };
 }

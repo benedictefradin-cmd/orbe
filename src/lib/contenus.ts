@@ -278,11 +278,8 @@ export const PIED = {
 
 export const CONSULTATION = {
   titre: "La consultation citoyenne",
-  recap: [
-    "La CIIVISE a recueilli 30 000 témoignages et formulé 82 préconisations en 2023.",
-    "Le Sénat a voté le 28 octobre 2026 l'imprescriptibilité des crimes sexuels sur mineurs par 252 voix contre 80.",
-    "Le texte n'est pas encore définitif. La présidentielle approche.",
-  ],
+  /** Ligne neutre : aucune mesure n'est citée avant le classement (le contexte reste sur /contexte). */
+  recap: [`4 étapes. Environ ${DUREE_CONSULTATION_MINUTES} minutes. Anonyme.`],
   accroche: "Votre avis compte. Ensemble nous pouvons changer les choses.",
   anonymat:
     "Cette consultation est anonyme. Nous ne vous demandons ni nom ni email pour répondre. Une seule réponse par personne.",
@@ -293,12 +290,33 @@ export const CONSULTATION = {
     intro:
       "Choisissez parmi ces 24 mesures les 5 qui comptent le plus pour vous. Classez les par ordre d'importance.",
     aide: "Touchez une mesure pour l'ajouter à votre classement. Vous pouvez ensuite changer l'ordre ou retirer une mesure.",
+    ordre: "Les mesures sont présentées dans un ordre tiré au hasard pour chaque personne.",
+    titreClassement: (n: number, total: number) => `Mon classement (${n} sur ${total})`,
+    titreListe: "Les 24 mesures",
+    chargement: "Préparation de la liste des mesures…",
     vide: "Aucune mesure choisie pour l'instant.",
     complet: "Vos 5 mesures sont choisies. Vous pouvez encore changer l'ordre.",
+    aChoisir: "À choisir",
     monter: "Monter",
     descendre: "Descendre",
     retirer: "Retirer",
     sources: "Sources",
+    details: "Détails",
+    filtres: "Afficher les mesures par thème",
+    tousLesAxes: "Tous les thèmes",
+    affichees: (n: number) => (n === 1 ? "1 mesure affichée." : `${n} mesures affichées.`),
+    resume: (n: number, total: number) => `${n} sur ${total} choisies`,
+    voirClassement: "Voir mon classement",
+    annonces: {
+      ajout: (position: number, total: number, texte: string) =>
+        `Ajoutée en position ${position} sur ${total} : ${texte}`,
+      deplacement: (position: number, total: number, texte: string) =>
+        `Déplacée en position ${position} sur ${total} : ${texte}`,
+      retrait: (texte: string) => `Retirée de votre classement : ${texte}`,
+      plein: "Votre classement est complet. Retirez une mesure pour en choisir une autre.",
+      dejaPremiere: "Cette mesure est déjà en première position.",
+      dejaDerniere: "Cette mesure est déjà en dernière position.",
+    },
   },
   plusLoinIntro: "Tout est facultatif.",
   recapIntro: "Relisez vos réponses avant de valider. Vous pouvez revenir en arrière.",

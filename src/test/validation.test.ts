@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { consultationSchema, erreursParChamp, inscriptionSchema } from "@/lib/formulaires";
+import {
+  consultationSchema,
+  envoiConsultationSchema,
+  erreursParChamp,
+  inscriptionSchema,
+} from "@/lib/formulaires";
+import { MESURE_IDS } from "@/lib/mesures";
 
 export const reponseValide = {
   age: "25-34",
@@ -15,6 +21,7 @@ export const reponseValide = {
   presenceDebat: null,
   poidsVote: "beaucoup",
   provenance: "reseaux-ir",
+  ordreAffichage: [...MESURE_IDS].reverse(),
 };
 export const inscriptionValide = {
   ateliers: ["atelier-1"],
@@ -65,6 +72,17 @@ describe("validation de la consultation", () => {
         classement: ["m01", "m02", "m03", "m04", "x99"],
       }).success,
     ).toBe(false);
+  });
+  it("exige l'ordre d'affichage des 24 mesures, chacune une fois", () => {
+    const envoi = { ...reponseValide, siteWeb: "", jeton: "x" };
+    expect(envoiConsultationSchema.safeParse(envoi).success).toBe(true);
+    for (const ordreAffichage of [
+      [],
+      MESURE_IDS.slice(1),
+      [...MESURE_IDS.slice(1), "m02"],
+      [...MESURE_IDS.slice(1), "x99"],
+    ])
+      expect(envoiConsultationSchema.safeParse({ ...envoi, ordreAffichage }).success).toBe(false);
   });
   it("limite la mesure manquante à 500 caractères", () => {
     expect(

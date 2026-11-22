@@ -61,6 +61,12 @@ export const SUPPRESSION_DES_DONNEES_ATELIERS = "2027-03-31";
 /** Nombre de mesures à classer parmi les 24. */
 export const NOMBRE_MESURES_A_CLASSER = 5;
 
+/**
+ * Version du questionnaire enregistrée avec chaque réponse. Les réponses antérieures au 23 novembre 2026
+ * sont en v1 (profil en premier, sans ordre d'affichage). Toute modification des questions crée une nouvelle version.
+ */
+export const VERSION_QUESTIONNAIRE = "v2";
+
 /** Anti robots : délai minimal entre l'ouverture d'un formulaire et son envoi, et quota horaire par adresse. */
 export const DELAI_MINIMUM_ENVOI_MS = 20_000;
 /** Formulaire court de l'écran de remerciement (un seul champ email). */

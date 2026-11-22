@@ -15,7 +15,7 @@ import {
   profilSchema,
   Q,
 } from "@/lib/formulaires";
-import { mesureParId } from "@/lib/mesures";
+import { melanger, MESURE_IDS, mesureParId } from "@/lib/mesures";
 import { getRequestOrigin } from "@/lib/origin.functions";
 import {
   envoyerConsultation,
@@ -145,6 +145,8 @@ function Formulaire({
   const [message, setMessage] = useState("");
   const [envoi, setEnvoi] = useState(false);
   const [piege, setPiege] = useState("");
+  // Ordre des 24 mesures tiré une seule fois par visite, côté navigateur, et gardé au retour sur l'étape.
+  const [ordre, setOrdre] = useState<string[] | null>(null);
   const jeton = useRef<string>("");
   const titreEtape = useRef<HTMLHeadingElement>(null);
   const resume = useRef<HTMLDivElement | null>(null);
@@ -155,6 +157,9 @@ function Formulaire({
       jeton.current = j;
     });
   }, [obtenirJeton]);
+  useEffect(() => {
+    setOrdre(melanger(MESURE_IDS));
+  }, []);
   useEffect(() => {
     if (premierRendu.current) {
       premierRendu.current = false;
@@ -195,7 +200,9 @@ function Formulaire({
     setEnvoi(true);
     setMessage("");
     try {
-      const r = await envoyer({ data: { ...d, siteWeb: piege, jeton: jeton.current } });
+      const r = await envoyer({
+        data: { ...d, ordreAffichage: ordre ?? [], siteWeb: piege, jeton: jeton.current },
+      });
       if (r.ok) return onEnvoye();
       if ("dejaRepondu" in r && r.dejaRepondu) return onDejaRepondu();
       const e = r.erreurs ?? {};
@@ -387,6 +394,7 @@ function Formulaire({
 
           {etape === 1 && (
             <Classement
+              ordre={ordre}
               valeur={d.classement}
               onChange={maj("classement")}
               erreur={erreurs["classement"]}
