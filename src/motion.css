@@ -1,0 +1,386 @@
+/* Mouvement « Le fil qui relie »
+
+   Le trait corail est un fil. Il souligne « ensemble » à l'arrivée, montre l'entrée de la
+   consultation, entoure chaque mesure choisie et l'étape en cours de la loi, puis se referme
+   en cercle autour du remerciement. Les filets navy (frise, chiffres, progression) se tracent.
+
+   Règles tenues dans tout ce fichier :
+   · tout mouvement vit sous screen et prefers-reduced-motion: no-preference ;
+     sinon l'état final s'affiche directement (styles.css le décrit seul) ;
+   · le défilement ne pilote que sous @supports (animation-timeline: view()) ;
+     sans ce support (Firefox), l'état final s'affiche ;
+   · seules transform, opacity et clip-path sont animées. Les traits sont des formes pleines
+     (src/assets/traits/README.md) : ils se dessinent par clip-path, pas par stroke-dashoffset ;
+   · rien d'infini, rien au delà de 5 s, aucune interaction au delà de 500 ms ;
+   · un contenu ne part jamais sous une opacité de 0,5 en attendant le défilement ;
+   · aucune animation sur les phrases qui parlent des violences, aucun compteur.
+   Les accroches sont des attributs data-* : elles survivent aux changements de classes. */
+
+/* Repères de l'en tête et de la page pour les transitions entre pages */
+[data-vt="entete"] {
+  view-transition-name: entete;
+}
+#contenu {
+  view-transition-name: page;
+}
+/* Pendant un déplacement dans « Mon classement », seules les lignes déplacées sont nommées */
+:root[data-transition] [data-vt="entete"],
+:root[data-transition] #contenu {
+  view-transition-name: none;
+}
+
+/* Accordéons : tw-animate-css anime la hauteur, propriété exclue ici. Ouverture en fondu plus bas. */
+[class*="animate-accordion"] {
+  animation: none;
+}
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* ─── Arrivée de l'accueil ───
+     Le surtitre, le titre, l'introduction puis l'échéance et le sommaire, 70 ms d'écart.
+     Le trait sous « ensemble » se dessine à partir de 150 ms, la flèche le prolonge.
+     Tout est fini avant 1,2 s. */
+  [data-entree] {
+    animation: arrivee var(--d-entree) var(--sortie) backwards;
+  }
+  [data-entree="1"] {
+    animation-delay: 70ms;
+  }
+  [data-entree="2"] {
+    animation-delay: 140ms;
+  }
+  [data-entree="3"] {
+    animation-delay: 210ms;
+  }
+  /* 150 ms + 1 000 ms : le tracé reste dans la limite de 1,2 s */
+  [data-motion="ensemble"] {
+    animation: balayer calc(var(--d-trace) - 100ms) var(--trace) 150ms backwards;
+  }
+  [data-motion="fleche"] {
+    animation: balayer 400ms var(--trace) 750ms backwards;
+  }
+
+  /* ─── Échéance : le trait sous la date se dessine une fois, sans pulsation ─── */
+  [data-motion="echeance"] {
+    animation: balayer 640ms var(--trace) 420ms backwards;
+  }
+
+  /* ─── Révélations au défilement ───
+     Une seule fois à l'œil : la plage est courte et se joue à l'entrée dans l'écran.
+     Les textes de la frise et des chiffres parlent des violences : ils ne bougent jamais.
+     Seuls les titres, les années, les dates et les filets bougent. */
+  @supports (animation-timeline: view()) {
+    main > section:not(:first-child) .titre-section,
+    [data-motion="frise"] .frise-annee,
+    [data-motion="frise"] .frise-jour {
+      animation: reveler linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 70%;
+    }
+
+    /* Frise : le filet vertical se trace étape après étape, au fil du défilement.
+       Le bord reste en place sans ce support, à l'impression et en mouvement réduit. */
+    [data-motion="frise"] .frise-item {
+      view-timeline: --etape block;
+    }
+    [data-motion="frise"] .frise-corps {
+      position: relative;
+      border-left-color: transparent;
+    }
+    [data-motion="frise"] .frise-corps::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -2px;
+      width: 2px;
+      background: var(--navy);
+      transform-origin: top;
+      animation: tracer-vertical linear both;
+      animation-timeline: --etape;
+      animation-range: cover 10% cover 45%;
+    }
+    /* L'année en cours s'entoure du trait corail quand elle arrive à l'écran */
+    [data-motion="frise-courant"] {
+      animation: entourer linear both;
+      animation-timeline: view();
+      animation-range: entry 60% cover 45%;
+    }
+
+    /* Chiffres clés : le filet au dessus de chaque nombre se trace à l'entrée dans l'écran.
+       Les nombres et leurs phrases restent fixes. */
+    [data-motion="chiffres"] > li {
+      position: relative;
+      border-top-color: transparent;
+    }
+    [data-motion="chiffres"] > li::before {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--navy);
+      transform-origin: left;
+      animation: tracer-horizontal linear both;
+      animation-timeline: view();
+      animation-range: entry 20% entry 90%;
+    }
+  }
+
+  /* ─── Étapes de la consultation ───
+     Le contenu arrive du côté où l'on va. Le focus sur le titre ne change pas. */
+  [data-sens="avant"] {
+    animation: etape-avant 360ms var(--sortie) backwards;
+  }
+  [data-sens="arriere"] {
+    animation: etape-arriere 360ms var(--sortie) backwards;
+  }
+
+  /* ─── Progression : le filet avance d'une étape ─── */
+  [data-motion="fil"] > div {
+    transition: transform var(--d-entree) var(--sortie);
+  }
+
+  /* ─── Mesures : le trait entoure le rang dès qu'une mesure est choisie ─── */
+  [data-motion="rang"] {
+    animation: entourer 360ms var(--trace) backwards;
+  }
+  /* La ligne arrive dans « Mon classement ». Pendant un déplacement, la transition de vue s'en charge. */
+  :root:not([data-transition]) [data-motion="classement"] > [data-mesure] {
+    transition:
+      opacity var(--d-etat) var(--sortie),
+      transform var(--d-etat) var(--sortie);
+  }
+  @starting-style {
+    :root:not([data-transition]) [data-motion="classement"] > [data-mesure] {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  /* Monter, descendre, retirer : chaque ligne glisse à sa nouvelle place */
+  ::view-transition-group(*) {
+    animation-duration: 250ms;
+    animation-timing-function: var(--sortie);
+  }
+
+  /* ─── Validation, après la seule confirmation réelle du serveur ───
+     Le fil se referme en cercle autour du premier mot, puis le reste arrive. Ensuite plus rien ne bouge. */
+  [data-motion="sceau"] {
+    animation: entourer 900ms var(--trace) backwards;
+  }
+  [data-motion="validation"] > :first-child > :not(h1),
+  [data-motion="validation"] > :not(:first-child) {
+    animation: arrivee 400ms var(--sortie) 700ms backwards;
+  }
+
+  /* ─── Micro interactions ─── */
+  .bouton {
+    transition: transform var(--d-retour) var(--sortie);
+  }
+  .bouton:active:not(:disabled, [aria-disabled="true"]) {
+    transform: scale(0.98);
+  }
+  .bouton svg {
+    transition: transform var(--d-retour) var(--sortie);
+  }
+  .bouton:hover:not(:disabled) svg.lucide-arrow-right {
+    transform: translateX(3px);
+  }
+  .bouton:hover:not(:disabled) svg.lucide-arrow-left {
+    transform: translateX(-3px);
+  }
+
+  /* Liens de navigation : un filet bleu s'étire au survol. La page en cours garde son soulignement. */
+  .nav-ancres a {
+    position: relative;
+  }
+  .nav-ancres a::after {
+    content: "";
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 6px;
+    height: 2px;
+    background: var(--bleu);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--d-retour) var(--sortie);
+  }
+  .nav-ancres a:hover::after {
+    transform: scaleX(1);
+  }
+  .nav-ancres a[aria-current="page"]::after {
+    display: none;
+  }
+
+  /* Erreurs : apparition douce, jamais de secousse */
+  .erreur:not([hidden]),
+  .encadre-erreur {
+    animation: erreur var(--d-etat) var(--sortie) backwards;
+  }
+
+  /* Accordéons : ouverture en fondu, fermeture immédiate */
+  [class*="animate-accordion"][data-state="open"] {
+    animation: apparaitre var(--d-etat) var(--sortie);
+  }
+
+  /* Tableau de bord */
+  .dash-carte {
+    animation: arrivee var(--d-entree) var(--sortie) backwards;
+  }
+  .dash-remplissage {
+    animation: tracer-horizontal 900ms var(--sortie) backwards;
+  }
+
+  /* ─── Entre les pages ───
+     L'en tête ne bouge pas. La page sort en fondu, la suivante monte de 8 px. */
+  :root:not([data-transition])::view-transition-group(entete),
+  :root:not([data-transition])::view-transition-old(entete),
+  :root:not([data-transition])::view-transition-new(entete) {
+    animation: none;
+  }
+  :root:not([data-transition])::view-transition-group(page) {
+    animation: none;
+  }
+  :root:not([data-transition])::view-transition-old(page) {
+    animation: sortie-page 180ms var(--accel) both;
+  }
+  :root:not([data-transition])::view-transition-new(page) {
+    animation: entree-page 320ms var(--sortie) 60ms both;
+  }
+  :root:not([data-transition])::view-transition-old(root),
+  :root:not([data-transition])::view-transition-new(root) {
+    animation-duration: 180ms;
+    animation-timing-function: var(--sortie);
+  }
+}
+
+/* Mouvement réduit : aucune animation, aucune transition, l'état final directement.
+   Couvre aussi les composants tiers (tiroir de menu, fenêtres de confirmation). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* Impression et PDF : tout le contenu, à son état final, sans aucune animation */
+@media print {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  main * {
+    opacity: 1 !important;
+  }
+}
+
+@keyframes arrivee {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+/* Souligner, flèche : le trait se dessine de gauche à droite */
+@keyframes balayer {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+/* Entourer : le trait fait le tour, dans le sens des aiguilles d'une montre, depuis le haut */
+@keyframes entourer {
+  0% {
+    clip-path: polygon(50% 50%, 50% -10%, 50% -10%, 50% -10%, 50% -10%, 50% -10%, 50% -10%);
+  }
+  12.5% {
+    clip-path: polygon(50% 50%, 50% -10%, 110% -10%, 110% -10%, 110% -10%, 110% -10%, 110% -10%);
+  }
+  37.5% {
+    clip-path: polygon(50% 50%, 50% -10%, 110% -10%, 110% 110%, 110% 110%, 110% 110%, 110% 110%);
+  }
+  62.5% {
+    clip-path: polygon(50% 50%, 50% -10%, 110% -10%, 110% 110%, -10% 110%, -10% 110%, -10% 110%);
+  }
+  87.5% {
+    clip-path: polygon(50% 50%, 50% -10%, 110% -10%, 110% 110%, -10% 110%, -10% -10%, -10% -10%);
+  }
+  100% {
+    clip-path: polygon(50% 50%, 50% -10%, 110% -10%, 110% 110%, -10% 110%, -10% -10%, 50% -10%);
+  }
+}
+@keyframes reveler {
+  from {
+    opacity: 0.5;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes tracer-vertical {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes tracer-horizontal {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes etape-avant {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}
+@keyframes etape-arriere {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+}
+@keyframes erreur {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+@keyframes apparaitre {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes sortie-page {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes entree-page {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}

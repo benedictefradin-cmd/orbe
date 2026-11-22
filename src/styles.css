@@ -1,6 +1,8 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+/* Tout le mouvement : src/motion.css */
+@import "./motion.css";
 
 /* Polices auto hébergées (@fontsource-variable), sous ensemble latin uniquement.
    Aucune requête vers un domaine tiers : l'adresse IP des visiteurs ne sort pas du site. */
@@ -126,7 +128,7 @@
   --trait-fort: 2px solid var(--navy);
   --focus: 0 0 0 3px var(--papier), 0 0 0 5px var(--bleu);
 
-  /* Mouvement (utilisés par le prompt 5) */
+  /* Mouvement (src/motion.css) */
   --d-retour: 160ms;
   --d-etat: 280ms;
   --d-entree: 480ms;
@@ -135,9 +137,6 @@
   --accel: cubic-bezier(0.4, 0, 1, 1);
   --trace: cubic-bezier(0.65, 0, 0.35, 1);
   --accueil: cubic-bezier(0.34, 1.3, 0.64, 1);
-
-  /* Seul reste de l'ancienne palette : la section mouvement ci dessous s'en sert encore (prompt 5). */
-  --accent: var(--bleu);
 }
 
 @layer base {
@@ -146,20 +145,8 @@
     box-sizing: border-box;
   }
   html {
-    scroll-behavior: smooth;
     scroll-padding-top: calc(var(--entete) + 1rem);
     -webkit-text-size-adjust: 100%;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
   }
   body {
     margin: 0;
@@ -356,6 +343,12 @@
     display: inline-block;
     isolation: isolate;
   }
+  /* Mot entouré dans un titre : en ligne, sinon le bloc en ligne ajoute une espace au nom
+     accessible (« Merci . Votre voix… »). nowrap garde le mot d'un seul tenant sous son trait. */
+  .titre-principal .marque-entourer {
+    display: inline;
+    white-space: nowrap;
+  }
   .marque > .trait {
     position: absolute;
     z-index: -1;
@@ -368,9 +361,7 @@
   }
   .marque-entourer > .trait {
     inset: -0.32em -0.5em -0.3em -0.45em;
-  }
-
-  /* ───── Boutons et liens ───── */
+  } /* ───── Boutons et liens ───── */
   .bouton {
     display: inline-flex;
     align-items: center;
@@ -1242,9 +1233,12 @@
     height: 2px;
     background: var(--filet);
   }
+  /* Remplie par transform (--p, de 0 à 1) : le fil avance sans recalcul de mise en page */
   .progression > div {
     height: 100%;
     background: var(--navy);
+    transform-origin: left;
+    transform: scaleX(var(--p, 1));
   }
   .etapes-liste {
     list-style: none;
@@ -1584,7 +1578,6 @@
     border: var(--trait-fin);
     border-top: var(--trait-fort);
     padding: 18px;
-    animation: dash-entree 0.5s ease both;
     min-width: 0;
   }
   .dash-libelle {
@@ -1617,7 +1610,6 @@
     height: 100%;
     background: var(--bleu);
     transform-origin: left;
-    animation: dash-jauge 0.9s ease both;
   }
   .dash-remplissage.plein {
     background: var(--navy);
@@ -1646,24 +1638,6 @@
   .badge-annule {
     color: var(--texte-2);
   }
-  @keyframes dash-entree {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-  @keyframes dash-jauge {
-    from {
-      transform: scaleX(0);
-    }
-    to {
-      transform: scaleX(1);
-    }
-  }
   .tableau {
     width: 100%;
     border-collapse: collapse;
@@ -1683,314 +1657,5 @@
     padding: 10px 8px;
     border-bottom: var(--trait-fin);
     vertical-align: top;
-  }
-}
-
-/* Mouvement
-   Sobre et lent à dessein : le sujet demande du calme. Tout ce qui déplace
-   un élément est réservé à prefers-reduced-motion: no-preference, le site
-   reste complet et lisible sans aucune animation. */
-:root {
-  --sortie: cubic-bezier(0.22, 1, 0.36, 1);
-  --sortie-douce: cubic-bezier(0.33, 1, 0.68, 1);
-}
-
-/* Transitions d'état (couleurs, bordures), sans déplacement */
-.bouton,
-.choix,
-.mesure,
-.saisie,
-.nav-ancres a,
-.badge {
-  transition-property: background-color, color, border-color, box-shadow, transform, opacity;
-  transition-duration: 0.2s;
-  transition-timing-function: var(--sortie-douce);
-}
-.progression > div {
-  transition: width 0.6s var(--sortie);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  /* Retour tactile des boutons */
-  .bouton:active:not(:disabled) {
-    transform: scale(0.98);
-  }
-  .bouton svg {
-    transition: transform 0.25s var(--sortie);
-  }
-  .bouton:hover:not(:disabled) svg.lucide-arrow-right {
-    transform: translateX(3px);
-  }
-  .bouton:hover:not(:disabled) svg.lucide-arrow-left {
-    transform: translateX(-3px);
-  }
-
-  /* Soulignement de navigation qui se déploie */
-  .nav-ancres a {
-    position: relative;
-  }
-  .nav-ancres a::after {
-    content: "";
-    position: absolute;
-    left: 12px;
-    right: 12px;
-    bottom: 6px;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s var(--sortie);
-  }
-  .nav-ancres a:hover::after {
-    transform: scaleX(1);
-  }
-  .nav-ancres a[aria-current="page"]::after {
-    display: none;
-  }
-
-  /* Choix et mesures : la sélection se confirme d'une légère pulsation */
-  .choix:has(input:checked),
-  .mesure[aria-pressed="true"] {
-    animation: selection 0.3s var(--sortie);
-  }
-  .rang:not(.rang-vide) {
-    animation: rang-entree 0.35s var(--sortie);
-  }
-
-  /* Messages d'erreur : apparition douce, jamais de secousse */
-  .erreur,
-  .encadre-erreur,
-  [role="status"]:not(:empty) {
-    animation: fondu-haut 0.35s var(--sortie) both;
-  }
-
-  /* Entrée de page : le haut de page arrive en cascade */
-  main > .section:first-child .surtitre,
-  main > .section:first-child .titre-principal,
-  main > .section:first-child .titre-principal ~ p,
-  main > .section:first-child .entree {
-    /* backwards : l'état final reste libre pour l'effet de survol */
-    animation: fondu-haut 0.7s var(--sortie) backwards;
-  }
-  main > .section:first-child .titre-principal {
-    animation-delay: 0.06s;
-  }
-  main > .section:first-child .titre-principal ~ p {
-    animation-delay: 0.14s;
-  }
-  .souligne {
-    animation: souligner 0.9s var(--sortie) both;
-    animation-delay: calc(0.45s + var(--i) * 0.12s);
-  }
-  main > .section:first-child .cloture {
-    animation: fondu-haut 0.7s var(--sortie) 0.18s backwards;
-  }
-  .cloture-compte::before {
-    animation: pulsation-orange 2s var(--sortie-douce) 2;
-  }
-  main > .section:first-child .entree:nth-child(1) {
-    animation-delay: 0.22s;
-  }
-  main > .section:first-child .entree:nth-child(2) {
-    animation-delay: 0.3s;
-  }
-  main > .section:first-child .entree:nth-child(3) {
-    animation-delay: 0.38s;
-  }
-
-  /* Étapes de la consultation et pages formulaires */
-  .etape-contenu {
-    animation: fondu-haut 0.45s var(--sortie) both;
-  }
-
-  /* Ombre de l'en tête une fois la page défilée (navigateurs compatibles) */
-  @supports (animation-timeline: scroll()) {
-    .entete {
-      animation: entete-ombre linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 80px;
-    }
-  }
-
-  /* Révélation au défilement, sans script (navigateurs compatibles).
-     Les éléments déjà visibles au chargement restent immobiles. Le contenu n'est
-     jamais transparent : il part d'une opacité de moitié, jamais de 0. */
-  @supports (animation-timeline: view()) {
-    main > .section:not(:first-child) .titre-section,
-    main > .section:not(:first-child) .carte,
-    .frise-date,
-    .frise-texte,
-    .frise-conclusion {
-      animation: revelation linear both;
-      animation-timeline: view();
-      animation-range: entry 10% entry 70%;
-    }
-    .frise-point {
-      animation: point-frise linear both;
-      animation-timeline: view();
-      animation-range: entry 30% entry 90%;
-    }
-    /* Le tracé bleu se dessine au fil du défilement */
-    .frise-repere::after {
-      animation: trace-frise linear both;
-      animation-timeline: view();
-      animation-range: cover 30% cover 60%;
-    }
-  }
-
-  /* Chiffres : les colonnes arrivent en cascade, les jauges se remplissent */
-  .chiffres-liste li {
-    transition:
-      opacity 0.8s var(--sortie),
-      transform 0.8s var(--sortie);
-    transition-delay: calc(var(--i) * 120ms);
-  }
-  .chiffres-liste[data-etat="attente"] li {
-    opacity: 0.5;
-    transform: translateY(12px);
-  }
-  .chiffres-liste li::before {
-    transition: width 1s var(--sortie) calc(var(--i) * 120ms + 200ms);
-  }
-  .chiffres-liste[data-etat="attente"] li::before {
-    width: 0;
-  }
-  .chiffre-jauge span {
-    transition: transform 1.6s var(--sortie) calc(var(--i) * 120ms + 250ms);
-  }
-  .chiffres-liste[data-etat="attente"] .chiffre-jauge span {
-    transform: scaleX(0);
-  }
-  .chiffre-points span {
-    transition:
-      background-color 0.4s var(--sortie-douce),
-      transform 0.5s var(--sortie);
-    transition-delay: calc(var(--i) * 120ms + var(--j) * 60ms + 250ms);
-  }
-  .chiffres-liste[data-etat="attente"] .chiffre-points span {
-    transform: scaleX(0);
-  }
-  .chiffres-liste[data-etat="attente"] .chiffre-points span.actif {
-    background: rgb(255 255 255 / 14%);
-  }
-
-  /* Étape en cours et mise à jour : pulsation lente, deux fois seulement (WCAG 2.2.2) */
-  .frise-courant .frise-point::after,
-  .mise-a-jour::before {
-    animation: pulsation 2.4s var(--sortie-douce) 2;
-  }
-  .frise-courant .frise-point::after {
-    content: "";
-    position: absolute;
-    inset: -3px;
-    border-radius: 50%;
-    box-shadow: 0 0 0 0 rgb(45 91 215 / 45%);
-  }
-}
-
-@keyframes fondu-haut {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes revelation {
-  from {
-    opacity: 0.5;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes point-frise {
-  from {
-    transform: scale(0.3);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-@keyframes souligner {
-  from {
-    background-size: 0% 0.14em;
-  }
-}
-@keyframes pulsation-orange {
-  0% {
-    box-shadow: 0 0 0 0 rgb(224 122 0 / 50%);
-  }
-  70%,
-  100% {
-    box-shadow: 0 0 0 8px rgb(224 122 0 / 0%);
-  }
-}
-@keyframes trace-frise {
-  from {
-    transform: scaleY(0);
-  }
-  to {
-    transform: scaleY(1);
-  }
-}
-@keyframes pulsation {
-  0% {
-    box-shadow: 0 0 0 0 rgb(45 91 215 / 45%);
-  }
-  70%,
-  100% {
-    box-shadow: 0 0 0 12px rgb(45 91 215 / 0%);
-  }
-}
-@keyframes selection {
-  40% {
-    transform: scale(1.01);
-  }
-}
-@keyframes rang-entree {
-  from {
-    transform: scale(0.4);
-    opacity: 0;
-  }
-  to {
-    transform: none;
-    opacity: 1;
-  }
-}
-@keyframes entete-ombre {
-  to {
-    box-shadow: 0 6px 20px rgb(27 42 74 / 8%);
-  }
-}
-
-/* Passage d'une page à l'autre : fondu enchaîné court */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.25s;
-  animation-timing-function: var(--sortie-douce);
-}
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation: none !important;
-  }
-}
-
-/* Impression et PDF : tout le contenu, à son état final, sans aucune animation */
-@media print {
-  *,
-  *::before,
-  *::after {
-    animation: none !important;
-    transition: none !important;
-    opacity: 1 !important;
-    transform: none !important;
   }
 }

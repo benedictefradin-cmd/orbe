@@ -20,7 +20,7 @@ export function ChiffresCles() {
         <h2 id="chiffres-titre" className="titre-section">
           {CONTEXTE.chiffresTitre}
         </h2>
-        <ul className="chiffres-liste">
+        <ul className="chiffres-liste" data-motion="chiffres">
           {CHIFFRES.map((c) => {
             const { nombre, unite } = decouper(c.valeur);
             const court = unite.length <= 2;
@@ -77,7 +77,14 @@ function EtapeFrise({
         .join(" ")}
     >
       <p className="frise-annee" aria-hidden="true">
-        {montrerAnnee && (courant ? <Marque geste="entourer">{annee}</Marque> : annee)}
+        {montrerAnnee &&
+          (courant ? (
+            <Marque geste="entourer" motion="frise-courant">
+              {annee}
+            </Marque>
+          ) : (
+            annee
+          ))}
       </p>
       <div className="frise-corps">
         <p className="frise-jour">
@@ -117,7 +124,7 @@ export function Frise() {
           ))}
         </ol>
       </details>
-      <ol className="frise">
+      <ol className="frise" data-motion="frise">
         {etapes.map((e, i) => (
           <EtapeFrise
             key={e.date}

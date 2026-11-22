@@ -38,7 +38,7 @@ export function Logos({ lien = true }: { lien?: boolean }) {
 export function Entete() {
   const [ouvert, setOuvert] = useState(false);
   return (
-    <header className="entete">
+    <header className="entete" data-vt="entete">
       <a href="#contenu" className="lien-evitement">
         Aller au contenu
       </a>

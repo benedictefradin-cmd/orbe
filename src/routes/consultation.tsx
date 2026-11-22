@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -12,6 +12,7 @@ import {
   Texte,
 } from "@/components/champs";
 import { Classement } from "@/components/classement";
+import { Marque } from "@/components/ui/trait";
 import { CONSULTATION, META, METHODE } from "@/lib/contenus";
 import { NOMBRE_MESURES_A_CLASSER } from "@/lib/config";
 import {
@@ -173,7 +174,13 @@ function Formulaire({
   const obtenirJeton = useServerFn(getJetonFormulaire);
   const envoyer = useServerFn(envoyerConsultation);
   const pret = usePret();
-  const [etape, setEtape] = useState(0);
+  const [etape, setEtapeBrute] = useState(0);
+  // Sens du passage d'une étape à l'autre : le contenu arrive du côté où l'on va.
+  const [sens, setSens] = useState<"avant" | "arriere" | undefined>(undefined);
+  const setEtape = (n: number) => {
+    setSens(n >= etape ? "avant" : "arriere");
+    setEtapeBrute(n);
+  };
   const [d, setD] = useState<Donnees>(VIDE);
   const [erreurs, setErreurs] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
@@ -200,7 +207,8 @@ function Formulaire({
       return;
     }
     titreEtape.current?.focus();
-    window.scrollTo({ top: 0 });
+    // Retour en haut immédiat : un défilement doux cacherait l'arrivée de l'étape.
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, [etape]);
 
   const effacerErreur = (cle: keyof Donnees) =>
@@ -339,8 +347,10 @@ function Formulaire({
             aria-valuemin={1}
             aria-valuemax={total}
             aria-valuenow={etape + 1}
+            data-motion="fil"
+            style={{ "--p": (etape + 1) / total } as CSSProperties}
           >
-            <div style={{ width: `${((etape + 1) / total) * 100}%` }} />
+            <div />
           </div>
         </div>
 
@@ -371,7 +381,7 @@ function Formulaire({
             </div>
           )}
 
-          <div key={etape} className="etape-contenu mt-6">
+          <div key={etape} className="etape-contenu mt-6" data-sens={sens}>
             {etape === 0 && (
               <Classement
                 ordre={ordre}
@@ -761,13 +771,20 @@ function Merci({ envoi, inscriptionsOuvertes }: { envoi: Envoi; inscriptionsOuve
   const F = CONSULTATION.fin;
   useEffect(() => {
     titre.current?.focus();
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
+  // Le fil se referme en cercle autour du premier mot (sans sa ponctuation), une fois l'envoi confirmé par le serveur.
+  const [, mot = "", ponctuation = "", suite = ""] =
+    /^(\p{L}+)(\p{P}*)(.*)$/u.exec(CONSULTATION.merci) ?? [];
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-10" data-motion="validation">
       <div>
         <h1 ref={titre} tabIndex={-1} className="titre-principal outline-none">
-          {CONSULTATION.merci}
+          <Marque geste="entourer" motion="sceau">
+            {mot}
+          </Marque>
+          {ponctuation}
+          {suite}
         </h1>
         <p className="lead">{F.confirmation}</p>
         {envoi.rang !== null && (

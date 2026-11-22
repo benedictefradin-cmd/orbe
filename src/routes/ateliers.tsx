@@ -88,7 +88,9 @@ function Echeance({ className = "" }: { className?: string }) {
   return (
     <p className={`echeance-date ${className}`}>
       {avant}
-      <Marque geste="souligner">{DATE_LIMITE_INSCRIPTION}</Marque>
+      <Marque geste="souligner" motion="echeance">
+        {DATE_LIMITE_INSCRIPTION}
+      </Marque>
       {apres}
     </p>
   );
@@ -247,7 +249,7 @@ function Formulaire({
       const r = await envoyer({ data: { ...s, siteWeb: piege, jeton: jeton.current } });
       if (r.ok) {
         onInscrit(r);
-        window.scrollTo({ top: 0 });
+        window.scrollTo({ top: 0, behavior: "instant" });
         return;
       }
       montrer(r.erreurs ?? {}, r.message);
@@ -510,7 +512,7 @@ function Confirmation({
     }
   };
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-10" data-motion="validation">
       <div>
         <h1 ref={titre} tabIndex={-1} className="titre-principal outline-none">
           {T.merci}

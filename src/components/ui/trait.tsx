@@ -11,12 +11,21 @@ import fleche from "@/assets/traits/fleche.svg?raw";
 const TRACES = { souligner, entourer, fleche } as const;
 export type Geste = keyof typeof TRACES;
 
-/** Le tracé seul, décoratif. */
-export function Trait({ geste, className = "" }: { geste: Geste; className?: string }) {
+/** Le tracé seul, décoratif. `motion` nomme son animation de tracé (src/motion.css). */
+export function Trait({
+  geste,
+  className = "",
+  motion,
+}: {
+  geste: Geste;
+  className?: string;
+  motion?: string | undefined;
+}) {
   return (
     <span
       className={`trait trait-${geste} ${className}`}
       aria-hidden="true"
+      data-motion={motion}
       dangerouslySetInnerHTML={{ __html: TRACES[geste] }}
     />
   );
@@ -26,14 +35,17 @@ export function Trait({ geste, className = "" }: { geste: Geste; className?: str
 export function Marque({
   geste,
   children,
+  motion,
 }: {
   geste: "souligner" | "entourer";
   children: ReactNode;
+  motion?: string | undefined;
 }) {
   return (
+    // Le trait avant le texte : placé après, il ajouterait une espace au nom accessible (« Merci . Votre »).
     <span className={`marque marque-${geste}`}>
+      <Trait geste={geste} motion={motion} />
       {children}
-      <Trait geste={geste} />
     </span>
   );
 }

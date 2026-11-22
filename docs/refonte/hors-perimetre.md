@@ -86,3 +86,20 @@ Le prompt 4 ne modifie pas `contenus.ts`. Deux libellés d'accordéon mobile son
 ## Mesures (captures `04-design`)
 
 - **Étape priorités à 390 px.** Le contenu fait environ 5,3 écrans (7,6 avant), loin de la cible de 3,5. Les 24 cartes, à 132 px en moyenne (189 avant), font à elles seules 4 écrans. La cible de 110 px demanderait de raccourcir les mesures, de passer le texte sous 16 px ou de retirer l'axe et les sources de la carte. Aucune de ces options n'a été retenue.
+
+# Hors périmètre du prompt 5 (mouvement)
+
+Les points notés pour le prompt 5 dans la section du prompt 4 sont traités : `--accent` supprimé, sélecteurs morts retirés (toute la section mouvement est dans `src/motion.css`), traits tracés par `clip-path`, accordéons sans animation de hauteur (fondu à l'ouverture).
+
+## Écarts au prompt, assumés
+
+- **Opacité de départ des révélations : 0,5 et non 0,4.** Le contrôle exige zéro élément sous 0,5 avant défilement.
+- **Trait sous « ensemble » : 1 000 ms et non 1 100.** Avec 150 ms de délai, il finirait à 1,25 s, au delà de la limite de 1,2 s.
+- **Filets en navy, pas en corail.** La direction du prompt 4 réserve le corail au trait dessiné. Le filet de la frise, ceux des chiffres et la progression se tracent en navy.
+- **Pas de repères sur la barre de progression.** Le folio « 01 / 04 » les remplace déjà. En ajouter changerait la mise en page du prompt 4.
+- **Sceau de validation.** L'écran de fin n'a plus d'icône. Le cercle se referme donc autour du mot « Merci » du titre (`Marque` entourer). C'est un ajout visuel à valider. Pas de cercle sur la confirmation des ateliers : son titre ne s'y prête pas, seule l'arrivée en cascade est commune.
+- **Pas d'ombre sous l'en tête au défilement.** La direction du prompt 4 n'a aucune ombre.
+
+## À traiter ailleurs
+
+- **Espace dans le texte accessible de l'échéance.** `.marque` est en `inline-block` : la phrase de l'accueil se lit « Ouvert jusqu'au 11 décembre . ». Pour le titre de remerciement, le mot entouré passe en `inline` (`.titre-principal .marque-entourer`). Passer toutes les marques en `inline` décale les soulignements de 0,1 à 0,2 em selon la hauteur de ligne : à reprendre avec les réglages du trait.

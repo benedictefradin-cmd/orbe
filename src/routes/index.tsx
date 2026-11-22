@@ -30,11 +30,11 @@ function joursRestants(maintenant: string) {
 }
 
 /** Souligne d'un trait corail chaque passage à mettre en valeur. */
-function souligner(texte: string, passages: readonly string[]): ReactNode[] {
+function souligner(texte: string, passages: readonly string[], motion: string): ReactNode[] {
   const motif = new RegExp(`(${passages.join("|")})`);
   return texte.split(motif).map((morceau, i) =>
     passages.includes(morceau) ? (
-      <Marque key={i} geste="souligner">
+      <Marque key={i} geste="souligner" motion={motion}>
         {morceau}
       </Marque>
     ) : (
@@ -58,27 +58,35 @@ function Accueil() {
         <section className="accueil" aria-labelledby="titre-principal">
           <div className="conteneur accueil-grille">
             <div>
-              <p className="surtitre">{ACCUEIL.surtitre}</p>
-              <h1 id="titre-principal" className="titre-principal titre-mega">
-                {souligner(ACCUEIL.titre, ACCUEIL.titreSouligne)}
+              <p className="surtitre" data-entree="0">
+                {ACCUEIL.surtitre}
+              </p>
+              <h1 id="titre-principal" className="titre-principal titre-mega" data-entree="1">
+                {souligner(ACCUEIL.titre, ACCUEIL.titreSouligne, "ensemble")}
               </h1>
-              <p className="lead">{ACCUEIL.intro}</p>
-              <p className="appel">{ACCUEIL.appel}</p>
+              <p className="lead" data-entree="2">
+                {ACCUEIL.intro}
+              </p>
+              <p className="appel" data-entree="2">
+                {ACCUEIL.appel}
+              </p>
               {(consultationOuverte || ateliersOuverts) && (
-                <p className="echeance">
+                <p className="echeance" data-entree="3">
                   <span className="echeance-date">
-                    {souligner(ACCUEIL.cloture, [DATE_LIMITE_INSCRIPTION])}
+                    {souligner(ACCUEIL.cloture, [DATE_LIMITE_INSCRIPTION], "echeance")}
                   </span>
                   {restant && <span className="meta">{restant}</span>}
                 </p>
               )}
             </div>
 
-            <ol className="sommaire">
+            <ol className="sommaire" data-entree="3">
               <li>
                 <span className="sommaire-num" aria-hidden="true">
                   01
-                  {consultationOuverte && <Trait geste="fleche" className="trait-fleche" />}
+                  {consultationOuverte && (
+                    <Trait geste="fleche" className="trait-fleche" motion="fleche" />
+                  )}
                 </span>
                 <div>
                   <h2 className="sommaire-titre">

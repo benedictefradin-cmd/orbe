@@ -4,6 +4,7 @@
  * Aucun bouton n'est jamais désactivé (disabled) : aria-disabled garde le focus là où il est.
  */
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { ArrowDown, ArrowUp, X } from "lucide-react";
 import { CONSULTATION } from "@/lib/contenus";
 import { AXES, formaterSource, mesureParId, type Mesure } from "@/lib/mesures";
@@ -32,6 +33,7 @@ export function Classement({
   const [ouverts, setOuverts] = useState<ReadonlySet<string>>(new Set());
   const boutons = useRef(new Map<string, HTMLButtonElement>());
   const titre = useRef<HTMLHeadingElement>(null);
+  const liste = useRef<HTMLOListElement>(null);
   const focusApres = useRef<string | null>(null);
   const plein = valeur.length >= N;
 
@@ -49,6 +51,26 @@ export function Classement({
     else boutons.current.delete(cle);
   };
   const texte = (id: string) => mesureParId(id)?.texte ?? id;
+
+  /** Monter, descendre, retirer : les lignes glissent à leur nouvelle place (transition de vue, motion.css). */
+  const glisser = (maj: () => void) => {
+    const racine = document.documentElement;
+    if (
+      !("startViewTransition" in document) ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    )
+      return maj();
+    const lignes = liste.current?.querySelectorAll<HTMLElement>("[data-mesure]") ?? [];
+    racine.dataset["transition"] = "classement";
+    lignes.forEach((li) => (li.style.viewTransitionName = `mesure-${li.dataset["mesure"]}`));
+    const transition = document.startViewTransition(() => flushSync(maj));
+    void transition.finished.finally(() => {
+      liste.current
+        ?.querySelectorAll<HTMLElement>("[data-mesure]")
+        .forEach((li) => (li.style.viewTransitionName = ""));
+      delete racine.dataset["transition"];
+    });
+  };
 
   const basculer = (id: string) => {
     if (valeur.includes(id)) {
@@ -68,7 +90,7 @@ export function Classement({
     const copie = [...valeur];
     [copie[i], copie[j]] = [copie[j]!, copie[i]!];
     focusApres.current = `${action}-${valeur[i]}`;
-    onChange(copie);
+    glisser(() => onChange(copie));
     setAnnonce(T.annonces.deplacement(j + 1, N, texte(valeur[i]!)));
   };
 
@@ -76,7 +98,7 @@ export function Classement({
     const id = valeur[i]!;
     const suivant = valeur[i + 1];
     focusApres.current = suivant ? `retirer-${suivant}` : "titre";
-    onChange(valeur.filter((x) => x !== id));
+    glisser(() => onChange(valeur.filter((x) => x !== id)));
     setAnnonce(T.annonces.retrait(texte(id)));
   };
 
@@ -99,15 +121,17 @@ export function Classement({
         <h3 id="mon-classement" ref={titre} tabIndex={-1} className="classement-titre outline-none">
           {T.titreClassement(valeur.length, N)}
         </h3>
-        <ol className="rangs">
+        <ol className="rangs" ref={liste} data-motion="classement">
           {valeur.map((id, i) => {
             const m = mesureParId(id)!;
             const premier = i === 0;
             const dernier = i === valeur.length - 1;
             return (
-              <li key={id}>
+              <li key={id} data-mesure={id}>
                 <span className="rang" aria-hidden="true">
-                  <Marque geste="entourer">{i + 1}</Marque>
+                  <Marque geste="entourer" motion="rang">
+                    {i + 1}
+                  </Marque>
                 </span>
                 <span className="rangs-texte">
                   <span className="sr-only">Position {i + 1}, </span>
@@ -222,7 +246,9 @@ export function Classement({
                       <span className="mesure-case" aria-hidden="true">
                         {choisie ? (
                           <span className="rang">
-                            <Marque geste="entourer">{rang + 1}</Marque>
+                            <Marque geste="entourer" motion="rang">
+                              {rang + 1}
+                            </Marque>
                           </span>
                         ) : (
                           <span className="mesure-case-vide" />

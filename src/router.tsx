@@ -10,7 +10,8 @@ export const getRouter = () => {
     routeTree,
     context: { queryClient },
     scrollRestoration: true,
-    // Fondu enchaîné entre les pages, désactivé en mouvement réduit (styles.css).
+    // Transitions entre les pages : l'en tête reste fixe, la page sort en fondu et la suivante
+    // monte de 8 px (src/motion.css). Aucune animation en mouvement réduit.
     defaultViewTransition: true,
     // Lets Query own freshness; set caching defaults on the QueryClient, not the router.
     defaultPreloadStaleTime: 0,
