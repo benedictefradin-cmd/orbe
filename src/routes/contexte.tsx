@@ -8,11 +8,11 @@ import {
 } from "@/components/ui/accordion";
 import { ChiffresCles, Frise } from "@/components/contexte";
 import { BesoinDeParler, Entete, LienExterne, PiedDePage } from "@/components/site";
-import { ACCUEIL, CALENDRIER, CONTEXTE, FAQ, PORTEURS, STRUCTURES } from "@/lib/contenus";
+import { ACCUEIL, CALENDRIER, CONTEXTE, FAQ, META, PORTEURS, STRUCTURES } from "@/lib/contenus";
 import { formaterJour } from "@/lib/config";
 import { getRequestOrigin } from "@/lib/origin.functions";
 import { getEtatSite } from "@/lib/site.functions";
-import { metaPage } from "@/lib/partage";
+import { metaPage, urlAbsolue } from "@/lib/partage";
 import logoIr from "@/assets/img/logo-institut-rousseau.svg";
 import logoFai from "@/assets/img/logo-face-a-l-inceste.png";
 
@@ -26,8 +26,11 @@ export const Route = createFileRoute("/contexte")({
       origine: loaderData?.origine,
       chemin: "/contexte",
       titre: `${CONTEXTE.surtitre} · Protection de l'enfance et présidentielle 2027`,
-      description: CONTEXTE.intro,
+      description: META.contexte,
     }),
+    links: loaderData
+      ? [{ rel: "canonical", href: urlAbsolue(loaderData.origine, "/contexte") }]
+      : [],
   }),
   component: PageContexte,
 });

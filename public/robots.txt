@@ -3,3 +3,5 @@ Allow: /
 Disallow: /admin
 Disallow: /annuler/
 Disallow: /partage
+
+Sitemap: https://orbe-ia.com/sitemap.xml

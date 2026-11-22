@@ -11,6 +11,7 @@ import {
 import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { STRUCTURES } from "@/lib/contenus";
 
 function PageIntrouvable() {
   return (
@@ -54,7 +55,7 @@ function PageErreur({ error, reset }: ErrorComponentProps) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
-    // Chaque page définit son titre, sa description et son image de partage.
+    // Chaque page définit son titre, sa description, son adresse canonique et son image de partage.
     // Polices auto hébergées (styles.css) : aucune requête vers un domaine tiers.
     meta: [
       { charSet: "utf-8" },
@@ -63,7 +64,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/favicon.ico", sizes: "16x16 32x32 48x48" },
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [STRUCTURES.ir, STRUCTURES.fai].map((s) => ({
+            "@type": "Organization",
+            name: s.nom,
+            url: s.site,
+            sameAs: s.reseaux.map((r) => r.url),
+          })),
+        }).replace(/</g, "\\u003c"),
+      },
     ],
   }),
   shellComponent: Coquille,

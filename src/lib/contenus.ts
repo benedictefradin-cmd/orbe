@@ -26,6 +26,21 @@ export const DUREE_CONSULTATION_MINUTES = 7;
 export const DATE_LIMITE_INSCRIPTION = formaterJourCourt(DERNIER_JOUR_INSCRIPTION);
 export const DATE_FIN_CONSULTATION = formaterJourCourt(CLOTURE_CONSULTATION);
 
+/**
+ * Descriptions des pages pour les moteurs de recherche et les partages (150 à 160 caractères).
+ * Textes provisoires, à réécrire avec le reste des contenus.
+ */
+export const META = {
+  accueil:
+    "Consultation citoyenne anonyme et ateliers en visio sur la protection de l'enfance. Vos propositions seront remises aux candidates et candidats en février 2027.",
+  contexte:
+    "Chiffres, lois récentes et calendrier : pourquoi la protection des enfants contre les violences sexuelles doit compter dans la présidentielle de 2027.",
+  consultation: `Répondez à la consultation citoyenne anonyme (environ ${DUREE_CONSULTATION_MINUTES} minutes). Classez les mesures qui comptent le plus pour vous. Réponses ouvertes jusqu'au ${DATE_FIN_CONSULTATION}.`,
+  ateliers: `Participez à un atelier de réflexion gratuit en visio (le ${formaterJourCourt(ATELIERS[0].debut.slice(0, 10))} ou le ${formaterJourCourt(ATELIERS[1].debut.slice(0, 10))}). Nous construirons ensemble des propositions pour protéger les enfants.`,
+  donneesPersonnelles:
+    "Ce que nous collectons, pourquoi et combien de temps. Réponses anonymes, aucun traceur publicitaire, polices hébergées sur le site et droits sur vos données.",
+};
+
 export const SITE = {
   titre: "Consultation citoyenne et ateliers de réflexion sur la protection de l'enfance",
   description:

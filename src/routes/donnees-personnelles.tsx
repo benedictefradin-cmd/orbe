@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Entete, LienExterne, PiedDePage } from "@/components/site";
-import { DONNEES } from "@/lib/contenus";
+import { DONNEES, META } from "@/lib/contenus";
 import { CONTACT_URL } from "@/lib/config";
 import { getRequestOrigin } from "@/lib/origin.functions";
-import { metaPage } from "@/lib/partage";
+import { metaPage, urlAbsolue } from "@/lib/partage";
 
 export const Route = createFileRoute("/donnees-personnelles")({
   loader: () => getRequestOrigin(),
@@ -12,8 +12,11 @@ export const Route = createFileRoute("/donnees-personnelles")({
       origine: loaderData,
       chemin: "/donnees-personnelles",
       titre: `${DONNEES.titre} · Consultation citoyenne et ateliers`,
-      description: "Comment l'Institut Rousseau et Face à l'inceste protègent vos données.",
+      description: META.donneesPersonnelles,
     }),
+    links: loaderData
+      ? [{ rel: "canonical", href: urlAbsolue(loaderData, "/donnees-personnelles") }]
+      : [],
   }),
   component: PageDonnees,
 });

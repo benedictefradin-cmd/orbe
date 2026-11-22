@@ -2,18 +2,21 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import type { CSSProperties, PointerEvent, ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
 import { Entete, PiedDePage } from "@/components/site";
-import { ACCUEIL } from "@/lib/contenus";
+import { ACCUEIL, META } from "@/lib/contenus";
 import { FERMETURE_INSCRIPTIONS } from "@/lib/config";
 import { getRequestOrigin } from "@/lib/origin.functions";
 import { getEtatSite } from "@/lib/site.functions";
-import { metaPage } from "@/lib/partage";
+import { metaPage, urlAbsolue } from "@/lib/partage";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
     const [origine, etat] = await Promise.all([getRequestOrigin(), getEtatSite()]);
     return { origine, etat };
   },
-  head: ({ loaderData }) => ({ meta: metaPage({ origine: loaderData?.origine, chemin: "/" }) }),
+  head: ({ loaderData }) => ({
+    meta: metaPage({ origine: loaderData?.origine, chemin: "/", description: META.accueil }),
+    links: loaderData ? [{ rel: "canonical", href: urlAbsolue(loaderData.origine, "/") }] : [],
+  }),
   component: Accueil,
 });
 

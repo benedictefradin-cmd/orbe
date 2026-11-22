@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { CalendarPlus, Check, CheckCircle2, Copy, Video } from "lucide-react";
 import { BesoinDeParler, Entete, Partage, PiedDePage, SuivreNosTravaux } from "@/components/site";
 import { CaseACocher, ChampPiege, ChoixMultiple, ResumeErreurs, Texte } from "@/components/champs";
-import { ATELIERS_PAGE, SITE } from "@/lib/contenus";
+import { ATELIERS_PAGE, META, STRUCTURES } from "@/lib/contenus";
 import {
   ATELIERS,
   CAPACITE_PAR_ATELIER,
@@ -25,7 +25,7 @@ import { telecharger } from "@/lib/exports";
 import { usePret } from "@/lib/use-pret";
 import { getRequestOrigin } from "@/lib/origin.functions";
 import { envoyerInscription, getEtatSite, getJetonFormulaire } from "@/lib/site.functions";
-import { metaPage } from "@/lib/partage";
+import { metaPage, urlAbsolue } from "@/lib/partage";
 import type { Place, ResultatInscription } from "@/lib/server/services.server";
 
 export const Route = createFileRoute("/ateliers")({
@@ -38,8 +38,44 @@ export const Route = createFileRoute("/ateliers")({
       origine: loaderData?.origine,
       chemin: "/ateliers",
       titre: `${ATELIERS_PAGE.titre} · Présidentielle 2027`,
-      description: SITE.description,
+      description: META.ateliers,
     }),
+    links: loaderData
+      ? [{ rel: "canonical", href: urlAbsolue(loaderData.origine, "/ateliers") }]
+      : [],
+    // Données structurées des deux ateliers : dates de config.ts, aucun lien de visio, aucune disponibilité.
+    scripts: loaderData
+      ? ATELIERS.map((a) => ({
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Event",
+            name: `Atelier ${a.numero} : ${a.titre}`,
+            description: ATELIERS_PAGE.intro.join(" "),
+            startDate: a.debut,
+            endDate: a.fin,
+            eventStatus: "https://schema.org/EventScheduled",
+            eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
+            location: {
+              "@type": "VirtualLocation",
+              url: urlAbsolue(loaderData.origine, "/ateliers"),
+            },
+            organizer: [STRUCTURES.ir, STRUCTURES.fai].map((s) => ({
+              "@type": "Organization",
+              name: s.nom,
+              url: s.site,
+            })),
+            isAccessibleForFree: true,
+            offers: {
+              "@type": "Offer",
+              price: 0,
+              priceCurrency: "EUR",
+              url: urlAbsolue(loaderData.origine, "/ateliers"),
+            },
+            inLanguage: "fr",
+          }).replace(/</g, "\\u003c"),
+        }))
+      : [],
   }),
   component: PageAteliers,
 });

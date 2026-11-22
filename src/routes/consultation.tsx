@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { BesoinDeParler, Entete, Partage, PiedDePage, SuivreNosTravaux } from "@/components/site";
 import { ChampPiege, ChoixMultiple, ChoixUnique, ResumeErreurs, Texte } from "@/components/champs";
 import { Classement } from "@/components/classement";
-import { CONSULTATION, CRENEAU_1, CRENEAU_2, DATE_LIMITE_INSCRIPTION, SITE } from "@/lib/contenus";
+import { CONSULTATION, CRENEAU_1, CRENEAU_2, DATE_LIMITE_INSCRIPTION, META } from "@/lib/contenus";
 import { ATELIERS } from "@/lib/config";
 import {
   classementSchema,
@@ -18,7 +18,7 @@ import {
 import { mesureParId } from "@/lib/mesures";
 import { getRequestOrigin } from "@/lib/origin.functions";
 import { envoyerConsultation, getEtatSite, getJetonFormulaire } from "@/lib/site.functions";
-import { metaPage } from "@/lib/partage";
+import { metaPage, urlAbsolue } from "@/lib/partage";
 import { usePret } from "@/lib/use-pret";
 
 export const Route = createFileRoute("/consultation")({
@@ -31,8 +31,11 @@ export const Route = createFileRoute("/consultation")({
       origine: loaderData?.origine,
       chemin: "/consultation",
       titre: `${CONSULTATION.titre} · Présidentielle 2027`,
-      description: SITE.description,
+      description: META.consultation,
     }),
+    links: loaderData
+      ? [{ rel: "canonical", href: urlAbsolue(loaderData.origine, "/consultation") }]
+      : [],
   }),
   component: PageConsultation,
 });
