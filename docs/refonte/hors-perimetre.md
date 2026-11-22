@@ -65,3 +65,24 @@ Points repérés pendant le prompt 2 (consultation) qui touchent des fichiers ho
 
 - **Dépendance de test manquante.** `@testing-library/react` est installé, mais pas sa dépendance `@testing-library/dom`. Le test du composant de classement (`src/test/classement-composant.test.tsx`) utilise donc directement React et le DOM. Ajouter `@testing-library/dom` dans `package.json` permettrait d'écrire ces tests plus simplement.
 - **Règle de calendrier du cron.** Aucune purge planifiée ne vise la table `jetons_utilises` (lot D) : elle est purgée par la tâche quotidienne Vercel (`entretenirBase`) et à chaque ouverture du tableau de bord. Une tâche `pg_cron` peut être ajoutée dans une nouvelle migration si besoin.
+
+# Hors périmètre du prompt 4 (design)
+
+## Textes écrits en dur, à déplacer dans `contenus.ts`
+
+Le prompt 4 ne modifie pas `contenus.ts`. Deux libellés d'accordéon mobile sont donc des constantes locales :
+
+- `VOIR_HISTORIQUE` (« Voir tout l'historique ») dans `src/components/contexte.tsx`.
+- `LIRE_LA_SUITE` (« Lire la suite ») dans `src/routes/contexte.tsx`.
+
+## Pour le prompt 5 (mouvement)
+
+- **Variable `--accent`.** Seul reste de l'ancienne palette, gardée dans `:root` parce que la section mouvement l'utilise (soulignement de navigation au survol). À remplacer par `--bleu` puis supprimer.
+- **Sélecteurs morts dans la section mouvement.** `.entree`, `.souligne`, `.cloture`, `.cloture-compte`, `.chiffres-liste[data-etat]`, `.chiffre-jauge`, `.chiffre-points`, `.frise-repere`, `.frise-point`, `.mise-a-jour` n'existent plus dans le balisage. Les retirer.
+- **Révélation au défilement.** Sur `/contexte`, les titres de section et la frise partent d'une opacité de 0,5. Une capture pleine page prise sans défiler les montre grisés.
+- **Traits corail.** Les trois SVG (`src/assets/traits/`) sont insérés en ligne par `Trait` et `Marque` (`src/components/ui/trait.tsx`), chaque `<path>` porte `pathLength="1"`. Ce sont des formes pleines : pour un tracé progressif, animer un masque ou un `clip-path`, pas `stroke-dashoffset` seul.
+- **Accordéons Radix.** `AccordionContent` garde `animate-accordion-up` et `animate-accordion-down` de tw-animate-css.
+
+## Mesures (captures `04-design`)
+
+- **Étape priorités à 390 px.** Le contenu fait environ 5,3 écrans (7,6 avant), loin de la cible de 3,5. Les 24 cartes, à 132 px en moyenne (189 avant), font à elles seules 4 écrans. La cible de 110 px demanderait de raccourcir les mesures, de passer le texte sous 16 px ou de retirer l'axe et les sources de la carte. Aucune de ces options n'a été retenue.

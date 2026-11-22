@@ -204,7 +204,8 @@ test.describe("questionnaire v2", () => {
     await allerAuProfil(page);
     await groupe(page, "Votre âge").getByLabel("Moins de 15 ans").check();
     await expect(page.getByText(/ouverte à partir de 15 ans/)).toBeVisible();
-    await expect(page.getByRole("link", { name: "Appeler le 119" })).toHaveAttribute(
+    // Nom exact : le bloc d'aide présent sur toutes les pages porte aussi des liens « Appeler le 119, … ».
+    await expect(page.getByRole("link", { name: "Appeler le 119", exact: true })).toHaveAttribute(
       "href",
       "tel:119",
     );
