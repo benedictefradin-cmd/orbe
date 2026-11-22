@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ChiffresCles, Frise } from "@/components/contexte";
-import { BesoinDeParler, Entete, LienExterne, PiedDePage } from "@/components/site";
+import { Entete, LienExterne, PiedDePage } from "@/components/site";
 import { ACCUEIL, CALENDRIER, CONTEXTE, FAQ, META, PORTEURS, STRUCTURES } from "@/lib/contenus";
 import { formaterJour } from "@/lib/config";
 import { getRequestOrigin } from "@/lib/origin.functions";
@@ -35,6 +35,41 @@ export const Route = createFileRoute("/contexte")({
   component: PageContexte,
 });
 
+/** Libellé de l'accordéon des textes « Pourquoi » en mobile. À déplacer dans contenus.ts (docs/refonte/hors-perimetre.md). */
+const LIRE_LA_SUITE = "Lire la suite";
+
+/** Premier paragraphe visible, la suite repliée sous 768 px et ouverte au delà. */
+function TextesRepliables({ textes }: { textes: readonly string[] }) {
+  const [premier, ...suite] = textes;
+  return (
+    <>
+      <p className="texte-long">{premier}</p>
+      {suite.length > 0 && (
+        <>
+          <details className="deplier suite-mobile">
+            <summary>
+              <span className="plus" aria-hidden="true" />
+              {LIRE_LA_SUITE}
+            </summary>
+            {suite.map((t) => (
+              <p key={t} className="texte-long mt-2">
+                {t}
+              </p>
+            ))}
+          </details>
+          <div className="suite-ecran">
+            {suite.map((t) => (
+              <p key={t} className="texte-long">
+                {t}
+              </p>
+            ))}
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
 function PageContexte() {
   const { etat } = Route.useLoaderData();
   const consultationOuverte = !etat.consultationClose;
@@ -46,30 +81,26 @@ function PageContexte() {
       <Entete />
       <main id="contenu">
         {/* Introduction */}
-        <section className="section pb-12" aria-labelledby="titre-principal">
+        <section className="section intro-page" aria-labelledby="titre-principal">
           <div className="conteneur">
-            <div className="max-w-3xl">
-              <p className="surtitre">{CONTEXTE.surtitre}</p>
-              <h1 id="titre-principal" className="titre-principal mt-4">
-                {CONTEXTE.titre}
-              </h1>
-              <p className="texte-long mt-6 text-secondaire">{CONTEXTE.intro}</p>
-            </div>
+            <p className="surtitre">{CONTEXTE.surtitre}</p>
+            <h1 id="titre-principal" className="titre-principal mt-3 max-w-[18ch]">
+              {CONTEXTE.titre.replace(" :", "\u00a0:")}
+            </h1>
+            <p className="lead">{CONTEXTE.intro}</p>
           </div>
         </section>
 
         <ChiffresCles />
 
         {/* Ce qui bouge */}
-        <section className="section" aria-labelledby="loi-titre">
-          <div className="conteneur grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
-            <div className="lg:sticky lg:top-28 lg:self-start">
+        <section className="section section-filet" aria-labelledby="loi-titre">
+          <div className="conteneur grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
+            <div className="lg:sticky lg:top-24 lg:self-start">
               <h2 id="loi-titre" className="titre-section">
                 {CONTEXTE.loiTitre}
               </h2>
-              <p className="mise-a-jour mt-5">
-                Mis à jour le {formaterJour(CONTEXTE.miseAJour, true)}
-              </p>
+              <p className="meta mt-3">Mis à jour le {formaterJour(CONTEXTE.miseAJour, true)}</p>
             </div>
             <div>
               <Frise />
@@ -78,67 +109,67 @@ function PageContexte() {
         </section>
 
         {/* Pourquoi une consultation, pourquoi des ateliers */}
-        <section className="section section-alternee" aria-label="Notre démarche">
-          <div className="conteneur grid gap-6 md:grid-cols-2">
-            <article className="carte flex flex-col gap-4" aria-labelledby="consultation-titre">
-              <h2 id="consultation-titre" className="text-2xl">
+        <section className="section section-filet" aria-label="Notre démarche">
+          <div className="conteneur demarche">
+            <article className="demarche-bloc" aria-labelledby="consultation-titre">
+              <h2 id="consultation-titre" className="titre-section">
                 {pourquoiConsultation.titre}
               </h2>
-              {pourquoiConsultation.textes.map((t) => (
-                <p key={t} className="texte-long">
-                  {t}
-                </p>
-              ))}
-              <div className="mt-auto pt-2">
-                {consultationOuverte ? (
-                  <Link to="/consultation" className="bouton bouton-plein w-full sm:w-auto">
-                    {pourquoiConsultation.bouton}
-                    <ArrowRight size={18} aria-hidden="true" />
-                  </Link>
-                ) : (
-                  <p className="font-semibold">{ACCUEIL.entrees.consultation.close}</p>
-                )}
+              <div className="flex flex-col gap-3">
+                <TextesRepliables textes={pourquoiConsultation.textes} />
+                <div className="pt-2">
+                  {consultationOuverte ? (
+                    <Link to="/consultation" className="bouton bouton-plein">
+                      {pourquoiConsultation.bouton}
+                      <ArrowRight size={18} aria-hidden="true" />
+                    </Link>
+                  ) : (
+                    <p className="font-titre font-semibold text-navy">
+                      {ACCUEIL.entrees.consultation.close}
+                    </p>
+                  )}
+                </div>
               </div>
             </article>
-            <article className="carte flex flex-col gap-4" aria-labelledby="ateliers-titre">
-              <h2 id="ateliers-titre" className="text-2xl">
+            <article className="demarche-bloc" aria-labelledby="ateliers-titre">
+              <h2 id="ateliers-titre" className="titre-section">
                 {pourquoiAteliers.titre}
               </h2>
-              {pourquoiAteliers.textes.map((t) => (
-                <p key={t} className="texte-long">
-                  {t}
-                </p>
-              ))}
-              <div className="mt-auto pt-2">
-                {ateliersOuverts ? (
-                  <Link to="/ateliers" className="bouton bouton-contour w-full sm:w-auto">
-                    {pourquoiAteliers.bouton}
-                  </Link>
-                ) : (
-                  <p className="badge badge-annule text-base">{pourquoiAteliers.clos}</p>
-                )}
+              <div className="flex flex-col gap-3">
+                <TextesRepliables textes={pourquoiAteliers.textes} />
+                <div>
+                  {ateliersOuverts ? (
+                    <Link to="/ateliers" className="lien-fort">
+                      {pourquoiAteliers.bouton}
+                    </Link>
+                  ) : (
+                    <p className="font-titre font-semibold text-navy">{pourquoiAteliers.clos}</p>
+                  )}
+                </div>
               </div>
             </article>
           </div>
         </section>
 
         {/* À quoi cela va servir, calendrier */}
-        <section className="section" aria-labelledby="servir-titre">
+        <section className="section section-filet" aria-labelledby="servir-titre">
           <div className="conteneur">
             <h2 id="servir-titre" className="titre-section">
               {aQuoiCaSert.titre}
             </h2>
-            <p className="texte-long mt-4 max-w-3xl">{aQuoiCaSert.texte}</p>
-            <h3 className="mt-10 text-2xl">{CALENDRIER.titre}</h3>
-            <ol className="mt-6 grid gap-4 md:grid-cols-4">
-              {CALENDRIER.etapes.map((e, i) => (
-                <li
-                  key={e.quand}
-                  className={`carte flex flex-col gap-2 ${i === CALENDRIER.etapes.length - 1 ? "carte-accent" : ""}`}
-                >
-                  <p className="font-display text-lg font-bold first-letter:uppercase text-primaire">
-                    {e.quand}
-                  </p>
+            <p className="texte-long mt-3">{aQuoiCaSert.texte}</p>
+            <h3 id="calendrier-titre" className="titre-bloc mt-8">
+              {CALENDRIER.titre}
+            </h3>
+            {/* Défilement horizontal en mobile : la liste reçoit le focus pour défiler au clavier. */}
+            <ol
+              className="defilement defilement-4 mt-4"
+              tabIndex={0}
+              aria-labelledby="calendrier-titre"
+            >
+              {CALENDRIER.etapes.map((e) => (
+                <li key={e.quand}>
+                  <p className="calendrier-quand">{e.quand}</p>
                   <p>{e.texte}</p>
                 </li>
               ))}
@@ -147,57 +178,49 @@ function PageContexte() {
         </section>
 
         {/* Qui porte la démarche */}
-        <section className="section section-alternee" aria-labelledby="porteurs-titre">
+        <section className="section section-filet" aria-labelledby="porteurs-titre">
           <div className="conteneur">
             <h2 id="porteurs-titre" className="titre-section">
               {PORTEURS.titre}
             </h2>
-            <div className="mt-8 grid gap-6 md:grid-cols-2">
+            <ul className="defilement defilement-2 mt-6">
               {(
                 [
-                  ["ir", logoIr, 221, 47, "h-10"],
-                  ["fai", logoFai, 322, 139, "h-16"],
+                  ["ir", logoIr, 221, 47, "h-7"],
+                  ["fai", logoFai, 322, 139, "h-12"],
                 ] as const
               ).map(([cle, logo, largeur, hauteur, classe]) => (
-                <article key={cle} className="carte flex flex-col gap-4">
-                  <img
-                    src={logo}
-                    alt=""
-                    className={`${classe} w-auto self-start`}
-                    width={largeur}
-                    height={hauteur}
-                  />
-                  <h3 className="text-2xl">{STRUCTURES[cle].nom}</h3>
+                <li key={cle}>
+                  <div className="flex h-12 items-center">
+                    <img
+                      src={logo}
+                      alt=""
+                      className={`porteur-logo ${classe}`}
+                      width={largeur}
+                      height={hauteur}
+                    />
+                  </div>
+                  <h3 className="titre-bloc">{STRUCTURES[cle].nom}</h3>
                   <p className="texte-long">{STRUCTURES[cle].presentation}</p>
-                  <LienExterne
-                    href={STRUCTURES[cle].site}
-                    className="mt-auto inline-flex min-h-11 items-center font-semibold"
-                  >
+                  <LienExterne href={STRUCTURES[cle].site} className="lien-fort mt-auto">
                     Découvrir {STRUCTURES[cle].nom}
                   </LienExterne>
-                </article>
+                </li>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Besoin de parler */}
-        <section className="section py-12" aria-label="Numéros d'aide">
-          <div className="conteneur">
-            <BesoinDeParler id="aide-contexte" />
+            </ul>
           </div>
         </section>
 
         {/* Questions fréquentes */}
-        <section className="section section-alternee" aria-labelledby="faq-titre">
-          <div className="conteneur conteneur-etroit">
+        <section className="section section-filet" aria-labelledby="faq-titre">
+          <div className="conteneur grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
             <h2 id="faq-titre" className="titre-section">
               Questions fréquentes
             </h2>
-            <Accordion type="multiple" className="mt-6">
+            <Accordion type="multiple" className="faq">
               {FAQ.map((f, i) => (
-                <AccordionItem key={f.q} value={`q${i}`} className="border-bordure-forte">
-                  <AccordionTrigger>{f.q}</AccordionTrigger>
+                <AccordionItem key={f.q} value={`q${i}`}>
+                  <AccordionTrigger className="faq-question">{f.q}</AccordionTrigger>
                   <AccordionContent className="texte-long">{f.r}</AccordionContent>
                 </AccordionItem>
               ))}
