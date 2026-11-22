@@ -450,7 +450,7 @@ export const ANNULATION = {
 
 /** Compteur public, affiché seulement au dessus du seuil (voir config.ts). */
 export const COMPTEUR = {
-  texte: (n: number) => `Plus de ${n.toLocaleString("fr-FR")} personnes ont déjà répondu`,
+  texte: (n: number) => `Plus de ${n.toLocaleString("fr-FR")} personnes ont déjà répondu.`,
 };
 
 /* ───────────── Méthode (textes provisoires, docs/refonte/a-valider.md) ───────────── */

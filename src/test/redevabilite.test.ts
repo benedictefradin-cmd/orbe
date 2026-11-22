@@ -16,7 +16,7 @@ describe("compteur public et rang", () => {
     expect(compteurPublic(100)).toBe(100);
     expect(compteurPublic(347)).toBe(340);
     expect(compteurPublic(Number.NaN)).toBeNull();
-    expect(COMPTEUR.texte(340)).toBe("Plus de 340 personnes ont déjà répondu");
+    expect(COMPTEUR.texte(340)).toBe("Plus de 340 personnes ont déjà répondu.");
   });
   it("ne donne le rang personnel qu'au dessus du seuil", () => {
     expect(rangPublic(42)).toBeNull();
