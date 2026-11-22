@@ -21,6 +21,7 @@ const PAGES = [
   { nom: "consultation", chemin: "/consultation" },
   { nom: "ateliers", chemin: "/ateliers" },
   { nom: "donnees-personnelles", chemin: "/donnees-personnelles" },
+  { nom: "methode", chemin: "/methode" },
 ];
 const LARGEURS = [
   { largeur: 360, hauteur: 780 },

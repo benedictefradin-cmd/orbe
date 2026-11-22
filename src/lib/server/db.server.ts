@@ -89,8 +89,8 @@ export async function preparerPglite(db: Pglite, migrations: string[]) {
     if not exists (select 1 from pg_roles where rolname = 'service_role') then create role service_role nologin; end if;
   end $$;`);
   const deja = await db.query("select to_regclass('public.ateliers') as t");
-  if (deja.rows[0]?.["t"]) return;
-  for (const sql of migrations) await db.exec(sql);
+  // Base déjà créée : seules les migrations suivantes, rejouables, repassent.
+  for (const sql of deja.rows[0]?.["t"] ? migrations.slice(1) : migrations) await db.exec(sql);
 }
 
 async function rpcPglite(): Promise<Rpc> {

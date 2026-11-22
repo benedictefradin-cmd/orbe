@@ -1,4 +1,8 @@
-import { DELAI_MINIMUM_ENVOI_MS, ENVOIS_MAX_PAR_HEURE } from "@/lib/config";
+import {
+  CONNEXIONS_ADMIN_MAX_PAR_HEURE,
+  DELAI_MINIMUM_ENVOI_MS,
+  ENVOIS_MAX_PAR_HEURE,
+} from "@/lib/config";
 import { rpc } from "@/lib/server/db.server";
 import { egaliteSure, empreinte, signer } from "@/lib/server/signature.server";
 
@@ -18,13 +22,14 @@ export async function verifierEnvoi(
   jeton: string,
   siteWeb: string,
   maintenantMs = Date.now(),
+  delaiMinimumMs = DELAI_MINIMUM_ENVOI_MS,
 ): Promise<RefusRobot | null> {
   if (siteWeb.trim() !== "") return "piege";
   const [t = "", sig = ""] = jeton.split(".");
   if (!/^\d{13}$/.test(t) || !egaliteSure(sig, await signer(`formulaire:${formulaire}`, t)))
     return "jeton";
   const age = maintenantMs - Number(t);
-  if (age < DELAI_MINIMUM_ENVOI_MS) return "trop_rapide";
+  if (age < delaiMinimumMs) return "trop_rapide";
   if (age > DUREE_MAX_JETON_MS) return "jeton";
   return null;
 }
@@ -43,7 +48,7 @@ export function adresseClient(headers: Headers): string {
   );
 }
 
-/** Quota de 10 envois par heure et par adresse, sur une empreinte conservée 24 h. */
+/** Quota de 30 envois par heure et par adresse, sur une empreinte conservée 24 h. */
 export async function verifierQuota(headers: Headers): Promise<boolean> {
   return rpc<boolean>("verifier_limite", {
     _empreinte: await empreinte(adresseClient(headers)),
@@ -63,6 +68,11 @@ export const MESSAGES_REFUS: Record<RefusRobot, string> = {
 export async function verifierQuotaConnexion(headers: Headers): Promise<boolean> {
   return rpc<boolean>("verifier_limite", {
     _empreinte: await empreinte(`admin:${adresseClient(headers)}`),
-    _max: ENVOIS_MAX_PAR_HEURE,
+    _max: CONNEXIONS_ADMIN_MAX_PAR_HEURE,
   });
+}
+
+/** Empreinte salée d'un jeton de formulaire, pour le consommer une seule fois (table jetons_utilises). */
+export function empreinteJeton(jeton: string): Promise<string> {
+  return empreinte(`jeton:${jeton}`);
 }

@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { agregerClassement, melanger, MESURES } from "@/lib/mesures";
+import {
+  AXES,
+  agregerClassement,
+  estPermutationDesMesures,
+  formaterNumeros,
+  formaterSource,
+  melanger,
+  MESURE_IDS,
+  MESURES,
+} from "@/lib/mesures";
 import { parJour } from "@/lib/statistiques";
 
 describe("classement agrégé", () => {
@@ -22,6 +31,34 @@ describe("classement agrégé", () => {
     const m = melanger(MESURES, () => 0.3);
     expect(m).toHaveLength(24);
     expect(new Set(m.map((x) => x.id)).size).toBe(24);
+  });
+  it("écrit les sources en toutes lettres", () => {
+    expect(formaterNumeros([28, 26])).toBe("26 et 28");
+    expect(formaterNumeros([1, 4, 5, 6, 11, 17])).toBe("1, 4 à 6, 11 et 17");
+    expect(formaterNumeros([61, 62, 63, 82])).toBe("61 à 63 et 82");
+    expect(formaterSource({ organisme: "ciivise", numeros: [26, 28], libelle: "x" })).toBe(
+      "Préconisations 26 et 28 x",
+    );
+    const m01 = MESURES[0]!;
+    expect(m01.sources.map(formaterSource)).toEqual([
+      "Proposition 1 de Face à l'inceste",
+      "Préconisation 20 du rapport de la CIIVISE (novembre 2023)",
+      "Proposition 6 de la Commission de l'Assemblée nationale",
+    ]);
+    const tout = MESURES.flatMap((m) => m.sources.map(formaterSource)).join(" ");
+    expect(tout).not.toMatch(/\bFAI\b|Commission AN/);
+  });
+  it("garde les identifiants m01 à m24 et aucun détail non validé", () => {
+    expect(MESURE_IDS).toEqual(
+      Array.from({ length: 24 }, (_, i) => `m${String(i + 1).padStart(2, "0")}`),
+    );
+    expect(MESURES.filter((m) => m.detail)).toEqual([]);
+  });
+  it("liste les axes par ordre alphabétique et reconnaît une permutation des 24 mesures", () => {
+    expect(AXES).toHaveLength(8);
+    expect([...AXES]).toEqual([...AXES].sort((a, b) => a.localeCompare(b, "fr")));
+    expect(estPermutationDesMesures(melanger(MESURE_IDS))).toBe(true);
+    expect(estPermutationDesMesures(MESURE_IDS.slice(1))).toBe(false);
   });
   it("compte par jour, jours vides compris", () => {
     expect(parJour(["2026-11-21", "2026-11-23", "2026-11-21"])).toEqual([

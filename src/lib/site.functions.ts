@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
+import { getRequest, setCookie } from "@tanstack/react-start/server";
 import { z } from "zod";
 
 /** État public du site : fermetures et places restantes, calculés côté serveur. */
@@ -16,9 +16,15 @@ export const getEtatSite = createServerFn({ method: "GET" }).handler(async () =>
   }
 });
 
+/** Résultats agrégés, null tant que RESULTATS_PUBLICS est faux (la page répond alors 404). */
+export const getResultatsPublics = createServerFn({ method: "GET" }).handler(async () => {
+  const { lireResultatsPublics } = await import("@/lib/server/services.server");
+  return lireResultatsPublics();
+});
+
 export const getJetonFormulaire = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) =>
-    z.object({ formulaire: z.enum(["consultation", "inscription"]) }).parse(input),
+    z.object({ formulaire: z.enum(["consultation", "inscription", "suite"]) }).parse(input),
   )
   .handler(async ({ data }) => {
     const { creerJeton } = await import("@/lib/server/anti-robot.server");
@@ -32,7 +38,30 @@ export const envoyerConsultation = createServerFn({ method: "POST" })
       import("@/lib/server/services.server"),
       import("@/lib/server/horloge.server"),
     ]);
-    return enregistrerConsultation(data, getRequest().headers, maintenant());
+    const { cookieParticipation } = await import("@/lib/server/participation.server");
+    const now = maintenant();
+    const r = await enregistrerConsultation(data, getRequest().headers, now);
+    if (r.ok) {
+      const c = cookieParticipation(now);
+      setCookie(c.nom, c.valeur, c.options);
+    }
+    return r;
+  });
+
+/** Vrai si une réponse a déjà été envoyée depuis ce navigateur (cookie posé par le serveur). */
+export const getDejaRepondu = createServerFn({ method: "GET" }).handler(async () => {
+  const { aDejaRepondu } = await import("@/lib/server/participation.server");
+  return aDejaRepondu(getRequest().headers);
+});
+
+export const envoyerContactSuite = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => input)
+  .handler(async ({ data }) => {
+    const [{ enregistrerContactSuite }, { maintenant }] = await Promise.all([
+      import("@/lib/server/services.server"),
+      import("@/lib/server/horloge.server"),
+    ]);
+    return enregistrerContactSuite(data, getRequest().headers, maintenant());
   });
 
 export const envoyerInscription = createServerFn({ method: "POST" })

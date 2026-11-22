@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import * as contenus from "@/lib/contenus";
-import { MESURES } from "@/lib/mesures";
+import { formaterSource, MESURES } from "@/lib/mesures";
 import { Q, SITUATIONS_ATELIER, LIBELLES_INSCRIPTION } from "@/lib/formulaires";
 
 function textes(v: unknown, out: string[] = []): string[] {
@@ -24,7 +24,7 @@ function textes(v: unknown, out: string[] = []): string[] {
 describe("règles d'écriture des textes visibles", () => {
   const tous = [
     ...textes(contenus),
-    ...MESURES.flatMap((m) => [m.texte, m.axe]),
+    ...MESURES.flatMap((m) => [m.texte, m.axe, m.detail ?? "", ...m.sources.map(formaterSource)]),
     ...textes(Q),
     ...textes(SITUATIONS_ATELIER),
     ...textes(LIBELLES_INSCRIPTION),

@@ -19,6 +19,9 @@ const r: ReponseAdmin = {
   presence_debat: null,
   poids_vote: "beaucoup",
   provenance: null,
+  version_questionnaire: "v2",
+  ordre_affichage: ["m03", "m01"],
+  mesures_rejetees: ["m02", "m11"],
 };
 
 describe("export Excel", () => {
@@ -43,5 +46,10 @@ describe("export Excel", () => {
     const cellule = ws.getRow(2).getCell(t.entetes.indexOf("Une mesure manque selon vous ?") + 1);
     expect(cellule.value).toBe("'=1+1");
     expect(cellule.formula).toBeUndefined();
+    const version = ws.getRow(2).getCell(t.entetes.indexOf("Version du questionnaire") + 1);
+    expect(version.value).toBe("v2");
+    expect(ws.getRow(2).getCell(t.entetes.indexOf("Ordre d'affichage des mesures") + 1).value).toBe(
+      "M03 M01",
+    );
   });
 });

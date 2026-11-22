@@ -14,9 +14,15 @@ import {
   formaterJour,
   formaterJourCourt,
   CLOTURE_CONSULTATION,
+  RESTITUTION,
   RESTITUTION_ATELIERS,
   SUPPRESSION_DES_DONNEES_ATELIERS,
   RESPONSABLE_DES_DONNEES,
+  DATE_RESULTATS,
+  SEUIL_COMPTEUR,
+  SEUIL_DIFFUSION,
+  SUPPRESSION_DES_REPONSES,
+  NOMBRE_MESURES_A_CLASSER,
 } from "@/lib/config";
 
 /** Durée d'un parcours complet, mesurée par src/test/duree.test.ts (arrondie à la minute supérieure). */
@@ -262,7 +268,11 @@ export const AIDE = {
 export const FAQ = [
   {
     q: "Mes réponses sont elles anonymes ?",
-    r: "Oui. La consultation ne demande ni nom, ni email, ni code postal. Nous ne conservons ni votre adresse IP ni l'heure de votre réponse. Seul le jour est gardé. Les questions sur votre profil proposent toutes « Je préfère ne pas répondre ».",
+    r: "Oui. La consultation ne demande ni nom, ni email, ni code postal. Nous ne conservons ni votre adresse IP ni l'heure de votre réponse. Seul le jour est gardé. Les questions sur votre profil proposent toutes « Je préfère ne pas répondre ». À la fin, vous pouvez laisser votre email pour connaître la suite. Il est enregistré à part et jamais relié à vos réponses.",
+  },
+  {
+    q: "Puis je répondre plusieurs fois ?",
+    r: "Non. La consultation accepte une seule réponse par personne. Relisez vos réponses avant de valider. Vous pouvez revenir en arrière jusqu'au dernier moment.",
   },
   {
     q: "Combien de temps faut il ?",
@@ -288,28 +298,71 @@ export const PIED = {
 
 export const CONSULTATION = {
   titre: "La consultation citoyenne",
-  recap: [
-    "La CIIVISE a recueilli 30 000 témoignages et formulé 82 préconisations en 2023.",
-    "Le Sénat a voté le 28 octobre 2026 l'imprescriptibilité des crimes sexuels sur mineurs par 252 voix contre 80.",
-    "Le texte n'est pas encore définitif. La présidentielle approche.",
-  ],
+  /** Ligne neutre : aucune mesure n'est citée avant le classement (le contexte reste sur /contexte). */
+  recap: [`4 étapes. Environ ${DUREE_CONSULTATION_MINUTES} minutes. Anonyme.`],
   accroche: "Votre avis compte. Ensemble nous pouvons changer les choses.",
-  anonymat: "Cette consultation est anonyme. Nous ne vous demandons ni nom ni email.",
-  etapes: ["Qui êtes vous", "Vos priorités", "Pour aller plus loin", "Récapitulatif"],
+  anonymat:
+    "Cette consultation est anonyme. Nous ne vous demandons ni nom ni email pour répondre. Une seule réponse par personne.",
+  ouverture: "Ouvert à partir de 15 ans.",
+  /** Questionnaire v2 : le cœur du sujet d'abord, les questions sur la personne ensuite. */
+  etapes: ["Vos priorités", "Vos idées", "Quelques mots sur vous", "Relecture"] as const,
   profilIntro:
     "Ces questions nous aident à savoir qui a répondu. Chacune propose « Je préfère ne pas répondre ».",
+  moins15: {
+    titre: "Merci pour votre intérêt",
+    textes: [
+      "Cette consultation est ouverte à partir de 15 ans. Vos réponses ne seront pas enregistrées.",
+      "Si quelque chose vous inquiète ou vous fait du mal, vous pouvez en parler. Le 119 est gratuit et joignable 24h sur 24. Vous pouvez aussi vous confier à un adulte de confiance.",
+    ],
+    appeler: "Appeler le 119",
+  },
+  erreurs: {
+    aCompleter: "Certaines réponses sont à compléter.",
+    technique:
+      "L'enregistrement n'a pas fonctionné. Vos réponses sont toujours là. Réessayez dans un instant.",
+    suiteTechnique: "L'enregistrement n'a pas fonctionné. Réessayez dans un instant.",
+  },
+  relecture: {
+    modifier: "Modifier",
+    modifierPriorites: " vos priorités",
+    modifierIdees: " vos idées",
+    modifierProfil: " vos réponses sur vous",
+    pasDeReponse: "Pas de réponse",
+    consentementDonne: "Accord donné pour les statistiques",
+  },
   priorites: {
     intro:
       "Choisissez parmi ces 24 mesures les 5 qui comptent le plus pour vous. Classez les par ordre d'importance.",
     aide: "Touchez une mesure pour l'ajouter à votre classement. Vous pouvez ensuite changer l'ordre ou retirer une mesure.",
+    ordre: "Les mesures sont présentées dans un ordre tiré au hasard pour chaque personne.",
+    titreClassement: (n: number, total: number) => `Mon classement (${n} sur ${total})`,
+    titreListe: "Les 24 mesures",
+    chargement: "Préparation de la liste des mesures…",
     vide: "Aucune mesure choisie pour l'instant.",
     complet: "Vos 5 mesures sont choisies. Vous pouvez encore changer l'ordre.",
+    aChoisir: "À choisir",
     monter: "Monter",
     descendre: "Descendre",
     retirer: "Retirer",
     sources: "Sources",
+    details: "Détails",
+    filtres: "Afficher les mesures par thème",
+    tousLesAxes: "Tous les thèmes",
+    affichees: (n: number) => (n === 1 ? "1 mesure affichée." : `${n} mesures affichées.`),
+    resume: (n: number, total: number) => `${n} sur ${total} choisies`,
+    voirClassement: "Voir mon classement",
+    annonces: {
+      ajout: (position: number, total: number, texte: string) =>
+        `Ajoutée en position ${position} sur ${total} : ${texte}`,
+      deplacement: (position: number, total: number, texte: string) =>
+        `Déplacée en position ${position} sur ${total} : ${texte}`,
+      retrait: (texte: string) => `Retirée de votre classement : ${texte}`,
+      plein: "Votre classement est complet. Retirez une mesure pour en choisir une autre.",
+      dejaPremiere: "Cette mesure est déjà en première position.",
+      dejaDerniere: "Cette mesure est déjà en dernière position.",
+    },
   },
-  plusLoinIntro: "Tout est facultatif.",
+  ideesIntro: "Tout est facultatif.",
   recapIntro: "Relisez vos réponses avant de valider. Vous pouvez revenir en arrière.",
   valider: "Je valide mes réponses",
   suivant: "Continuer",
@@ -319,8 +372,37 @@ export const CONSULTATION = {
     "La consultation est close. Merci pour votre participation. La synthèse sera présentée en février 2027.",
   merci:
     "Merci. Vos réponses sont bien enregistrées. Inscrivez vous aux ateliers pour en discuter.",
+  /** Écran de fin, affiché uniquement après la confirmation du serveur. */
+  fin: {
+    vosPriorites: "Vos 5 priorités",
+    rang: (n: number) => `Vous êtes la ${n.toLocaleString("fr-FR")}e personne à répondre.`,
+    ensuiteTitre: "Et maintenant",
+    ensuite: [
+      `La consultation reste ouverte jusqu'au ${DATE_FIN_CONSULTATION}.`,
+      `L'Institut Rousseau et Face à l'inceste rassemblent ensuite toutes les réponses dans une synthèse. Elle sera présentée aux candidates et candidats à la présidentielle lors du débat organisé par l'Institut Rousseau en ${DEBAT}.`,
+    ],
+    /** Affiché seulement si DATE_RESULTATS est renseignée dans config.ts. */
+    resultats: DATE_RESULTATS
+      ? `Les résultats seront publiés le ${formaterJour(DATE_RESULTATS, true)}.`
+      : "",
+    methode: "Comment les réponses sont analysées",
+  },
   rebondTitre: "Allez plus loin : rejoignez un atelier de réflexion en décembre",
   rebondBouton: "Je découvre les ateliers",
+  dejaRepondu: {
+    titre: "Merci pour votre participation",
+    texte:
+      "Une réponse a déjà été envoyée depuis ce navigateur. La consultation accepte une seule réponse par personne.",
+  },
+  suite: {
+    titre: "Connaître la suite",
+    texte: `Laissez votre email si vous souhaitez recevoir la synthèse présentée ${RESTITUTION} et l'invitation au débat.`,
+    separe: `Votre email est enregistré à part. Il n'est jamais relié à vos réponses. Il est supprimé le ${formaterJour(SUPPRESSION_DES_DONNEES_ATELIERS, true)}.`,
+    libelle: "Votre email",
+    bouton: "Je veux connaître la suite",
+    envoi: "Enregistrement…",
+    merci: "C'est noté. Nous vous écrirons pour la restitution.",
+  },
 };
 
 /* ───────────── Ateliers ───────────── */
@@ -367,6 +449,96 @@ export const ANNULATION = {
   perdu: "Un empêchement et plus de lien ? Écrivez nous et nous annulerons pour vous.",
 };
 
+/** Compteur public, affiché seulement au dessus du seuil (voir config.ts). */
+export const COMPTEUR = {
+  texte: (n: number) => `Plus de ${n.toLocaleString("fr-FR")} personnes ont déjà répondu`,
+};
+
+/* ───────────── Méthode (textes provisoires, docs/refonte/a-valider.md) ───────────── */
+
+export const METHODE = {
+  titre: "La méthode de la consultation",
+  lienPied: "Méthode",
+  lienConsultation: "Comment vos réponses sont analysées",
+  retour: "Retour à la consultation",
+  intro:
+    "Cette page explique d'où viennent les 24 mesures et comment les réponses sont comptées. Elle sera complétée si la méthode évolue.",
+  sections: [
+    {
+      titre: "D'où viennent les 24 mesures",
+      textes: [
+        "Les 24 mesures ont été choisies par l'Institut Rousseau et l'association Face à l'inceste.",
+        "Elles reprennent des préconisations du rapport de la CIIVISE (novembre 2023), des propositions de Face à l'inceste et des propositions issues des travaux d'une commission de l'Assemblée nationale. Les sources de chaque mesure sont indiquées sous son texte.",
+        "Vous pouvez aussi proposer une mesure qui manque. Toutes les propositions sont lues.",
+      ],
+    },
+    {
+      titre: "Comment les résultats sont calculés",
+      textes: [
+        `Chaque personne classe ${NOMBRE_MESURES_A_CLASSER} mesures. Une mesure classée en première position reçoit 5 points. La deuxième reçoit 4 points et ainsi de suite jusqu'à la cinquième (1 point). Les points de toutes les réponses sont additionnés (méthode de Borda).`,
+        "Pour chaque mesure, nous indiquons aussi la part des personnes qui l'ont retenue dans leurs 5 priorités.",
+        "Vous pouvez signaler jusqu'à 3 mesures que vous ne soutenez pas. Le score net d'une mesure est le nombre de personnes qui l'ont retenue moins le nombre de personnes qui ne la soutiennent pas. Cette question a été ajoutée en cours de consultation. Le score net ne porte que sur les réponses qui l'ont vue.",
+        "Deux mesures à égalité de points partagent le même rang. Aucune n'est avantagée.",
+      ],
+    },
+    {
+      titre: "Qui a répondu",
+      textes: [
+        "Les personnes qui répondent ne forment pas un échantillon représentatif de la population. Les résultats disent ce que pensent les personnes qui ont choisi de participer. Ce n'est pas un sondage.",
+        "Les questions sur votre profil servent à décrire qui a répondu. Elles proposent toutes « Je préfère ne pas répondre ».",
+      ],
+    },
+    {
+      titre: "Un ordre tiré au hasard",
+      textes: [
+        "Les 24 mesures s'affichent dans un ordre tiré au hasard pour chaque personne. Aucune mesure n'est avantagée par sa place dans la liste.",
+        "Cet ordre est enregistré avec la réponse. Il permet de vérifier qu'il n'a pas pesé sur les choix.",
+        "Les mesures en tête ne sont jamais affichées pendant la consultation, pour ne pas influencer les réponses.",
+      ],
+    },
+    {
+      titre: "Les réponses en double",
+      textes: [
+        "La consultation accepte une seule réponse par navigateur. Un cookie technique, sans identifiant, le vérifie.",
+        "Chaque formulaire reçoit un jeton à usage unique. Le même envoi ne peut donc pas être enregistré deux fois. Les jetons utilisés sont gardés à part, sans lien avec les réponses, et supprimés après la clôture.",
+        "Les réponses strictement identiques sont repérées. Les résultats sont calculés avec et sans elles.",
+      ],
+    },
+    {
+      titre: "Les textes libres",
+      textes: [
+        "Les propositions écrites librement sont relues avant toute citation. Tout élément qui pourrait permettre de reconnaître une personne est retiré.",
+      ],
+    },
+    {
+      titre: "Ce qui est publié",
+      textes: [
+        `Aucun chiffre portant sur moins de ${SEUIL_DIFFUSION} réponses n'est publié.`,
+        `Le nombre de réponses n'est affiché qu'à partir de ${SEUIL_COMPTEUR} réponses. Il est arrondi à la dizaine inférieure.`,
+      ],
+    },
+  ],
+};
+
+/* ───────────── Résultats (page fermée tant que RESULTATS_PUBLICS est faux) ───────────── */
+
+export const RESULTATS = {
+  titre: "Les résultats de la consultation",
+  total: (n: number) => `Plus de ${n.toLocaleString("fr-FR")} réponses`,
+  avertissement:
+    "Les personnes qui ont répondu ne forment pas un échantillon représentatif. Les cases de moins de 10 réponses sont masquées.",
+  colonnes: {
+    rang: "Rang",
+    mesure: "Mesure",
+    points: "Points",
+    part: "Retenue par",
+    net: "Score net",
+  },
+  exAequo: "ex aequo",
+  masque: "Moins de 10",
+  methode: "Comprendre le calcul",
+};
+
 export const PARTAGE = {
   titre: "Faites circuler",
   texte: "Plus nous serons nombreux, plus ces propositions pèseront auprès des candidats.",
@@ -396,6 +568,21 @@ export const DONNEES = {
         "La consultation est anonyme. Nous n'enregistrons ni nom, ni email, ni adresse IP, ni l'heure de réponse, seulement le jour. Les réponses servent à préparer une synthèse présentée aux candidats.",
         "L'inscription aux ateliers demande vos coordonnées pour organiser l'atelier et vous envoyer le lien de la visio.",
         "Si vous l'avez accepté, votre email sert aussi à vous envoyer les actualités de l'Institut Rousseau ou de Face à l'inceste, selon vos choix.",
+        "Après la consultation, vous pouvez laisser votre email pour connaître la suite (synthèse et débat). Il est enregistré dans une liste à part, sans lien avec vos réponses. Il sert uniquement à vous écrire pour la restitution.",
+      ],
+    },
+    {
+      titre: "Sur quelle base",
+      texte: [
+        "Vous répondez à la consultation et vous vous inscrivez aux ateliers de votre plein gré. Le traitement repose sur votre consentement.",
+        "La consultation est ouverte à partir de 15 ans. Aucune réponse n'est enregistrée pour une personne de moins de 15 ans.",
+      ],
+    },
+    {
+      titre: "La réponse « personne concernée »",
+      texte: [
+        "Indiquer que vous avez subi des violences sexuelles dans l'enfance est facultatif. Cette information est sensible. Elle n'est enregistrée que si vous cochez la case d'accord qui apparaît à côté. Sans cet accord, rien n'est enregistré.",
+        "Elle sert uniquement aux statistiques de la synthèse. Elle n'est jamais publiée pour un groupe de moins de 10 personnes.",
       ],
     },
     {
@@ -407,22 +594,27 @@ export const DONNEES = {
     {
       titre: "Combien de temps",
       texte: [
-        `Les inscriptions aux ateliers sont supprimées le ${formaterJour(SUPPRESSION_DES_DONNEES_ATELIERS, true)}. Les consentements aux actualités transmis avant cette date restent gérés par chaque structure. Vous pouvez vous désinscrire à tout moment.`,
-        "Les réponses anonymes à la consultation sont conservées pour l'analyse.",
+        `Les inscriptions aux ateliers et les emails laissés pour connaître la suite sont supprimés le ${formaterJour(SUPPRESSION_DES_DONNEES_ATELIERS, true)}. Les consentements aux actualités transmis avant cette date restent gérés par chaque structure. Vous pouvez vous désinscrire à tout moment.`,
+        SUPPRESSION_DES_REPONSES
+          ? `Les réponses anonymes à la consultation sont conservées pour l'analyse. Elles sont supprimées le ${formaterJour(SUPPRESSION_DES_REPONSES, true)}.`
+          : "Les réponses anonymes à la consultation sont conservées pour l'analyse. La date de leur suppression sera indiquée ici dès qu'elle sera fixée.",
         "Une empreinte chiffrée de votre adresse IP est gardée 24 heures pour limiter les envois automatiques. Elle est stockée à part et jamais reliée à vos réponses.",
+        "Une empreinte chiffrée du jeton de votre formulaire est gardée jusqu'au lendemain de la clôture. Elle empêche d'enregistrer deux fois le même envoi. Elle est stockée à part et jamais reliée à vos réponses.",
       ],
     },
     {
       titre: "Vos droits",
       texte: [
         "Vous pouvez accéder à vos données, les corriger, les supprimer ou vous opposer à leur usage. Vous pouvez aussi saisir la CNIL.",
-        "Les réponses à la consultation sont anonymes. Nous ne pouvons donc pas retrouver celle d'une personne.",
+        "Les réponses à la consultation sont anonymes. Rien ne relie une réponse à la personne qui l'a envoyée. Nous ne pouvons donc ni la retrouver, ni la modifier, ni la supprimer à votre demande.",
       ],
     },
     {
       titre: "Cookies",
       texte: [
-        "Ce site n'utilise aucun traceur publicitaire ni mesure d'audience. Le seul cookie sert à la connexion de l'organisatrice au tableau de bord.",
+        "Ce site n'utilise aucun traceur publicitaire ni mesure d'audience.",
+        "Après votre réponse, un cookie technique indique seulement qu'une réponse a été envoyée depuis ce navigateur. Il évite les réponses en double. Il ne contient aucun identifiant et ne permet pas de retrouver vos réponses. Il expire à la clôture de la consultation.",
+        "Un autre cookie sert à la connexion de l'organisatrice au tableau de bord.",
       ],
     },
   ],

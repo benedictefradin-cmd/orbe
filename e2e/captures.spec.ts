@@ -1,5 +1,5 @@
 import { test } from "@playwright/test";
-import { pagePrete, parcoursConsultation, remplirProfil } from "./aides";
+import { allerAuProfil, choisirMesures, pagePrete, parcoursConsultation } from "./aides";
 
 /** Captures des pages principales, en mobile (360 px) et ordinateur (1280 px), dans docs/captures. */
 test.describe("captures", () => {
@@ -23,12 +23,12 @@ test.describe("captures", () => {
     }
     await page.goto("/consultation");
     await pagePrete(page, "Continuer");
-    await capture("consultation-1-profil");
-    await remplirProfil(page);
-    await page.getByRole("button", { name: "Continuer" }).click();
-    const mesures = page.locator("button.mesure");
-    for (let i = 0; i < 3; i++) await mesures.nth(i * 4).click();
-    await capture("consultation-2-priorites");
+    await choisirMesures(page, 3);
+    await capture("consultation-1-priorites");
+    await page.reload();
+    await pagePrete(page, "Continuer");
+    await allerAuProfil(page);
+    await capture("consultation-3-profil");
     await parcoursConsultation(page);
     await capture("consultation-confirmation");
     await page.goto("/admin");

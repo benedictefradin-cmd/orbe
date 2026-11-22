@@ -22,15 +22,23 @@ import {
   formaterCreneau,
   jourParis,
   NOMBRE_MESURES_A_CLASSER,
+  SEUIL_DIFFUSION,
   type AtelierId,
 } from "@/lib/config";
 import { libelle, Q, SITUATIONS_ATELIER, type Option } from "@/lib/formulaires";
-import { agregerClassement } from "@/lib/mesures";
+import type { LigneClassement } from "@/lib/mesures";
 import {
   adressesInscrits,
-  repartition,
+  aMasquer,
+  classementReponses,
+  FILTRES_PAR_DEFAUT,
+  filtrerReponses,
+  repartitionMasquee,
+  repererDoublons,
+  scoreParAxe,
   statsAteliers,
   statsConsultation,
+  type FiltresConsultation,
 } from "@/lib/statistiques";
 import { STATUTS } from "@/lib/exports";
 import type { DonneesAdmin, InscriptionAdmin } from "@/lib/server/services.server";
@@ -253,14 +261,17 @@ function Repartition({
   valeurs,
   options,
   i,
+  masquer = false,
 }: {
   titre: string;
   valeurs: string[];
   options?: readonly Option[];
   i: number;
+  /** Consultation : un effectif de 1 à 9 réponses n'est pas affiché. */
+  masquer?: boolean;
 }) {
-  const lignes = repartition(valeurs);
-  const max = Math.max(1, ...lignes.map((l) => l.n));
+  const lignes = repartitionMasquee(valeurs).map((l) => ({ ...l, masque: masquer && l.masque }));
+  const max = Math.max(1, ...lignes.filter((l) => !l.masque).map((l) => l.n));
   return (
     <div className="dash-carte" style={retard(i)}>
       <div className="dash-libelle">{titre}</div>
@@ -274,9 +285,11 @@ function Repartition({
               <span className="truncate" title={options ? libelle(options, l.valeur) : l.valeur}>
                 {options ? libelle(options, l.valeur) : l.valeur}
               </span>
-              <span className="font-semibold tabular-nums">{l.n}</span>
+              <span className="font-semibold tabular-nums">{l.masque ? MASQUE : l.n}</span>
               <div className="dash-piste col-span-2 h-2">
-                <div className="dash-remplissage" style={{ width: `${(l.n / max) * 100}%` }} />
+                {!l.masque && (
+                  <div className="dash-remplissage" style={{ width: `${(l.n / max) * 100}%` }} />
+                )}
               </div>
             </li>
           ))}
@@ -287,6 +300,9 @@ function Repartition({
     </div>
   );
 }
+
+const MASQUE = `moins de ${SEUIL_DIFFUSION}`;
+const SANS_REPONSE: Option = { valeur: "sans-reponse", libelle: "Pas de réponse" };
 
 /* ───────────── Onglet Ateliers ───────────── */
 
@@ -692,29 +708,155 @@ function LigneInscrit({
 
 /* ───────────── Onglet Consultation ───────────── */
 
+const nombre = (n: number, masque: boolean) => (masque ? MASQUE : n.toLocaleString("fr-FR"));
+
+function Selection({
+  id,
+  libelle: l,
+  valeur,
+  onChange,
+  options,
+}: {
+  id: string;
+  libelle: string;
+  valeur: string;
+  onChange: (v: string) => void;
+  options: readonly Option[];
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label htmlFor={id} className="dash-sous font-semibold">
+        {l}
+      </label>
+      <select id={id} className="saisie" value={valeur} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => (
+          <option key={o.valeur} value={o.valeur}>
+            {o.libelle}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+function TopCinq({ titre, lignes }: { titre: string; lignes: LigneClassement[] }) {
+  return (
+    <div>
+      <h3 className="dash-sous font-semibold">{titre}</h3>
+      <ol className="mt-2 flex flex-col gap-1 text-sm">
+        {lignes
+          .filter((l) => l.rang <= 5 && l.points > 0)
+          .map((l) => (
+            <li key={l.mesure.id}>
+              <span className="font-semibold tabular-nums">
+                {l.rang}
+                {l.exAequo ? " ex aequo" : ""}
+              </span>{" "}
+              {l.mesure.id.toUpperCase()} · {l.mesure.texte}
+            </li>
+          ))}
+      </ol>
+    </div>
+  );
+}
+
 export function OngletConsultation({ donnees }: { donnees: DonneesAdmin }) {
   const aujourdhui = jourParis(donnees.maintenant);
-  const s = useMemo(
-    () => statsConsultation(donnees.reponses, aujourdhui),
-    [donnees.reponses, aujourdhui],
+  const [f, setF] = useState<FiltresConsultation>(FILTRES_PAR_DEFAUT);
+  const maj =
+    <K extends keyof FiltresConsultation>(cle: K) =>
+    (v: FiltresConsultation[K]) =>
+      setF((x) => ({ ...x, [cle]: v }));
+  const r = useMemo(() => filtrerReponses(donnees.reponses, f), [donnees.reponses, f]);
+  const s = useMemo(() => statsConsultation(r, aujourdhui), [r, aujourdhui]);
+  const classement = useMemo(() => classementReponses(r), [r]);
+  const axes = useMemo(() => scoreParAxe(classement), [classement]);
+  const doublons = useMemo(() => repererDoublons(donnees.reponses), [donnees.reponses]);
+  const avecSans = useMemo(
+    () => ({
+      avec: classementReponses(filtrerReponses(donnees.reponses, { ...f, sansDoublons: false })),
+      sans: classementReponses(filtrerReponses(donnees.reponses, { ...f, sansDoublons: true })),
+    }),
+    [donnees.reponses, f],
   );
-  const classement = useMemo(
-    () =>
-      agregerClassement(
-        donnees.reponses.map((r) => r.classement),
-        NOMBRE_MESURES_A_CLASSER,
-      ),
-    [donnees.reponses],
-  );
+  const v2Lignes = useMemo(() => r.filter((x) => x.mesures_rejetees !== null), [r]);
+  const v2 = v2Lignes.length;
   const maxPoints = Math.max(1, ...classement.map((c) => c.points));
-  const r = donnees.reponses;
+  const maxAxe = Math.max(1, ...axes.map((a) => a.score));
+  const filtre = JSON.stringify(f) !== JSON.stringify(FILTRES_PAR_DEFAUT);
+
   return (
     <div className="flex flex-col gap-4">
+      <section className="dash-carte" aria-labelledby="filtres-consultation">
+        <h2 id="filtres-consultation" className="dash-libelle">
+          Filtres
+        </h2>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Selection
+            id="filtre-concernees"
+            libelle="Personnes concernées"
+            valeur={f.concernees}
+            onChange={(v) => maj("concernees")(v as FiltresConsultation["concernees"])}
+            options={[
+              { valeur: "toutes", libelle: "Toutes les réponses" },
+              { valeur: "oui", libelle: "Personnes concernées" },
+              { valeur: "non", libelle: "Autres réponses" },
+            ]}
+          />
+          <Selection
+            id="filtre-professionnels"
+            libelle="Lien professionnel avec l'enfance"
+            valeur={f.professionnels}
+            onChange={(v) => maj("professionnels")(v as FiltresConsultation["professionnels"])}
+            options={[
+              { valeur: "tous", libelle: "Toutes les réponses" },
+              { valeur: "oui", libelle: "Professionnels et engagés" },
+              { valeur: "non", libelle: "Sans lien professionnel" },
+            ]}
+          />
+          <Selection
+            id="filtre-provenance"
+            libelle="Provenance"
+            valeur={f.provenance}
+            onChange={maj("provenance")}
+            options={[
+              { valeur: "toutes", libelle: "Toutes les provenances" },
+              ...Q.provenance.options,
+              SANS_REPONSE,
+            ]}
+          />
+          <Selection
+            id="filtre-version"
+            libelle="Version du questionnaire"
+            valeur={f.version}
+            onChange={(v) => maj("version")(v as FiltresConsultation["version"])}
+            options={[
+              { valeur: "toutes", libelle: "Toutes les versions" },
+              { valeur: "v1", libelle: "v1 (profil en premier)" },
+              { valeur: "v2", libelle: "v2 (priorités en premier)" },
+            ]}
+          />
+        </div>
+        <label className="mt-3 inline-flex min-h-11 items-center gap-2">
+          <input
+            type="checkbox"
+            className="h-5 w-5 accent-[#2D5BD7]"
+            checked={f.sansDoublons}
+            onChange={(e) => maj("sansDoublons")(e.target.checked)}
+          />
+          Sans les réponses strictement identiques ({doublons.copies} en double)
+        </label>
+        <p className="dash-sous mt-2">
+          {filtre ? `${r.length} réponses retenues sur ${donnees.reponses.length}. ` : ""}
+          Les effectifs de 1 à {SEUIL_DIFFUSION - 1} réponses sont masqués.
+        </p>
+      </section>
+
       <div className="grid grid-cols-2 gap-3">
         <Indicateur
           i={0}
           icone={<Users size={14} aria-hidden="true" />}
-          titre="Réponses complètes"
+          titre={filtre ? "Réponses retenues" : "Réponses complètes"}
           valeur={s.total}
         />
         <Indicateur
@@ -733,80 +875,206 @@ export function OngletConsultation({ donnees }: { donnees: DonneesAdmin }) {
         </h2>
         <p className="dash-sous mt-1">
           Points, {NOMBRE_MESURES_A_CLASSER} pour une mesure classée première, 1 pour la cinquième.
-          Rang moyen parmi les personnes qui l'ont retenue.
+          Les égalités de points partagent le même rang. Score net, retenues moins rejets, sur les
+          seules réponses v2 ({v2}).
         </p>
         <div className="mt-3 overflow-x-auto">
-          <table className="tableau min-w-[640px]">
+          <table className="tableau min-w-[820px]">
             <thead>
               <tr>
                 <th scope="col">Rang</th>
                 <th scope="col">Mesure</th>
                 <th scope="col">Points</th>
                 <th scope="col">Retenue</th>
+                <th scope="col">Rejetée</th>
+                <th scope="col">Score net</th>
                 <th scope="col">Rang moyen</th>
                 <th scope="col">En tête</th>
               </tr>
             </thead>
             <tbody>
-              {classement.map((c, k) => (
-                <tr key={c.mesure.id}>
-                  <td className="font-display text-lg font-bold text-primaire">{k + 1}</td>
-                  <td>
-                    <span className="axe">{c.mesure.axe}</span>
-                    <span className="block">{c.mesure.texte}</span>
-                    <div className="dash-piste mt-1 h-1.5">
-                      <div
-                        className="dash-remplissage"
-                        style={{ width: `${(c.points / maxPoints) * 100}%` }}
-                      />
-                    </div>
-                  </td>
-                  <td className="tabular-nums">{c.points}</td>
-                  <td className="tabular-nums">{c.selections}</td>
-                  <td className="tabular-nums">
-                    {c.rangMoyen === null
-                      ? ""
-                      : c.rangMoyen.toLocaleString("fr-FR", { maximumFractionDigits: 1 })}
-                  </td>
-                  <td className="tabular-nums">{c.enTete}</td>
-                </tr>
-              ))}
+              {classement.map((c) => {
+                const masque = aMasquer(c.selections);
+                const retenuesV2 = v2Lignes.filter((x) =>
+                  x.classement.includes(c.mesure.id),
+                ).length;
+                const netMasque = aMasquer(retenuesV2) || aMasquer(c.rejets);
+                return (
+                  <tr key={c.mesure.id}>
+                    <td className="font-display text-lg font-bold text-primaire">
+                      {c.rang}
+                      {c.exAequo && <span className="dash-sous block">ex aequo</span>}
+                    </td>
+                    <td>
+                      <span className="axe">{c.mesure.axe}</span>
+                      <span className="block">{c.mesure.texte}</span>
+                      <div className="dash-piste mt-1 h-1.5">
+                        {!masque && (
+                          <div
+                            className="dash-remplissage"
+                            style={{ width: `${(c.points / maxPoints) * 100}%` }}
+                          />
+                        )}
+                      </div>
+                    </td>
+                    <td className="tabular-nums">{nombre(c.points, masque)}</td>
+                    <td className="tabular-nums">{nombre(c.selections, masque)}</td>
+                    <td className="tabular-nums">{nombre(c.rejets, aMasquer(c.rejets))}</td>
+                    <td className="tabular-nums">
+                      {netMasque ? MASQUE : (retenuesV2 - c.rejets).toLocaleString("fr-FR")}
+                    </td>
+                    <td className="tabular-nums">
+                      {c.rangMoyen === null || masque
+                        ? ""
+                        : c.rangMoyen.toLocaleString("fr-FR", { maximumFractionDigits: 1 })}
+                    </td>
+                    <td className="tabular-nums">{nombre(c.enTete, aMasquer(c.enTete))}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       </section>
 
+      <div className="grid gap-3 lg:grid-cols-2">
+        <section className="dash-carte" aria-labelledby="score-axes">
+          <h2 id="score-axes" className="dash-libelle">
+            Score par thème
+          </h2>
+          <p className="dash-sous mt-1">
+            Points du thème divisés par son nombre de mesures, pour comparer des thèmes de tailles
+            différentes.
+          </p>
+          <ul className="mt-3 flex flex-col gap-2">
+            {axes.map((a) => {
+              const masque = aMasquer(a.selections);
+              return (
+                <li
+                  key={a.axe}
+                  className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 text-sm"
+                >
+                  <span>
+                    {a.axe} ({a.mesures} {a.mesures > 1 ? "mesures" : "mesure"})
+                  </span>
+                  <span className="font-semibold tabular-nums">
+                    {masque
+                      ? MASQUE
+                      : a.score.toLocaleString("fr-FR", { maximumFractionDigits: 1 })}
+                  </span>
+                  <div className="dash-piste col-span-2 h-2">
+                    {!masque && (
+                      <div
+                        className="dash-remplissage"
+                        style={{ width: `${(a.score / maxAxe) * 100}%` }}
+                      />
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+
+        <section className="dash-carte" aria-labelledby="doublons">
+          <h2 id="doublons" className="dash-libelle">
+            Réponses strictement identiques
+          </h2>
+          <p className="dash-sous mt-1">
+            {doublons.copies === 0
+              ? "Aucune réponse identique à une autre."
+              : `${doublons.copies} réponses répètent une réponse précédente (${doublons.groupes} groupes). Tout leur contenu est identique, jour excepté.`}
+          </p>
+          <div className="mt-3 grid gap-4 sm:grid-cols-2">
+            <TopCinq titre="Avec elles" lignes={avecSans.avec} />
+            <TopCinq titre="Sans elles" lignes={avecSans.sans} />
+          </div>
+        </section>
+      </div>
+
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-        <Repartition i={2} titre="Âge" valeurs={r.map((x) => x.age)} options={Q.age.options} />
         <Repartition
+          masquer
+          i={2}
+          titre="Âge"
+          valeurs={r.map((x) => x.age)}
+          options={Q.age.options}
+        />
+        <Repartition
+          masquer
           i={3}
           titre="Genre"
           valeurs={r.map((x) => x.genre)}
           options={Q.genre.options}
         />
         <Repartition
+          masquer
           i={4}
           titre="Région"
           valeurs={r.map((x) => x.region)}
           options={Q.region.options}
         />
         <Repartition
+          masquer
           i={5}
           titre="Lieu de vie"
           valeurs={r.map((x) => x.lieu_vie)}
           options={Q.lieuVie.options}
         />
         <Repartition
+          masquer
           i={6}
+          titre="Situation"
+          valeurs={r.map((x) => x.situation)}
+          options={Q.situation.options}
+        />
+        <Repartition
+          masquer
+          i={7}
+          titre="Parent ou responsable d'un enfant mineur"
+          valeurs={r.map((x) => x.parent)}
+          options={Q.parent.options}
+        />
+        <Repartition
+          masquer
+          i={8}
           titre="Lien avec l'enfance"
           valeurs={r.flatMap((x) => x.liens_enfance)}
           options={Q.liensEnfance.options}
         />
         <Repartition
-          i={7}
+          masquer
+          i={9}
+          titre="Lien avec le sujet"
+          valeurs={r.flatMap((x) => (x.lien_sujet.length ? x.lien_sujet : ["sans-reponse"]))}
+          options={[...Q.lienSujet.options, SANS_REPONSE]}
+        />
+        <Repartition
+          masquer
+          i={10}
+          titre="Présence dans le débat public"
+          valeurs={r.map((x) => x.presence_debat ?? "sans-reponse")}
+          options={[...Q.presenceDebat.options, SANS_REPONSE]}
+        />
+        <Repartition
+          masquer
+          i={11}
+          titre="Poids dans le vote"
+          valeurs={r.map((x) => x.poids_vote ?? "sans-reponse")}
+          options={[...Q.poidsVote.options, SANS_REPONSE]}
+        />
+        <Repartition
+          masquer
+          i={12}
           titre="Provenance"
           valeurs={r.map((x) => x.provenance ?? "sans-reponse")}
-          options={[...Q.provenance.options, { valeur: "sans-reponse", libelle: "Pas de réponse" }]}
+          options={[...Q.provenance.options, SANS_REPONSE]}
+        />
+        <Repartition
+          masquer
+          i={13}
+          titre="Version du questionnaire"
+          valeurs={r.map((x) => x.version_questionnaire)}
         />
       </div>
 
@@ -814,6 +1082,10 @@ export function OngletConsultation({ donnees }: { donnees: DonneesAdmin }) {
         <h2 id="mesures-manquantes" className="dash-libelle">
           Une mesure manque, {s.mesuresManquantes.length} réponses libres
         </h2>
+        <p className="dash-sous mt-1">
+          À relire avant toute citation. Retirez tout élément qui permettrait de reconnaître une
+          personne.
+        </p>
         {s.mesuresManquantes.length ? (
           <ul className="mt-3 flex flex-col gap-2">
             {s.mesuresManquantes

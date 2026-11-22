@@ -3,20 +3,38 @@ import { creerJeton } from "@/lib/server/anti-robot.server";
 import {
   annulerInscription,
   donneesAdmin,
+  etatSite,
   enregistrerConsultation,
+  enregistrerContactSuite,
   enregistrerInscription,
   synchroniserAteliers,
   type ResultatInscription,
 } from "@/lib/server/services.server";
-import { tableauInscriptions, tableauReponses, versCsv } from "@/lib/exports";
+import { tableauContactsSuite, tableauInscriptions, tableauReponses, versCsv } from "@/lib/exports";
+import { COOKIE_PARTICIPATION, cookieParticipation } from "@/lib/server/participation.server";
 import { statsAteliers, adressesInscrits } from "@/lib/statistiques";
 import { CAPACITE_PAR_ATELIER } from "@/lib/config";
+import { rpc } from "@/lib/server/db.server";
 import { nouvelleBase } from "./base-de-test";
 import { inscriptionValide, reponseValide } from "./validation.test";
 
 const AVANT = new Date("2026-11-25T10:00:00+01:00");
+const reponseSqlServeur = {
+  jour: "2026-11-25",
+  age: "25-34",
+  genre: "nsp",
+  region: "idf",
+  lieu_vie: "rural",
+  situation: "emploi",
+  parent: "oui",
+  liens_enfance: ["sante"],
+  lien_sujet: [],
+  classement: ["m03", "m01", "m24", "m07", "m10"],
+};
 const headers = (ip = "203.0.113.7") => new Headers({ "x-forwarded-for": ip });
-const vieux = (f: string) => creerJeton(f, Date.now() - 21_000);
+// Chaque jeton de test est unique (usage unique) : deux appels dans la même milliseconde différeraient sinon pas.
+let decalage = 0;
+const vieux = (f: string) => creerJeton(f, Date.now() - 21_000 - decalage++);
 const personne = (n: number, ateliers = ["atelier-1"]) => ({
   ...inscriptionValide,
   prenom: `P${n}`,
@@ -44,7 +62,7 @@ describe("parcours côté serveur, sur un vrai Postgres", () => {
         headers(),
         AVANT,
       ),
-    ).toEqual({ ok: true });
+    ).toEqual({ ok: true, rang: null });
     const r = await enregistrerInscription(
       { ...personne(1), nom: "MARQUEUR_ATELIER", siteWeb: "", jeton: await vieux("inscription") },
       headers(),
@@ -169,8 +187,8 @@ describe("parcours côté serveur, sur un vrai Postgres", () => {
     expect(d.inscriptions).toHaveLength(0);
   });
 
-  it("limite à 10 envois par heure et par adresse", async () => {
-    for (let i = 0; i < 10; i++)
+  it("limite à 30 envois par heure et par adresse", async () => {
+    for (let i = 0; i < 30; i++)
       expect(
         (
           await enregistrerConsultation(
@@ -196,6 +214,23 @@ describe("parcours côté serveur, sur un vrai Postgres", () => {
         )
       ).ok,
     ).toBe(true);
+  });
+
+  it("un jeton ne sert qu'une fois : l'envoi rejoué n'ajoute rien, la table des jetons est séparée", async () => {
+    const jeton = await vieux("consultation");
+    const envoi = { ...reponseValide, siteWeb: "", jeton };
+    expect((await enregistrerConsultation(envoi, headers("192.0.2.20"), AVANT)).ok).toBe(true);
+    expect(await enregistrerConsultation(envoi, headers("192.0.2.21"), AVANT)).toMatchObject({
+      ok: false,
+      dejaRepondu: true,
+    });
+    expect((await donneesAdmin(AVANT)).reponses).toHaveLength(1);
+    // Rien dans la réponse ne renvoie au jeton.
+    expect(JSON.stringify((await donneesAdmin(AVANT)).reponses)).not.toContain(jeton);
+    // Purge : pas avant le lendemain de la clôture, tout après.
+    expect(await rpc("purger_jetons_utilises", { _a_partir_du: "2099-01-01" })).toBe(0);
+    expect(await rpc("purger_jetons_utilises", { _a_partir_du: "2000-01-01" })).toBe(1);
+    expect((await enregistrerConsultation(envoi, headers("192.0.2.22"), AVANT)).ok).toBe(true);
   });
 
   it("neutralise une saisie commençant par = dans les exports", async () => {
@@ -225,5 +260,104 @@ describe("parcours côté serveur, sur un vrai Postgres", () => {
     const ateliers = versCsv(tableauInscriptions(d.inscriptions, "https://exemple.fr"));
     expect(ateliers).toContain(`"'@SUM(1)"`);
     expect(ateliers).toContain(`"'+33 attaque"`);
+  });
+
+  it("refuse une deuxième réponse depuis un navigateur qui a déjà répondu", async () => {
+    const c = cookieParticipation(AVANT);
+    expect(c.valeur).toBe("1");
+    expect(c.options).toMatchObject({ httpOnly: true, path: "/" });
+    expect(c.options.maxAge).toBeGreaterThan(14 * 86_400);
+    const avecCookie = new Headers({
+      "x-forwarded-for": "203.0.113.8",
+      cookie: `autre=x; ${COOKIE_PARTICIPATION}=1`,
+    });
+    const r = await enregistrerConsultation(
+      { ...reponseValide, siteWeb: "", jeton: await vieux("consultation") },
+      avecCookie,
+      AVANT,
+    );
+    expect(r).toMatchObject({ ok: false, dejaRepondu: true });
+    expect((await donneesAdmin(AVANT)).reponses).toHaveLength(0);
+  });
+
+  it("questionnaire v2 : enregistre les mesures non soutenues, refuse moins de 15 ans et « concernée » sans accord", async () => {
+    const envoi = async (extra: Record<string, unknown>, ip: string) =>
+      enregistrerConsultation(
+        { ...reponseValide, ...extra, siteWeb: "", jeton: await vieux("consultation") },
+        headers(ip),
+        AVANT,
+      );
+    expect((await envoi({ age: "moins-15" }, "192.0.2.1")).ok).toBe(false);
+    expect(await envoi({ lienSujet: ["concerne"] }, "192.0.2.2")).toMatchObject({
+      ok: false,
+      erreurs: { consentementConcerne: expect.any(String) },
+    });
+    expect((await donneesAdmin(AVANT)).reponses).toHaveLength(0);
+
+    expect(
+      (
+        await envoi(
+          { lienSujet: ["concerne"], consentementConcerne: true, mesuresRejetees: ["m02"] },
+          "192.0.2.3",
+        )
+      ).ok,
+    ).toBe(true);
+    const [r] = (await donneesAdmin(AVANT)).reponses;
+    expect(r).toMatchObject({
+      version_questionnaire: "v2",
+      lien_sujet: ["concerne"],
+      mesures_rejetees: ["m02"],
+      ordre_affichage: reponseValide.ordreAffichage,
+    });
+    expect(Object.keys(r!)).not.toContain("consentement_concerne");
+  });
+
+  it("compteur et rang : rien sous 100 réponses, puis le rang à la seule personne qui répond", async () => {
+    const envoi = async (ip: string) =>
+      enregistrerConsultation(
+        { ...reponseValide, siteWeb: "", jeton: await vieux("consultation") },
+        headers(ip),
+        AVANT,
+      );
+    expect(await envoi("192.0.2.10")).toEqual({ ok: true, rang: null });
+    expect((await etatSite(AVANT)).compteur).toBeNull();
+    const r = { ...reponseSqlServeur, version_questionnaire: "v2", ordre_affichage: [] };
+    for (let i = 0; i < 98; i++) await rpc("enregistrer_reponse", { r });
+    expect((await etatSite(AVANT)).compteur).toBeNull();
+    expect(await envoi("192.0.2.11")).toEqual({ ok: true, rang: 100 });
+    expect((await etatSite(AVANT)).compteur).toBe(100);
+    for (let i = 0; i < 9; i++) await rpc("enregistrer_reponse", { r });
+    expect((await etatSite(AVANT)).compteur).toBe(100);
+    expect(await envoi("192.0.2.12")).toEqual({ ok: true, rang: 110 });
+    expect((await etatSite(AVANT)).compteur).toBe(110);
+  });
+
+  it("garde les emails pour la suite à part, sans doublon et sans lien avec les réponses", async () => {
+    await enregistrerConsultation(
+      { ...reponseValide, siteWeb: "", jeton: await vieux("consultation") },
+      headers(),
+      AVANT,
+    );
+    const suite = async (email: string, jeton?: string) =>
+      enregistrerContactSuite(
+        { email, siteWeb: "", jeton: jeton ?? (await creerJeton("suite", Date.now() - 4_000)) },
+        headers(),
+        AVANT,
+      );
+    expect(await suite("Camille@Exemple.fr")).toEqual({ ok: true });
+    expect(await suite("camille@exemple.fr ")).toEqual({ ok: true });
+    expect(await suite("pas-un-email")).toMatchObject({
+      ok: false,
+      erreurs: { email: expect.any(String) },
+    });
+    expect(await suite("robot@exemple.fr", await creerJeton("suite", Date.now()))).toMatchObject({
+      ok: false,
+      message: expect.stringMatching(/vite/),
+    });
+    const d = await donneesAdmin(AVANT);
+    expect(d.contactsSuite).toEqual([{ email: "camille@exemple.fr", jour: "2026-11-25" }]);
+    expect(Object.keys(d.reponses[0]!)).not.toContain("email");
+    expect(versCsv(tableauReponses(d.reponses, 5))).not.toContain("camille@exemple.fr");
+    expect(versCsv(tableauContactsSuite(d.contactsSuite))).toContain("camille@exemple.fr");
   });
 });

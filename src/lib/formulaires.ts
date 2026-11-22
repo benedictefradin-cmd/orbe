@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { MESURE_IDS } from "@/lib/mesures";
-import { NOMBRE_MESURES_A_CLASSER } from "@/lib/config";
+import { estPermutationDesMesures, MESURE_IDS } from "@/lib/mesures";
+import { MAX_MESURES_REJETEES, NOMBRE_MESURES_A_CLASSER } from "@/lib/config";
 
 /** Messages zod en français : aucun message anglais par défaut ne doit s'afficher. */
 z.setErrorMap((issue, ctx) => {
@@ -54,6 +54,7 @@ export const Q = {
   age: {
     libelle: "Votre âge",
     options: opts([
+      ["moins-15", "Moins de 15 ans"],
       ["15-17", "15 à 17 ans"],
       ["18-24", "18 à 24 ans"],
       ["25-34", "25 à 34 ans"],
@@ -135,11 +136,24 @@ export const Q = {
   lienSujet: {
     libelle: "Votre lien avec le sujet",
     aide: "Facultatif (plusieurs choix possibles)",
+    // Libellés provisoires, à faire valider par Face à l'inceste (docs/refonte/a-valider.md).
     options: opts([
-      ["connait-victime", "Je connais une personne victime de violences dans son enfance"],
-      ["concerne", "Je suis personnellement concerné"],
+      ["concerne", "Je suis une personne concernée (violences sexuelles subies dans l'enfance)"],
+      [
+        "connait-victime",
+        "Je connais une personne qui a subi des violences sexuelles dans son enfance",
+      ],
       ["aucun", "Aucun lien connu"],
     ]),
+  },
+  consentementConcerne: {
+    libelle:
+      "J'accepte que cette information, anonyme, soit utilisée pour les statistiques de la synthèse",
+  },
+  mesuresRejetees: {
+    libelle: "Des mesures que vous ne soutenez pas ?",
+    aide: `Facultatif (${MAX_MESURES_REJETEES} au plus). Les mesures de votre classement n'apparaissent pas ici.`,
+    max: MAX_MESURES_REJETEES,
   },
   presenceDebat: {
     libelle: "Ce sujet est il assez présent dans le débat public ?",
@@ -193,7 +207,16 @@ const multiAvecNsp = (o: readonly Option[]) =>
     );
 const facultatif = (o: readonly Option[]) => z.enum(valeurs([...o])).nullable();
 
-export const profilSchema = z.object({
+export const AGE_MOINS_15 = "moins-15";
+export const MESSAGES_CONSULTATION = {
+  moins15: "La consultation est ouverte à partir de 15 ans. Aucune réponse n'est enregistrée.",
+  consentement:
+    "Pour que cette réponse soit comptée, cochez la case d'accord. Vous pouvez aussi décocher « personne concernée ». Les deux choix sont possibles.",
+  rejeteeEtChoisie:
+    "Une mesure de votre classement ne peut pas être aussi parmi celles que vous ne soutenez pas.",
+};
+
+const profilBase = z.object({
   age: avecNsp(Q.age.options),
   genre: avecNsp(Q.genre.options),
   region: avecNsp(Q.region.options),
@@ -201,26 +224,71 @@ export const profilSchema = z.object({
   situation: avecNsp(Q.situation.options),
   parent: avecNsp(Q.parent.options),
   liensEnfance: multiAvecNsp(Q.liensEnfance.options),
-  lienSujet: z.array(z.enum(valeurs([...Q.lienSujet.options]))).max(3),
+  lienSujet: z
+    .array(z.enum(valeurs([...Q.lienSujet.options])))
+    .max(3)
+    .refine(
+      (v) => new Set(v).size === v.length,
+      "Chaque réponse ne peut être choisie qu'une fois.",
+    ),
+  /** Accord explicite, exigé seulement si « personne concernée » est cochée. */
+  consentementConcerne: z.boolean().default(false),
 });
 
-export const classementSchema = z.object({
+/** Règles du profil : moins de 15 ans jamais enregistré, « personne concernée » jamais sans accord. */
+function reglesProfil(
+  v: { age: string; lienSujet: string[]; consentementConcerne: boolean },
+  ctx: z.RefinementCtx,
+) {
+  if (v.age === AGE_MOINS_15)
+    ctx.addIssue({ code: "custom", path: ["age"], message: MESSAGES_CONSULTATION.moins15 });
+  if (v.lienSujet.includes("concerne") && !v.consentementConcerne)
+    ctx.addIssue({
+      code: "custom",
+      path: ["consentementConcerne"],
+      message: MESSAGES_CONSULTATION.consentement,
+    });
+}
+
+export const profilSchema = profilBase.superRefine(reglesProfil);
+
+const classementBase = z.object({
   classement: z
     .array(z.enum(MESURE_IDS))
     .length(NOMBRE_MESURES_A_CLASSER, `Choisissez et classez ${NOMBRE_MESURES_A_CLASSER} mesures.`)
     .refine((v) => new Set(v).size === v.length, "Chaque mesure ne peut être choisie qu'une fois."),
 });
+export const classementSchema = classementBase;
 
-export const pourAllerPlusLoinSchema = z.object({
+const ideesBase = z.object({
   mesureManquante: z
     .string()
     .trim()
     .max(Q.mesureManquante.max, `${Q.mesureManquante.max} caractères au maximum.`)
     .default(""),
+  mesuresRejetees: z
+    .array(z.enum(MESURE_IDS))
+    .max(MAX_MESURES_REJETEES, `${MAX_MESURES_REJETEES} mesures au plus.`)
+    .refine((v) => new Set(v).size === v.length, "Chaque mesure ne peut être choisie qu'une fois.")
+    .default([]),
   presenceDebat: facultatif(Q.presenceDebat.options),
   poidsVote: facultatif(Q.poidsVote.options),
   provenance: facultatif(Q.provenance.options),
 });
+/** Étape « Vos idées », entièrement facultative. */
+export const ideesSchema = ideesBase;
+
+function reglesCroisees(
+  v: { classement: string[]; mesuresRejetees: string[] },
+  ctx: z.RefinementCtx,
+) {
+  if (v.mesuresRejetees.some((id) => v.classement.includes(id)))
+    ctx.addIssue({
+      code: "custom",
+      path: ["mesuresRejetees"],
+      message: MESSAGES_CONSULTATION.rejeteeEtChoisie,
+    });
+}
 
 /** Champs communs anti robots, présents dans chaque formulaire. */
 export const antiRobotSchema = z.object({
@@ -230,11 +298,36 @@ export const antiRobotSchema = z.object({
   jeton: z.string().max(200),
 });
 
-export const consultationSchema = profilSchema
-  .merge(classementSchema)
-  .merge(pourAllerPlusLoinSchema);
-export const envoiConsultationSchema = consultationSchema.merge(antiRobotSchema);
+const consultationBase = classementBase.merge(ideesBase).merge(profilBase);
+const reglesConsultation = (v: z.infer<typeof consultationBase>, ctx: z.RefinementCtx) => {
+  reglesProfil(v, ctx);
+  reglesCroisees(v, ctx);
+};
+export const consultationSchema = consultationBase.superRefine(reglesConsultation);
+
+/** Ordre dans lequel les 24 mesures ont été présentées, tiré une fois par visite. */
+export const ordreAffichageSchema = z.object({
+  ordreAffichage: z
+    .array(z.enum(MESURE_IDS))
+    .refine(estPermutationDesMesures, "L'ordre d'affichage des mesures est invalide."),
+});
+export const envoiConsultationSchema = consultationBase
+  .merge(ordreAffichageSchema)
+  .merge(antiRobotSchema)
+  .superRefine(reglesConsultation);
 export type ReponseConsultation = z.infer<typeof consultationSchema>;
+
+/** Email facultatif laissé après la consultation, enregistré à part des réponses. */
+export const suiteSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(1, "Indiquez votre email.")
+    .email("Indiquez une adresse email valide (par exemple prenom@exemple.fr).")
+    .max(254),
+});
+export const envoiSuiteSchema = suiteSchema.merge(antiRobotSchema);
 
 /* ───────────── Inscription aux ateliers ───────────── */
 

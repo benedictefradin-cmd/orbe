@@ -1,7 +1,16 @@
 import { readFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { inscrire, pagePrete, parcoursConsultation, sansDebordement, tabJusqua } from "./aides";
+import {
+  allerAuProfil,
+  groupe,
+  inscrire,
+  pagePrete,
+  parcoursConsultation,
+  remplirProfil,
+  sansDebordement,
+  tabJusqua,
+} from "./aides";
 
 test.describe("accueil", () => {
   test("trois entrées qui mènent chacune à sa page", async ({ page }) => {
@@ -36,6 +45,15 @@ test.describe("parcours complets", () => {
       type: "durée machine",
       description: `${Math.round(duree / 1000)} s, dont 21 s d'attente anti robots`,
     });
+    // Écran de fin : rappel des priorités, suite de la démarche, aide, ateliers, partage.
+    await expect(page.getByRole("heading", { name: "Vos 5 priorités" })).toBeVisible();
+    await expect(
+      page.getByRole("region", { name: "Vos 5 priorités" }).getByRole("listitem"),
+    ).toHaveCount(5);
+    await expect(page.getByRole("heading", { name: "Et maintenant" })).toBeVisible();
+    await expect(page.getByText(/Vous êtes la \d+e personne/)).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /Appeler le 119/ }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: /Appeler le 116 006/ }).first()).toBeVisible();
     await expect(
       page.getByRole("heading", {
         name: "Allez plus loin : rejoignez un atelier de réflexion en décembre",
@@ -47,6 +65,21 @@ test.describe("parcours complets", () => {
     );
     await expect(page.getByRole("heading", { name: "Faites circuler" })).toBeVisible();
     await sansDebordement(page);
+
+    await page.getByLabel("Votre email").fill(`suite.${Date.now()}@exemple.fr`);
+    await page.waitForTimeout(3_500);
+    await page.getByRole("button", { name: "Je veux connaître la suite" }).click();
+    await expect(
+      page.getByText("C'est noté. Nous vous écrirons pour la restitution."),
+    ).toBeVisible();
+
+    // Une seule réponse par navigateur : en revenant, le formulaire ne s'affiche plus.
+    await page.goto("/consultation");
+    await expect(
+      page.getByRole("heading", { name: "Merci pour votre participation" }),
+    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Continuer" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Je veux connaître la suite" })).toBeVisible();
   });
 
   test("ateliers, deux dates, agenda et annulation", async ({ page }) => {
@@ -90,7 +123,7 @@ test.describe("parcours complets", () => {
 });
 
 test.describe("navigation au clavier", () => {
-  test("de l'accueil à la fin du profil, sans souris", async ({ page }, info) => {
+  test("de l'accueil au classement, sans souris", async ({ page }, info) => {
     test.skip(info.project.name !== "ordinateur-1280", "clavier testé sur ordinateur");
     await page.goto("/");
     await page.keyboard.press("Tab");
@@ -100,18 +133,109 @@ test.describe("navigation au clavier", () => {
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/\/consultation$/);
     await pagePrete(page, "Continuer");
-    const premierAge = page.getByRole("group", { name: "Votre âge" }).getByRole("radio").first();
-    await tabJusqua(page, premierAge);
-    await page.keyboard.press("Space");
-    await expect(premierAge).toBeChecked();
-    await page.keyboard.press("ArrowDown");
-    await expect(
-      page.getByRole("group", { name: "Votre âge" }).getByRole("radio").nth(1),
-    ).toBeChecked();
+    const premiere = page.locator("button.mesure").first();
+    await tabJusqua(page, premiere);
+    await page.keyboard.press("Enter");
+    await expect(premiere).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByText(/^Ajoutée en position 1 sur 5 : /)).toHaveCount(1);
+    await expect(premiere).toBeFocused();
     const continuer = page.getByRole("button", { name: "Continuer" });
     await tabJusqua(page, continuer);
     await page.keyboard.press("Enter");
     await expect(page.getByRole("alert").first()).toBeFocused();
+  });
+});
+
+test.describe("redevabilité", () => {
+  test("la méthode est accessible depuis la consultation", async ({ page }) => {
+    await page.goto("/consultation");
+    await pagePrete(page, "Continuer");
+    await page.getByRole("link", { name: "Comment vos réponses sont analysées" }).click();
+    await expect(page).toHaveURL(/\/methode$/);
+    await expect(
+      page.getByRole("heading", { name: "La méthode de la consultation", level: 1 }),
+    ).toBeVisible();
+    await expect(page.getByText(/méthode de Borda/)).toBeVisible();
+    await expect(page.getByText(/pas un échantillon représentatif/)).toBeVisible();
+  });
+
+  test("les résultats ne sont pas publics tant que le réglage est désactivé", async ({
+    request,
+  }) => {
+    const r = await request.get("/resultats");
+    expect(r.status()).toBe(404);
+    expect(await r.text()).not.toContain("Les résultats de la consultation");
+  });
+});
+
+test.describe("questionnaire v2", () => {
+  test("ordre gardé au retour, mesures classées absentes des mesures non soutenues", async ({
+    page,
+  }) => {
+    await page.goto("/consultation");
+    await pagePrete(page, "Continuer");
+    const mesures = page.locator("button.mesure");
+    await expect(mesures).toHaveCount(24);
+    for (const i of [0, 5, 7, 9, 11]) await mesures.nth(i).click();
+    const textes = await mesures.allTextContents();
+    await page.getByRole("button", { name: "Continuer" }).click();
+    const rejet = groupe(page, /ne soutenez pas/);
+    await expect(rejet.getByRole("checkbox")).toHaveCount(19);
+    for (let i = 0; i < 3; i++) await rejet.getByRole("checkbox").nth(i).click();
+    const quatrieme = rejet.getByRole("checkbox").nth(3);
+    await expect(quatrieme).toHaveAttribute("aria-disabled", "true");
+    // Au clavier, la case reste atteignable mais ne se coche pas.
+    await quatrieme.focus();
+    await page.keyboard.press("Space");
+    await expect(quatrieme).toBeFocused();
+    await expect(rejet.getByRole("checkbox", { checked: true })).toHaveCount(3);
+    await page.getByRole("button", { name: "Retour" }).click();
+    expect(await mesures.allTextContents()).toEqual(textes);
+  });
+
+  test("moins de 15 ans : message bienveillant, 119, rien n'est envoyé", async ({ page }) => {
+    let envois = 0;
+    page.on("request", (r) => {
+      if (r.method() === "POST" && r.url().includes("_serverFn")) envois++;
+    });
+    await page.goto("/consultation");
+    await pagePrete(page, "Continuer");
+    await expect(page.getByText("Ouvert à partir de 15 ans.")).toBeVisible();
+    await allerAuProfil(page);
+    await groupe(page, "Votre âge").getByLabel("Moins de 15 ans").check();
+    await expect(page.getByText(/ouverte à partir de 15 ans/)).toBeVisible();
+    await expect(page.getByRole("link", { name: "Appeler le 119" })).toHaveAttribute(
+      "href",
+      "tel:119",
+    );
+    await expect(page.getByRole("button", { name: "Continuer" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Je valide mes réponses" })).toHaveCount(0);
+    expect(envois).toBe(0);
+  });
+
+  test("« personne concernée » demande un accord explicite, retiré si on décoche", async ({
+    page,
+  }) => {
+    await page.goto("/consultation");
+    await pagePrete(page, "Continuer");
+    await allerAuProfil(page);
+    const accord = page.getByLabel(/J'accepte que cette information, anonyme/);
+    const concerne = groupe(page, "Votre lien avec le sujet").getByLabel(
+      /Je suis une personne concernée/,
+    );
+    await expect(accord).toHaveCount(0);
+    await remplirProfil(page);
+    await concerne.check();
+    await expect(accord).toBeVisible();
+    await page.getByRole("button", { name: "Continuer" }).click();
+    await expect(page.locator("#consentementConcerne-erreur")).toContainText("case d'accord");
+    await accord.check();
+    await page.getByRole("button", { name: "Continuer" }).click();
+    await expect(page.getByRole("heading", { name: "Relecture", level: 2 })).toBeFocused();
+    await expect(page.getByText(/Accord donné pour les statistiques/)).toBeVisible();
+    await page.getByRole("button", { name: "Retour" }).click();
+    await concerne.uncheck();
+    await expect(accord).toHaveCount(0);
   });
 });
 
@@ -203,6 +327,7 @@ test.describe("mise en page et accessibilité", () => {
         "/consultation",
         "/ateliers",
         "/donnees-personnelles",
+        "/methode",
         "/admin",
       ]) {
         await page.goto(chemin);
@@ -219,6 +344,7 @@ test.describe("mise en page et accessibilité", () => {
       "/consultation",
       "/ateliers",
       "/donnees-personnelles",
+      "/methode",
     ]) {
       await page.goto(chemin);
       await page.waitForLoadState("networkidle");
@@ -287,6 +413,13 @@ test.describe("tableau de bord", () => {
 
     await page.getByRole("tab", { name: "Consultation" }).click();
     await expect(page.getByText("Classement des 24 mesures, en direct")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Score par thème" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Réponses strictement identiques" }),
+    ).toBeVisible();
+    await page.getByLabel("Version du questionnaire").selectOption("v1");
+    await expect(page.getByText(/^0 réponses retenues sur \d+/)).toBeVisible();
+    await page.getByLabel("Version du questionnaire").selectOption("toutes");
 
     const telechargement = page.waitForEvent("download");
     await page.getByRole("button", { name: "Télécharger les réponses (.xlsx)" }).click();

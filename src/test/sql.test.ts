@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { rpc } from "@/lib/server/db.server";
-import { nouvelleBase } from "./base-de-test";
+import { preparerPglite, rpc } from "@/lib/server/db.server";
+import { migrations, nouvelleBase } from "./base-de-test";
 
 const ateliers = (cap: number | null) => [
   {
@@ -87,39 +87,93 @@ describe("fonctions SQL", () => {
     expect(await rpc("verifier_limite", { _empreinte: "autre", _max: 10 })).toBe(true);
   });
 
-  it("enregistre une réponse anonyme avec la date du jour seulement", async () => {
-    await rpc("enregistrer_reponse", {
-      r: {
-        jour: "2026-11-21",
-        age: "25-34",
-        genre: "nsp",
-        region: "idf",
-        lieu_vie: "rural",
-        situation: "emploi",
-        parent: "oui",
-        liens_enfance: ["sante"],
-        lien_sujet: [],
-        classement: ["m03", "m01", "m24", "m07", "m10"],
-        mesure_manquante: "",
-        presence_debat: null,
-        poids_vote: "beaucoup",
-        provenance: null,
-      },
-    });
+  const reponseSql = {
+    jour: "2026-11-21",
+    age: "25-34",
+    genre: "nsp",
+    region: "idf",
+    lieu_vie: "rural",
+    situation: "emploi",
+    parent: "oui",
+    liens_enfance: ["sante"],
+    lien_sujet: [],
+    classement: ["m03", "m01", "m24", "m07", "m10"],
+    mesure_manquante: "",
+    presence_debat: null,
+    poids_vote: "beaucoup",
+    provenance: null,
+  };
+
+  it("enregistre une réponse anonyme avec la date du jour, la version et l'ordre d'affichage", async () => {
+    const ordre = Array.from({ length: 24 }, (_, i) => `m${String(24 - i).padStart(2, "0")}`);
+    expect(
+      await rpc("enregistrer_reponse", {
+        r: { ...reponseSql, version_questionnaire: "v2", ordre_affichage: ordre },
+      }),
+    ).toMatchObject({ statut: "ok" });
     const [r] = await rpc<Record<string, unknown>[]>("admin_reponses");
     expect(r).toMatchObject({
       jour: "2026-11-21",
       classement: ["m03", "m01", "m24", "m07", "m10"],
       mesure_manquante: null,
+      version_questionnaire: "v2",
+      ordre_affichage: ordre,
     });
     expect(Object.keys(r!)).not.toContain("id");
+  });
+
+  it("renvoie le rang de chaque réponse et compte les réponses, sans stocker le rang", async () => {
+    const r = { ...reponseSql, version_questionnaire: "v2", ordre_affichage: [] };
+    expect(await rpc("nombre_reponses")).toBe(0);
+    expect(await rpc("enregistrer_reponse", { r })).toEqual({ statut: "ok", rang: 1 });
+    expect(await rpc("enregistrer_reponse", { r })).toEqual({ statut: "ok", rang: 2 });
+    expect(await rpc("nombre_reponses")).toBe(2);
+    const [ligne] = await rpc<Record<string, unknown>[]>("admin_reponses");
+    expect(Object.keys(ligne!)).not.toContain("rang");
+  });
+
+  it("refuse une réponse sans version du questionnaire", async () => {
+    await expect(rpc("enregistrer_reponse", { r: reponseSql })).rejects.toThrow();
+    expect(await rpc("admin_reponses")).toEqual([]);
+  });
+
+  it("garde intactes les réponses v1 existantes et les marque v1, migrations rejouables", async () => {
+    // Base dans l'état d'avant le questionnaire v2, avec une réponse réelle enregistrée par l'ancienne fonction.
+    const avantV2 = migrations.filter((m) => !m.includes("version_questionnaire"));
+    const db = await nouvelleBase(avantV2);
+    await rpc("enregistrer_reponse", {
+      r: { ...reponseSql, lien_sujet: ["concerne"], mesure_manquante: "Texte libre v1" },
+    });
+    const [avant] = await rpc<Record<string, unknown>[]>("admin_reponses");
+
+    // Les migrations suivantes passent, puis repassent comme en développement local.
+    await preparerPglite(db, migrations);
+    await preparerPglite(db, migrations);
+    const [apres] = await rpc<Record<string, unknown>[]>("admin_reponses");
+    expect(apres).toEqual({
+      ...avant,
+      version_questionnaire: "v1",
+      ordre_affichage: null,
+      mesures_rejetees: null,
+    });
+
+    await rpc("enregistrer_reponse", {
+      r: { ...reponseSql, version_questionnaire: "v2", ordre_affichage: [] },
+    });
+    const versions = (await rpc<{ version_questionnaire: string }[]>("admin_reponses"))
+      .map((x) => x.version_questionnaire)
+      .sort();
+    expect(versions).toEqual(["v1", "v2"]);
   });
 
   it("purge les inscriptions à la date prévue, pas avant", async () => {
     await rpc("synchroniser_ateliers", { _ateliers: ateliers(30) });
     await rpc("inscrire_atelier", { r: personne(1) });
+    await rpc("inscrire_contact_suite", { _email: "suite@exemple.fr", _jour: "2026-11-25" });
     expect(await rpc("purger_donnees_ateliers", { _a_partir_du: "2099-01-01" })).toBe(0);
+    expect(await rpc<unknown[]>("admin_contacts_suite")).toHaveLength(1);
     expect(await rpc("purger_donnees_ateliers", { _a_partir_du: "2000-01-01" })).toBe(1);
     expect(await rpc("admin_inscriptions")).toEqual([]);
+    expect(await rpc("admin_contacts_suite")).toEqual([]);
   });
 });

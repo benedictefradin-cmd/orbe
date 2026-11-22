@@ -1,19 +1,32 @@
 /** Logique serveur des deux parcours, indépendante de TanStack pour être testée directement. */
 import {
+  ajouterJours,
   ATELIERS,
   CAPACITE_PAR_ATELIER,
+  CLOTURE_CONSULTATION,
+  DELAI_MINIMUM_ENVOI_SUITE_MS,
   inscriptionsOuvertes,
   isClosed,
   jourParis,
+  RESULTATS_PUBLICS,
   SUPPRESSION_DES_DONNEES_ATELIERS,
+  VERSION_QUESTIONNAIRE,
 } from "@/lib/config";
 import {
   envoiConsultationSchema,
   envoiInscriptionSchema,
+  envoiSuiteSchema,
   erreursParChamp,
 } from "@/lib/formulaires";
-import { MESSAGES_REFUS, verifierEnvoi, verifierQuota } from "@/lib/server/anti-robot.server";
+import {
+  empreinteJeton,
+  MESSAGES_REFUS,
+  verifierEnvoi,
+  verifierQuota,
+} from "@/lib/server/anti-robot.server";
 import { rpc } from "@/lib/server/db.server";
+import { aDejaRepondu } from "@/lib/server/participation.server";
+import { compteurPublic, rangPublic, resultatsPublics } from "@/lib/statistiques";
 
 export type Place = {
   atelier_id: string;
@@ -27,6 +40,8 @@ export type EtatSite = {
   consultationClose: boolean;
   inscriptionsOuvertes: boolean;
   places: Place[];
+  /** Nombre public de réponses (arrondi), null sous le seuil, compteur inactif ou erreur. */
+  compteur: number | null;
 };
 export type Echec = { ok: false; message: string; erreurs?: Record<string, string> };
 
@@ -64,31 +79,64 @@ export async function lirePlaces(): Promise<Place[]> {
  * Appelée chaque jour par la tâche Vercel. Écrit réellement en base (mise à jour des ateliers, purge des
  * empreintes expirées) car Supabase met en pause un projet gratuit dont la base reste peu sollicitée 7 jours.
  */
+/** Les jetons consommés sont supprimés à partir du lendemain de la clôture. */
+export function purgerJetons() {
+  return rpc<number>("purger_jetons_utilises", {
+    _a_partir_du: ajouterJours(CLOTURE_CONSULTATION, 1),
+  });
+}
+
 export async function entretenirBase(): Promise<number> {
   await synchroniserAteliers(true);
   await rpc("purger_donnees_ateliers", { _a_partir_du: SUPPRESSION_DES_DONNEES_ATELIERS });
+  await purgerJetons();
   return (await lirePlaces()).length;
 }
 
+/** Jamais de chiffre de repli : en cas d'erreur, le compteur ne s'affiche pas. */
+export async function lireCompteur(): Promise<number | null> {
+  try {
+    return compteurPublic(Number(await rpc<number>("nombre_reponses")));
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
 export async function etatSite(now: Date, avecPlaces = true): Promise<EtatSite> {
+  const [places, compteur] = await Promise.all([
+    avecPlaces ? lirePlaces() : Promise.resolve([]),
+    avecPlaces ? lireCompteur() : Promise.resolve(null),
+  ]);
   return {
     maintenant: now.toISOString(),
     consultationClose: isClosed(now),
     inscriptionsOuvertes: inscriptionsOuvertes(now),
-    places: avecPlaces ? await lirePlaces() : [],
+    places,
+    compteur,
   };
+}
+
+/** Résultats publics : agrégats seulement, et uniquement quand RESULTATS_PUBLICS est vrai. */
+export async function lireResultatsPublics() {
+  if (!RESULTATS_PUBLICS) return null;
+  return resultatsPublics(await rpc<ReponseAdmin[]>("admin_reponses"));
 }
 
 const ERREUR_TECHNIQUE =
   "L'enregistrement n'a pas fonctionné. Vos réponses sont toujours là, réessayez dans un instant.";
 
+export const MESSAGE_DEJA_REPONDU =
+  "Une réponse a déjà été envoyée depuis ce navigateur. La consultation accepte une seule réponse par personne.";
+
 export async function enregistrerConsultation(
   input: unknown,
   headers: Headers,
   now: Date,
-): Promise<{ ok: true } | Echec> {
+): Promise<{ ok: true; rang: number | null } | (Echec & { dejaRepondu?: true })> {
   if (isClosed(now))
     return { ok: false, message: "La consultation est close, merci pour votre intérêt." };
+  if (aDejaRepondu(headers)) return { ok: false, message: MESSAGE_DEJA_REPONDU, dejaRepondu: true };
   const v = envoiConsultationSchema.safeParse(input);
   if (!v.success)
     return {
@@ -101,7 +149,7 @@ export async function enregistrerConsultation(
   try {
     if (!(await verifierQuota(headers))) return { ok: false, message: MESSAGES_REFUS.quota };
     const d = v.data;
-    await rpc("enregistrer_reponse", {
+    const r = await rpc<{ statut: string; rang?: number }>("enregistrer_reponse", {
       r: {
         jour: jourParis(now),
         age: d.age,
@@ -117,12 +165,55 @@ export async function enregistrerConsultation(
         presence_debat: d.presenceDebat,
         poids_vote: d.poidsVote,
         provenance: d.provenance,
+        version_questionnaire: VERSION_QUESTIONNAIRE,
+        ordre_affichage: d.ordreAffichage,
+        mesures_rejetees: d.mesuresRejetees,
       },
+      _jeton: await empreinteJeton(v.data.jeton),
     });
-    return { ok: true };
+    // Le même envoi rejoué : la réponse est déjà enregistrée, rien n'est ajouté.
+    if (r.statut === "jeton_deja_utilise")
+      return { ok: false, message: MESSAGE_DEJA_REPONDU, dejaRepondu: true };
+    if (r.statut !== "ok") return { ok: false, message: ERREUR_TECHNIQUE };
+    // Le rang n'est renvoyé qu'à la personne qui répond, et seulement si le compteur public s'affiche.
+    return { ok: true, rang: rangPublic(r.rang) };
   } catch (e) {
     console.error(e);
     return { ok: false, message: ERREUR_TECHNIQUE };
+  }
+}
+
+/** Email laissé pour connaître la suite. Enregistré à part, sans lien avec une réponse. */
+export async function enregistrerContactSuite(
+  input: unknown,
+  headers: Headers,
+  now: Date,
+): Promise<{ ok: true } | Echec> {
+  const v = envoiSuiteSchema.safeParse(input);
+  if (!v.success)
+    return {
+      ok: false,
+      message: "Votre email est à vérifier.",
+      erreurs: erreursParChamp(v.error),
+    };
+  const refus = await verifierEnvoi(
+    "suite",
+    v.data.jeton,
+    v.data.siteWeb,
+    Date.now(),
+    DELAI_MINIMUM_ENVOI_SUITE_MS,
+  );
+  if (refus) return { ok: false, message: MESSAGES_REFUS[refus] };
+  try {
+    if (!(await verifierQuota(headers))) return { ok: false, message: MESSAGES_REFUS.quota };
+    await rpc("inscrire_contact_suite", { _email: v.data.email, _jour: jourParis(now) });
+    return { ok: true };
+  } catch (e) {
+    console.error(e);
+    return {
+      ok: false,
+      message: "L'enregistrement n'a pas fonctionné. Réessayez dans un instant.",
+    };
   }
 }
 
@@ -254,9 +345,17 @@ export type ReponseAdmin = {
   presence_debat: string | null;
   poids_vote: string | null;
   provenance: string | null;
+  /** « v1 » pour les réponses antérieures au questionnaire actuel. */
+  version_questionnaire: string;
+  /** Ordre de présentation des 24 mesures (null en v1). */
+  ordre_affichage: string[] | null;
+  /** Mesures non soutenues, 3 au plus (null en v1, question absente). */
+  mesures_rejetees: string[] | null;
 };
+export type ContactSuite = { email: string; jour: string };
 export type DonneesAdmin = {
   reponses: ReponseAdmin[];
+  contactsSuite: ContactSuite[];
   inscriptions: InscriptionAdmin[];
   places: Place[];
   misAJour: string;
@@ -265,13 +364,16 @@ export type DonneesAdmin = {
 
 export async function donneesAdmin(now: Date): Promise<DonneesAdmin> {
   await rpc("purger_donnees_ateliers", { _a_partir_du: SUPPRESSION_DES_DONNEES_ATELIERS });
-  const [reponses, inscriptions, places] = await Promise.all([
+  await purgerJetons();
+  const [reponses, inscriptions, places, contactsSuite] = await Promise.all([
     rpc<ReponseAdmin[]>("admin_reponses"),
     rpc<InscriptionAdmin[]>("admin_inscriptions"),
     lirePlaces(),
+    rpc<ContactSuite[]>("admin_contacts_suite"),
   ]);
   return {
     reponses,
+    contactsSuite,
     inscriptions,
     places,
     misAJour: new Date().toISOString(),

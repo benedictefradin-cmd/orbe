@@ -55,15 +55,47 @@ export const CONTACT_URL = "https://institut-rousseau.fr/contact?sujet=atelier-e
 
 export const RESPONSABLE_DES_DONNEES = "l'Institut Rousseau";
 
-/** Les inscriptions aux ateliers sont supprimées ce jour là. */
+/** Les inscriptions aux ateliers et les emails laissés pour connaître la suite sont supprimés ce jour là. */
 export const SUPPRESSION_DES_DONNEES_ATELIERS = "2027-03-31";
 
 /** Nombre de mesures à classer parmi les 24. */
 export const NOMBRE_MESURES_A_CLASSER = 5;
 
+/**
+ * Version du questionnaire enregistrée avec chaque réponse. Les réponses antérieures au 23 novembre 2026
+ * sont en v1 (profil en premier, sans ordre d'affichage). Toute modification des questions crée une nouvelle version.
+ */
+export const VERSION_QUESTIONNAIRE = "v2";
+
+/* ───────────── Redevabilité ───────────── */
+
+/** Compteur public des réponses : affiché seulement à partir du seuil, arrondi à la dizaine inférieure. */
+export const COMPTEUR_ACTIF = true;
+export const SEUIL_COMPTEUR = 100;
+
+/** Aucun chiffre portant sur moins de réponses que ce seuil n'est affiché (résultats, tableau de bord). */
+export const SEUIL_DIFFUSION = 10;
+
+/** Date de publication des résultats (AAAA-MM-JJ). Vide tant qu'elle n'est pas décidée : rien ne s'affiche. */
+export const DATE_RESULTATS = "";
+
+/** La page /resultats renvoie une erreur 404 tant que ce réglage vaut false. */
+export const RESULTATS_PUBLICS = false;
+
+/** Suppression des réponses anonymes (AAAA-MM-JJ). Vide tant qu'elle n'est pas décidée (docs/refonte/a-valider.md). */
+export const SUPPRESSION_DES_REPONSES = "";
+
+/** Nombre maximal de mesures que l'on peut signaler comme non soutenues (question facultative). */
+export const MAX_MESURES_REJETEES = 3;
+
 /** Anti robots : délai minimal entre l'ouverture d'un formulaire et son envoi, et quota horaire par adresse. */
 export const DELAI_MINIMUM_ENVOI_MS = 20_000;
-export const ENVOIS_MAX_PAR_HEURE = 10;
+/** Formulaire court de l'écran de remerciement (un seul champ email). */
+export const DELAI_MINIMUM_ENVOI_SUITE_MS = 3_000;
+/** 30 envois par heure et par adresse : une connexion partagée (lycée, association) n'est pas bloquée. */
+export const ENVOIS_MAX_PAR_HEURE = 30;
+/** Connexion au tableau de bord : compteur séparé, plus strict. */
+export const CONNEXIONS_ADMIN_MAX_PAR_HEURE = 10;
 
 /* ───────────── Calcul des dates, en heure de Paris ───────────── */
 

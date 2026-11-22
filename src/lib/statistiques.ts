@@ -1,5 +1,13 @@
 /** Calculs du tableau de bord, purs et testables. */
-import { ATELIERS, jourParis } from "@/lib/config";
+import {
+  ATELIERS,
+  COMPTEUR_ACTIF,
+  jourParis,
+  NOMBRE_MESURES_A_CLASSER,
+  SEUIL_COMPTEUR,
+  SEUIL_DIFFUSION,
+} from "@/lib/config";
+import { agregerClassement, MESURES, type LigneClassement } from "@/lib/mesures";
 import type { InscriptionAdmin, ReponseAdmin } from "@/lib/server/services.server";
 
 export function parJour(jours: readonly string[]): { jour: string; n: number }[] {
@@ -61,4 +69,197 @@ export function statsConsultation(reponses: readonly ReponseAdmin[], aujourdhui:
     parJour: parJour(reponses.map((r) => r.jour)),
     mesuresManquantes: reponses.map((r) => r.mesure_manquante).filter((t): t is string => !!t),
   };
+}
+
+/* ───────────── Seuils de diffusion ───────────── */
+
+/** Vrai si un effectif doit être masqué : entre 1 et le seuil exclu. Zéro ne révèle personne. */
+export function aMasquer(n: number, seuil = SEUIL_DIFFUSION): boolean {
+  return n > 0 && n < seuil;
+}
+
+/** Nombre public de réponses : rien sous le seuil, arrondi à la dizaine inférieure au delà. */
+export function compteurPublic(n: number): number | null {
+  if (!COMPTEUR_ACTIF || !Number.isFinite(n) || n < SEUIL_COMPTEUR) return null;
+  return Math.floor(n / 10) * 10;
+}
+
+/** Rang affiché à la personne qui vient de répondre, seulement si le compteur public est affiché. */
+export function rangPublic(rang: number | null | undefined): number | null {
+  if (!COMPTEUR_ACTIF || !rang || rang < SEUIL_COMPTEUR) return null;
+  return rang;
+}
+
+/* ───────────── Résultats publics (agrégats seulement) ───────────── */
+
+export type LigneResultat = {
+  id: string;
+  axe: string;
+  texte: string;
+  rang: number;
+  exAequo: boolean;
+  /** Points de Borda, null si masqué. */
+  points: number | null;
+  /** Part des personnes qui ont retenu la mesure (0 à 1), null si masquée. */
+  part: number | null;
+  /** Retenues moins rejets, sur les seules réponses qui ont vu la question des rejets, null si masqué. */
+  net: number | null;
+};
+export type ResultatsPublics = {
+  /** Nombre de réponses arrondi à la dizaine inférieure. */
+  total: number;
+  lignes: LigneResultat[];
+};
+
+/** Agrégats publiables. Rien sous le seuil de diffusion, et chaque case de moins de 10 réponses masquée. */
+export function resultatsPublics(
+  reponses: readonly Pick<ReponseAdmin, "classement" | "mesures_rejetees">[],
+): ResultatsPublics | null {
+  if (reponses.length < SEUIL_DIFFUSION) return null;
+  const n = NOMBRE_MESURES_A_CLASSER;
+  const tout = agregerClassement(
+    reponses.map((r) => r.classement),
+    n,
+  );
+  const v2 = reponses.filter((r) => r.mesures_rejetees !== null);
+  const net = new Map(
+    agregerClassement(
+      v2.map((r) => r.classement),
+      n,
+      v2.map((r) => r.mesures_rejetees ?? []),
+    ).map((l) => [l.mesure.id, l]),
+  );
+  return {
+    total: Math.floor(reponses.length / 10) * 10,
+    lignes: tout.map((l) => {
+      const masque = aMasquer(l.selections);
+      const n2 = net.get(l.mesure.id)!;
+      const netMasque =
+        v2.length < SEUIL_DIFFUSION || aMasquer(n2.selections) || aMasquer(n2.rejets);
+      return {
+        id: l.mesure.id,
+        axe: l.mesure.axe,
+        texte: l.mesure.texte,
+        rang: l.rang,
+        exAequo: l.exAequo,
+        points: masque ? null : l.points,
+        part: masque ? null : l.selections / reponses.length,
+        net: netMasque ? null : n2.net,
+      };
+    }),
+  };
+}
+
+/* ───────────── Tableau de bord de la consultation ───────────── */
+
+export type FiltresConsultation = {
+  /** « oui » : a coché « personne concernée » ; « non » : ne l'a pas coché. */
+  concernees: "toutes" | "oui" | "non";
+  /** « oui » : au moins un lien avec l'enfance dans son métier ou engagement. */
+  professionnels: "tous" | "oui" | "non";
+  /** Valeur de provenance, « sans-reponse » ou « toutes ». */
+  provenance: string;
+  version: "toutes" | "v1" | "v2";
+  sansDoublons: boolean;
+};
+export const FILTRES_PAR_DEFAUT: FiltresConsultation = {
+  concernees: "toutes",
+  professionnels: "tous",
+  provenance: "toutes",
+  version: "toutes",
+  sansDoublons: false,
+};
+
+export function estConcernee(r: Pick<ReponseAdmin, "lien_sujet">): boolean {
+  return r.lien_sujet.includes("concerne");
+}
+
+export function estProfessionnel(r: Pick<ReponseAdmin, "liens_enfance">): boolean {
+  return r.liens_enfance.some((x) => x !== "aucun" && x !== "nsp");
+}
+
+/** Clé d'une réponse : tout son contenu, sauf le jour. Deux clés égales = réponses strictement identiques. */
+export function cleReponse(r: ReponseAdmin): string {
+  const { jour: _, ...contenu } = r;
+  return JSON.stringify(
+    Object.keys(contenu)
+      .sort()
+      .map((k) => [k, contenu[k as keyof typeof contenu]]),
+  );
+}
+
+/**
+ * Réponses strictement identiques. La première de chaque groupe est gardée, les suivantes
+ * sont des copies : « sansDoublons » les retire.
+ */
+export function repererDoublons(reponses: readonly ReponseAdmin[]) {
+  const vues = new Set<string>();
+  const copie: boolean[] = [];
+  const groupes = new Map<string, number>();
+  for (const r of reponses) {
+    const cle = cleReponse(r);
+    copie.push(vues.has(cle));
+    vues.add(cle);
+    groupes.set(cle, (groupes.get(cle) ?? 0) + 1);
+  }
+  return {
+    /** Vrai pour chaque réponse qui répète une réponse précédente. */
+    copie,
+    /** Nombre de copies (réponses en trop). */
+    copies: copie.filter(Boolean).length,
+    /** Nombre de groupes de réponses identiques (au moins deux). */
+    groupes: [...groupes.values()].filter((n) => n > 1).length,
+    sansDoublons: reponses.filter((_, i) => !copie[i]),
+  };
+}
+
+export function filtrerReponses(
+  reponses: readonly ReponseAdmin[],
+  f: FiltresConsultation,
+): ReponseAdmin[] {
+  const base = f.sansDoublons ? repererDoublons(reponses).sansDoublons : [...reponses];
+  return base.filter(
+    (r) =>
+      (f.concernees === "toutes" || estConcernee(r) === (f.concernees === "oui")) &&
+      (f.professionnels === "tous" || estProfessionnel(r) === (f.professionnels === "oui")) &&
+      (f.provenance === "toutes" || (r.provenance ?? "sans-reponse") === f.provenance) &&
+      (f.version === "toutes" || r.version_questionnaire === f.version),
+  );
+}
+
+/** Classement des 24 mesures sur un ensemble de réponses, rejets comptés sur les seules réponses v2. */
+export function classementReponses(reponses: readonly ReponseAdmin[]): LigneClassement[] {
+  return agregerClassement(
+    reponses.map((r) => r.classement),
+    NOMBRE_MESURES_A_CLASSER,
+    reponses.map((r) => r.mesures_rejetees ?? []),
+  );
+}
+
+/** Score par axe : points de Borda de l'axe divisés par le nombre de mesures de l'axe. */
+export function scoreParAxe(lignes: readonly LigneClassement[]) {
+  const axes = new Map<string, { points: number; mesures: number; selections: number }>();
+  for (const m of MESURES) {
+    const a = axes.get(m.axe) ?? { points: 0, mesures: 0, selections: 0 };
+    a.mesures += 1;
+    axes.set(m.axe, a);
+  }
+  for (const l of lignes) {
+    const a = axes.get(l.mesure.axe)!;
+    a.points += l.points;
+    a.selections += l.selections;
+  }
+  return [...axes.entries()]
+    .map(([axe, a]) => ({
+      axe,
+      mesures: a.mesures,
+      selections: a.selections,
+      score: a.points / a.mesures,
+    }))
+    .sort((x, y) => y.score - x.score || x.axe.localeCompare(y.axe, "fr"));
+}
+
+/** Répartition avec masquage : une valeur de 1 à 9 réponses n'affiche pas son effectif. */
+export function repartitionMasquee(valeurs: readonly string[]) {
+  return repartition(valeurs).map((l) => ({ ...l, masque: aMasquer(l.n) }));
 }
