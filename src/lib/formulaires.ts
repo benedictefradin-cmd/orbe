@@ -95,9 +95,9 @@ export const Q = {
     libelle: "Vous vivez",
     options: opts([
       ["rural", "Dans une commune rurale"],
-      ["petite-ville", "Dans une petite ville de moins de 20 000 habitants"],
+      ["petite-ville", "Dans une petite ville (moins de 20 000 personnes)"],
       ["ville-moyenne", "Dans une ville moyenne"],
-      ["grande-ville", "Dans une grande ville de plus de 100 000 habitants"],
+      ["grande-ville", "Dans une grande ville (plus de 100 000 personnes)"],
       ["agglo-paris", "Dans l'agglomération parisienne"],
     ]),
   },
@@ -129,13 +129,13 @@ export const Q = {
       ["justice", "Justice ou droit"],
       ["police", "Police ou gendarmerie"],
       ["association", "Association"],
-      ["elu", "Mandat d'élu"],
+      ["elu", "Mandat électif"],
       ["aucun", "Aucun"],
     ]),
   },
   lienSujet: {
     libelle: "Votre lien avec le sujet",
-    aide: "Facultatif (plusieurs choix possibles)",
+    aide: "Facultatif (plusieurs choix possibles). Vous n'avez rien à expliquer.",
     // Libellés provisoires, à faire valider par Face à l'inceste (docs/refonte/a-valider.md).
     options: opts([
       ["concerne", "Je suis une personne concernée (violences sexuelles subies dans l'enfance)"],
@@ -165,7 +165,8 @@ export const Q = {
     ]),
   },
   poidsVote: {
-    libelle: "Les engagements des candidats sur ces mesures compteront ils dans votre choix ?",
+    libelle:
+      "Les engagements des candidates et candidats sur ces mesures compteront ils dans votre choix ?",
     options: opts([
       ["beaucoup", "Beaucoup"],
       ["un-peu", "Un peu"],
@@ -339,11 +340,11 @@ export const SITUATIONS_ATELIER = opts([
   ["justice", "Vous travaillez dans la justice ou le droit"],
   ["police", "Vous travaillez dans la police ou la gendarmerie"],
   ["association", "Vous êtes membre d'une association"],
-  ["politique", "Vous êtes élu ou collaborateur politique"],
-  ["recherche", "Vous êtes chercheur"],
+  ["politique", "Vous exercez un mandat ou travaillez en politique"],
+  ["recherche", "Vous faites de la recherche"],
   ["parent", "Vous êtes parent"],
   ["etudes", "Vous êtes en études"],
-  ["citoyen", "Vous êtes un citoyen intéressé"],
+  ["citoyen", "Le sujet vous intéresse"],
   ["autre", "Autre (à préciser)"],
 ]);
 

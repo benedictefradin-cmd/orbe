@@ -39,6 +39,16 @@ describe("règles d'écriture des textes visibles", () => {
     // Seul le nom de l'association peut contenir le mot.
     expect(t.replaceAll("Face à l'inceste", "")).not.toMatch(/incest/i);
   });
+  it.each(tous.map((t) => [t]))("vocabulaire juste, %s", (t) => {
+    // « violences sexuelles », « pédocriminalité », « personnes concernées ».
+    expect(t).not.toMatch(/\babus\b|pédophil|\bdrames?\b/i);
+    // Épicène : jamais « candidats » seul.
+    expect(t.replaceAll("candidates et candidats", "")).not.toMatch(/\bcandidats\b/);
+  });
+  it.each(Object.entries(contenus.META))("description %s entre 150 et 160 caractères", (_, d) => {
+    expect(d.length).toBeGreaterThanOrEqual(150);
+    expect(d.length).toBeLessThanOrEqual(160);
+  });
   it("contient bien 24 mesures aux identifiants uniques", () => {
     expect(MESURES).toHaveLength(24);
     expect(new Set(MESURES.map((m) => m.id)).size).toBe(24);

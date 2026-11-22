@@ -94,6 +94,19 @@ Fichier : `DONNEES` dans `src/lib/contenus.ts`.
 - [ ] **Réponses strictement identiques.** Elles sont repérées (tout le contenu identique, jour excepté) et le tableau de bord montre le classement avec et sans elles. Depuis la v2, l'ordre d'affichage tiré au hasard fait partie du contenu : deux personnes différentes n'ont pratiquement jamais le même. À décider : quelle version retenir pour la synthèse.
 - [ ] **Masquage dans le tableau de bord.** Les effectifs de 1 à 9 réponses sont masqués, y compris pour l'organisatrice (les exports restent complets). À confirmer.
 
+## Prompt 3 · Textes
+
+### T1. Source du chiffre « 77 % »
+
+Fichier : `src/lib/contenus.ts` (`CHIFFRES[1]`).
+
+- [ ] **Source exacte introuvable.** Le site affiche « 77 % de ces violences ont lieu au sein de la famille » avec la mention « Source estimation CIIVISE reprise par le plan gouvernemental de lutte contre les violences faites aux enfants 2023 2027 ». Merci d'indiquer le document et la page exacts. S'il n'y en a pas, retirer le chiffre. La valeur n'a pas été modifiée.
+
+### T2. Réécritures à relire
+
+- [ ] **Frise du contexte.** Une phrase par date. Le 28 octobre 2026 ne mentionne plus que la commission des lois du Sénat avait écarté l'imprescriptibilité. La formulation vient du prompt 3.
+- [ ] **Sondage Ipsos 2025.** « des Français » devient « des personnes interrogées ». Vérifier que cela correspond bien à l'échantillon du sondage.
+
 ## Points de vigilance pour la mise en production
 
 - Appliquer les nouvelles migrations sur Supabase, dans l'ordre : `20261122000000_contacts_suite.sql` (prompt 1), `20261123000000_consultation_v2.sql`, `20261123000100_compteur_reponses.sql`, `20261123000200_jetons_usage_unique.sql`. Elles sont rejouables. Le fichier `docs/schema-a-appliquer.sql` les contient toutes.
