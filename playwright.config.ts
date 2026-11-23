@@ -7,6 +7,7 @@ import { defineConfig, devices } from "@playwright/test";
 const env = (port: number, extra: Record<string, string> = {}) => ({
   DATABASE_DRIVER: "pglite",
   PGLITE_DIR: `.data/e2e-${port}`,
+  DOSSIER_SERVEUR: `.data/serveur-${port}`,
   ADMIN_USERNAME: "organisatrice",
   ADMIN_PASSWORD: "e2e-mot-de-passe",
   ADMIN_SESSION_SECRET: "cle-e2e-uniquement-0123456789abcdefghij",

@@ -7,12 +7,20 @@ import tailwindcss from "@tailwindcss/vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 import { nitro } from "nitro/vite";
 
+// Serveurs e2e lancés en parallèle : chacun son cache Vite et son dossier Nitro, sinon ils
+// se marchent dessus au démarrage (« Vite environment "nitro" is unavailable »).
+const dossierServeur = process.env["DOSSIER_SERVEUR"];
+
 export default defineConfig({
-  server: { port: 3000 },
+  // Les worktrees de .claude/ et les données locales ne font pas partie du site : les surveiller
+  // vide le cache et recharge le serveur à chaque écriture d'une autre session.
+  server: { port: 3000, watch: { ignored: ["**/.claude/**", "**/.data/**"] } },
+  ...(dossierServeur ? { cacheDir: `${dossierServeur}/vite` } : {}),
   plugins: [
-    tsConfigPaths(),
+    tsConfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart({ server: { entry: "server" } }),
     nitro({
+      ...(dossierServeur ? { buildDir: `${dossierServeur}/nitro` } : {}),
       // Tâche quotidienne Vercel : sollicite la base pour que Supabase ne mette pas le projet gratuit en pause.
       vercel: { config: { version: 3, crons: [{ path: "/api/maintien", schedule: "0 5 * * *" }] } },
     }),
