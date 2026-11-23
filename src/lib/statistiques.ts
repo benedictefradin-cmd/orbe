@@ -178,9 +178,12 @@ export function estProfessionnel(r: Pick<ReponseAdmin, "liens_enfance">): boolea
   return r.liens_enfance.some((x) => x !== "aucun" && x !== "nsp");
 }
 
-/** Clé d'une réponse : tout son contenu, sauf le jour. Deux clés égales = réponses strictement identiques. */
+/**
+ * Clé d'une réponse : tout ce que la personne a saisi. Le jour et l'ordre d'affichage (tiré
+ * au hasard, pas choisi) sont exclus. Deux clés égales = réponses strictement identiques.
+ */
 export function cleReponse(r: ReponseAdmin): string {
-  const { jour: _, ...contenu } = r;
+  const { jour: _jour, ordre_affichage: _ordre, ...contenu } = r;
   return JSON.stringify(
     Object.keys(contenu)
       .sort()

@@ -983,7 +983,7 @@ export function OngletConsultation({ donnees }: { donnees: DonneesAdmin }) {
           <p className="dash-sous mt-1">
             {doublons.copies === 0
               ? "Aucune réponse identique à une autre."
-              : `${doublons.copies} réponses répètent une réponse précédente (${doublons.groupes} groupes). Tout leur contenu est identique, jour excepté.`}
+              : `${doublons.copies} réponses répètent une réponse précédente (${doublons.groupes} groupes). Tout ce qui a été saisi est identique (jour et ordre d'affichage exceptés).`}
           </p>
           <div className="mt-3 grid gap-4 sm:grid-cols-2">
             <TopCinq titre="Avec elles" lignes={avecSans.avec} />

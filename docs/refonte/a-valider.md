@@ -91,7 +91,7 @@ Fichier : `DONNEES` dans `src/lib/contenus.ts`.
 ## Lot D · Fiabilité et analyse
 
 - [ ] **Quota relevé à 30 envois par heure et par connexion** (`ENVOIS_MAX_PAR_HEURE`), pour ne pas bloquer un lycée ou une association qui répond depuis la même connexion. La connexion au tableau de bord reste limitée à 10 tentatives par heure.
-- [ ] **Réponses strictement identiques.** Elles sont repérées (tout le contenu identique, jour excepté) et le tableau de bord montre le classement avec et sans elles. Depuis la v2, l'ordre d'affichage tiré au hasard fait partie du contenu : deux personnes différentes n'ont pratiquement jamais le même. À décider : quelle version retenir pour la synthèse.
+- [ ] **Réponses strictement identiques.** Elles sont repérées (tout ce qui a été saisi est identique, hors jour et ordre d'affichage tiré au hasard) et le tableau de bord montre le classement avec et sans elles. Deux personnes différentes peuvent donner exactement les mêmes réponses (le profil reste large) : une réponse identique n'est pas forcément un envoi en double. À décider : quelle version retenir pour la synthèse.
 - [ ] **Masquage dans le tableau de bord.** Les effectifs de 1 à 9 réponses sont masqués, y compris pour l'organisatrice (les exports restent complets). À confirmer.
 
 ## Prompt 3 · Textes

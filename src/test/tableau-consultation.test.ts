@@ -33,10 +33,10 @@ const base: ReponseAdmin = {
 };
 
 describe("tableau de bord de la consultation", () => {
-  it("repère les réponses strictement identiques, jour excepté", () => {
+  it("repère les réponses strictement identiques, jour et ordre d'affichage exceptés", () => {
     const d = repererDoublons([
       base,
-      { ...base, jour: "2026-11-26" },
+      { ...base, jour: "2026-11-26", ordre_affichage: ["m02", "m01"] },
       { ...base, age: "35-49" },
       base,
     ]);
