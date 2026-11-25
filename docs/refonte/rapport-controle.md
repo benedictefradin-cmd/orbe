@@ -33,7 +33,10 @@ Contrôle du 23 novembre 2026 sur `main` (lots 1 à 5 fusionnés). Les captures 
 | Cibles tactiles de 44 px | OK (e2e) |
 | Zéro requête tierce, zéro cookie hors administration | OK en local |
 | Sitemap, robots, favicon, canonical, descriptions uniques, JSON-LD | OK |
-| Poids, requêtes, CLS, LCP | À mesurer sur le site en ligne après déploiement |
+| En têtes de sécurité en ligne | OK (vérifiés sur orbe-ia.com le 25 novembre) |
+| Requêtes (12 à 18 par page), LCP textuel (titre ou paragraphe, 0,4 à 1,3 s) | OK en ligne |
+| Poids de 250 Ko au plus | **Non tenu** : 287 à 319 Ko. Le socle React pèse 101 Ko et les deux polices 91 Ko. Retirer ou alléger une police est un choix de design |
+| CLS de 0,05 au plus | Presque : 0,052 sur `/consultation` et 0,055 sur `/methode` en mobile, 0,028 au plus ailleurs |
 
 ## Captures avant et après (390 et 1440)
 
