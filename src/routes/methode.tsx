@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Entete, PiedDePage } from "@/components/site";
 import { METHODE } from "@/lib/contenus";
 import { getRequestOrigin } from "@/lib/origin.functions";
-import { metaPage } from "@/lib/partage";
+import { metaPage, urlAbsolue } from "@/lib/partage";
 
 export const Route = createFileRoute("/methode")({
   loader: () => getRequestOrigin(),
@@ -13,6 +13,7 @@ export const Route = createFileRoute("/methode")({
       titre: `${METHODE.titre} · Consultation citoyenne`,
       description: METHODE.intro,
     }),
+    links: loaderData ? [{ rel: "canonical", href: urlAbsolue(loaderData, "/methode") }] : [],
   }),
   component: PageMethode,
 });
