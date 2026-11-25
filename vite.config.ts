@@ -11,6 +11,15 @@ import { nitro } from "nitro/vite";
 // se marchent dessus au démarrage (« Vite environment "nitro" is unavailable »).
 const dossierServeur = process.env["DOSSIER_SERVEUR"];
 
+const ENTETES_SECURITE = {
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+  "X-Frame-Options": "DENY",
+  "Content-Security-Policy-Report-Only":
+    "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+};
+
 export default defineConfig({
   // Les worktrees de .claude/ et les données locales ne font pas partie du site : les surveiller
   // vide le cache et recharge le serveur à chaque écriture d'une autre session.
@@ -21,8 +30,16 @@ export default defineConfig({
     tanstackStart({ server: { entry: "server" } }),
     nitro({
       ...(dossierServeur ? { buildDir: `${dossierServeur}/nitro` } : {}),
-      // Tâche quotidienne Vercel : sollicite la base pour que Supabase ne mette pas le projet gratuit en pause.
-      vercel: { config: { version: 3, crons: [{ path: "/api/maintien", schedule: "0 5 * * *" }] } },
+      vercel: {
+        config: {
+          version: 3,
+          // Tâche quotidienne : sollicite la base pour que Supabase ne mette pas le projet gratuit en pause.
+          crons: [{ path: "/api/maintien", schedule: "0 5 * * *" }],
+          // En têtes de sécurité. La sortie Nitro (.vercel/output/config.json) ignore ceux de
+          // vercel.json. continue: true laisse la suite du routage servir la page.
+          routes: [{ src: "/(.*)", headers: ENTETES_SECURITE, continue: true }],
+        },
+      },
     }),
     viteReact(),
     tailwindcss(),
