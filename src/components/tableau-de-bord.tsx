@@ -33,6 +33,9 @@ import {
   classementReponses,
   FILTRES_PAR_DEFAUT,
   filtrerReponses,
+  organismes,
+  part,
+  profilsParAtelier,
   repartitionMasquee,
   repererDoublons,
   scoreParAxe,
@@ -262,6 +265,8 @@ function Repartition({
   options,
   i,
   masquer = false,
+  total,
+  sous,
 }: {
   titre: string;
   valeurs: string[];
@@ -269,12 +274,17 @@ function Repartition({
   i: number;
   /** Consultation : un effectif de 1 à 9 réponses n'est pas affiché. */
   masquer?: boolean;
+  /** Base du pourcentage (personnes ou réponses). Par défaut, le nombre de valeurs. */
+  total?: number;
+  sous?: string;
 }) {
   const lignes = repartitionMasquee(valeurs).map((l) => ({ ...l, masque: masquer && l.masque }));
   const max = Math.max(1, ...lignes.filter((l) => !l.masque).map((l) => l.n));
+  const base = total ?? valeurs.length;
   return (
     <div className="dash-carte" style={retard(i)}>
       <div className="dash-libelle">{titre}</div>
+      {sous && <p className="dash-sous mt-1">{sous}</p>}
       {lignes.length ? (
         <ul className="mt-3 flex flex-col gap-2">
           {lignes.map((l) => (
@@ -285,7 +295,15 @@ function Repartition({
               <span className="truncate" title={options ? libelle(options, l.valeur) : l.valeur}>
                 {options ? libelle(options, l.valeur) : l.valeur}
               </span>
-              <span className="font-semibold tabular-nums">{l.masque ? MASQUE : l.n}</span>
+              <span className="font-semibold tabular-nums">
+                {l.masque ? (
+                  MASQUE
+                ) : (
+                  <>
+                    {l.n} <span className="font-normal text-texte-2">({part(l.n, base)} %)</span>
+                  </>
+                )}
+              </span>
               <div className="dash-piste col-span-2 h-2">
                 {!l.masque && (
                   <div className="dash-remplissage" style={{ width: `${(l.n / max) * 100}%` }} />
@@ -326,6 +344,7 @@ const AIDE_STATUT: Record<string, string> = {
 
 export function OngletAteliers({ donnees, actions }: { donnees: DonneesAdmin; actions: Actions }) {
   const s = useMemo(() => statsAteliers(donnees.inscriptions), [donnees.inscriptions]);
+  const actives = donnees.inscriptions.filter((i) => i.dates.some((d) => d.statut !== "annule"));
   const [recherche, setRecherche] = useState("");
   const [filtreAtelier, setFiltreAtelier] = useState<"tous" | AtelierId>("tous");
   const [filtreStatut, setFiltreStatut] = useState<"tous" | "inscrit" | "liste_attente" | "annule">(
@@ -497,20 +516,21 @@ export function OngletAteliers({ donnees, actions }: { donnees: DonneesAdmin; ac
       <div className="grid gap-3 md:grid-cols-2">
         <Repartition
           i={9}
-          titre="Situations"
-          valeurs={donnees.inscriptions
-            .filter((i) => i.dates.some((d) => d.statut !== "annule"))
-            .flatMap((i) => i.situations)}
+          titre="Profils"
+          sous={`Part des ${actives.length} personnes inscrites ou en attente. Plusieurs situations possibles par personne.`}
+          valeurs={actives.flatMap((i) => i.situations)}
+          total={actives.length}
           options={SITUATIONS_ATELIER}
         />
         <Repartition
           i={10}
-          titre="Structures"
-          valeurs={donnees.inscriptions
-            .filter((i) => i.dates.some((d) => d.statut !== "annule"))
-            .map((i) => i.structure?.trim() || "Sans structure")}
+          titre="Départements"
+          valeurs={actives.map((i) => i.departement?.trim() || "Non renseigné")}
         />
       </div>
+
+      <ProfilsParAtelier inscriptions={donnees.inscriptions} />
+      <Organismes inscriptions={donnees.inscriptions} />
 
       <section className="dash-carte" aria-labelledby="liste-inscrits">
         <h2 id="liste-inscrits" className="dash-libelle">
@@ -590,6 +610,110 @@ export function OngletAteliers({ donnees, actions }: { donnees: DonneesAdmin; ac
         </div>
       </section>
     </div>
+  );
+}
+
+function ProfilsParAtelier({ inscriptions }: { inscriptions: InscriptionAdmin[] }) {
+  const p = useMemo(() => profilsParAtelier(inscriptions, SITUATIONS_ATELIER), [inscriptions]);
+  const entetes = ["Ensemble", ...ATELIERS.map((a) => `Atelier ${a.numero}`)];
+  return (
+    <section className="dash-carte" aria-labelledby="profils-atelier">
+      <h2 id="profils-atelier" className="dash-libelle">
+        <Users size={14} aria-hidden="true" />
+        Profils par atelier
+      </h2>
+      <p className="dash-sous mt-1">
+        Personnes inscrites ou en liste d'attente. Le pourcentage se lit par colonne.
+      </p>
+      {p.lignes.length ? (
+        <div className="mt-3 overflow-x-auto">
+          <table className="tableau min-w-[560px]">
+            <thead>
+              <tr>
+                <th scope="col">Profil</th>
+                {entetes.map((h, k) => (
+                  <th key={h} scope="col">
+                    {h}
+                    <span className="dash-sous block font-normal">
+                      {p.effectifs[k]!.n} personnes
+                    </span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {p.lignes.map((l) => (
+                <tr key={l.valeur}>
+                  <td>{libelle(SITUATIONS_ATELIER, l.valeur)}</td>
+                  {l.colonnes.map((c) => (
+                    <td key={c.id} className="tabular-nums">
+                      <strong>{c.part} %</strong> <span className="text-texte-2">({c.n})</span>
+                      <div className="dash-piste mt-1 h-1.5">
+                        <div className="dash-remplissage" style={{ width: `${c.part}%` }} />
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="dash-sous mt-3">Pas encore de données.</p>
+      )}
+    </section>
+  );
+}
+
+function Organismes({ inscriptions }: { inscriptions: InscriptionAdmin[] }) {
+  const o = useMemo(() => organismes(inscriptions), [inscriptions]);
+  return (
+    <section className="dash-carte" aria-labelledby="organismes">
+      <h2 id="organismes" className="dash-libelle">
+        Organismes représentés ({o.lignes.length})
+      </h2>
+      <p className="dash-sous mt-1">
+        {o.total - o.sansStructure} personnes sur {o.total} ont indiqué une structure (
+        {part(o.total - o.sansStructure, o.total)} %). Noms regroupés sans tenir compte des
+        majuscules.
+      </p>
+      {o.lignes.length ? (
+        <div className="mt-3 overflow-x-auto">
+          <table className="tableau min-w-[720px]">
+            <thead>
+              <tr>
+                <th scope="col">Organisme</th>
+                <th scope="col">Personnes</th>
+                <th scope="col">Ateliers</th>
+                <th scope="col">Profils</th>
+              </tr>
+            </thead>
+            <tbody>
+              {o.lignes.map((l) => (
+                <tr key={l.nom}>
+                  <td>
+                    <strong>{l.nom}</strong>
+                  </td>
+                  <td className="whitespace-nowrap tabular-nums">
+                    {l.personnes} <span className="text-texte-2">({l.part} %)</span>
+                  </td>
+                  <td className="whitespace-nowrap">
+                    {l.ateliers
+                      .map((id) => `Atelier ${ATELIERS.find((a) => a.id === id)?.numero ?? id}`)
+                      .join(", ")}
+                  </td>
+                  <td className="text-sm">
+                    {l.situations.map((s) => libelle(SITUATIONS_ATELIER, s)).join(" · ")}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="dash-sous mt-3">Aucune structure indiquée pour l'instant.</p>
+      )}
+    </section>
   );
 }
 
@@ -781,6 +905,15 @@ export function OngletConsultation({ donnees }: { donnees: DonneesAdmin }) {
   );
   const v2Lignes = useMemo(() => r.filter((x) => x.mesures_rejetees !== null), [r]);
   const v2 = v2Lignes.length;
+  const [tri, setTri] = useState<"points" | "votes">("points");
+  const lignesTriees = useMemo(
+    () =>
+      tri === "points"
+        ? classement
+        : [...classement].sort((a, b) => b.selections - a.selections || a.rang - b.rang),
+    [classement, tri],
+  );
+  const maxVotes = Math.max(1, ...classement.map((c) => c.selections));
   const maxPoints = Math.max(1, ...classement.map((c) => c.points));
   const maxAxe = Math.max(1, ...axes.map((a) => a.score));
   const filtre = JSON.stringify(f) !== JSON.stringify(FILTRES_PAR_DEFAUT);
@@ -876,16 +1009,38 @@ export function OngletConsultation({ donnees }: { donnees: DonneesAdmin }) {
         <p className="dash-sous mt-1">
           Points, {NOMBRE_MESURES_A_CLASSER} pour une mesure classée première, 1 pour la cinquième.
           Les égalités de points partagent le même rang. Score net, retenues moins rejets, sur les
-          seules réponses v2 ({v2}).
+          seules réponses v2 ({v2}). « Votes » compte les réponses qui ont placé la mesure dans
+          leurs {NOMBRE_MESURES_A_CLASSER} priorités, et le pourcentage se calcule sur {s.total}{" "}
+          réponses.
         </p>
+        <fieldset className="mt-3 flex flex-wrap items-center gap-2">
+          <legend className="dash-sous mb-1 font-semibold">Trier</legend>
+          {(
+            [
+              ["points", "Par points (classement officiel)"],
+              ["votes", "Par nombre de votes"],
+            ] as const
+          ).map(([v, l]) => (
+            <button
+              key={v}
+              type="button"
+              aria-pressed={tri === v}
+              className={`bouton bouton-petit ${tri === v ? "bouton-plein" : "bouton-contour"}`}
+              onClick={() => setTri(v)}
+            >
+              {l}
+            </button>
+          ))}
+        </fieldset>
         <div className="mt-3 overflow-x-auto">
-          <table className="tableau min-w-[820px]">
+          <table className="tableau min-w-[900px]">
             <thead>
               <tr>
-                <th scope="col">Rang</th>
+                <th scope="col">{tri === "points" ? "Rang" : "Position"}</th>
                 <th scope="col">Mesure</th>
+                <th scope="col">Votes</th>
+                <th scope="col">% des réponses</th>
                 <th scope="col">Points</th>
-                <th scope="col">Retenue</th>
                 <th scope="col">Rejetée</th>
                 <th scope="col">Score net</th>
                 <th scope="col">Rang moyen</th>
@@ -893,17 +1048,20 @@ export function OngletConsultation({ donnees }: { donnees: DonneesAdmin }) {
               </tr>
             </thead>
             <tbody>
-              {classement.map((c) => {
+              {lignesTriees.map((c, k) => {
                 const masque = aMasquer(c.selections);
                 const retenuesV2 = v2Lignes.filter((x) =>
                   x.classement.includes(c.mesure.id),
                 ).length;
                 const netMasque = aMasquer(retenuesV2) || aMasquer(c.rejets);
+                const largeur = tri === "points" ? c.points / maxPoints : c.selections / maxVotes;
                 return (
                   <tr key={c.mesure.id}>
                     <td className="font-display text-lg font-bold text-navy">
-                      {c.rang}
-                      {c.exAequo && <span className="dash-sous block">ex aequo</span>}
+                      {tri === "points" ? c.rang : k + 1}
+                      {tri === "points" && c.exAequo && (
+                        <span className="dash-sous block">ex aequo</span>
+                      )}
                     </td>
                     <td>
                       <span className="axe">{c.mesure.axe}</span>
@@ -912,13 +1070,16 @@ export function OngletConsultation({ donnees }: { donnees: DonneesAdmin }) {
                         {!masque && (
                           <div
                             className="dash-remplissage"
-                            style={{ width: `${(c.points / maxPoints) * 100}%` }}
+                            style={{ width: `${largeur * 100}%` }}
                           />
                         )}
                       </div>
                     </td>
-                    <td className="tabular-nums">{nombre(c.points, masque)}</td>
                     <td className="tabular-nums">{nombre(c.selections, masque)}</td>
+                    <td className="tabular-nums font-semibold">
+                      {masque ? "" : `${part(c.selections, s.total)} %`}
+                    </td>
+                    <td className="tabular-nums">{nombre(c.points, masque)}</td>
                     <td className="tabular-nums">{nombre(c.rejets, aMasquer(c.rejets))}</td>
                     <td className="tabular-nums">
                       {netMasque ? MASQUE : (retenuesV2 - c.rejets).toLocaleString("fr-FR")}
@@ -1040,6 +1201,7 @@ export function OngletConsultation({ donnees }: { donnees: DonneesAdmin }) {
           i={8}
           titre="Lien avec l'enfance"
           valeurs={r.flatMap((x) => x.liens_enfance)}
+          total={r.length}
           options={Q.liensEnfance.options}
         />
         <Repartition
@@ -1047,6 +1209,7 @@ export function OngletConsultation({ donnees }: { donnees: DonneesAdmin }) {
           i={9}
           titre="Lien avec le sujet"
           valeurs={r.flatMap((x) => (x.lien_sujet.length ? x.lien_sujet : ["sans-reponse"]))}
+          total={r.length}
           options={[...Q.lienSujet.options, SANS_REPONSE]}
         />
         <Repartition

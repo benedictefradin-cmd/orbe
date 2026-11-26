@@ -52,6 +52,86 @@ export function statsAteliers(inscriptions: readonly InscriptionAdmin[]) {
   };
 }
 
+/** Part en pourcentage, arrondie à l'unité. Zéro si le total est nul. */
+export function part(n: number, total: number): number {
+  return total > 0 ? Math.round((n / total) * 100) : 0;
+}
+
+/** Inscriptions non annulées (inscrit ou liste d'attente) d'un atelier, ou de tous. */
+function personnesActives(inscriptions: readonly InscriptionAdmin[], atelierId?: string) {
+  return inscriptions.filter((i) =>
+    i.dates.some((d) => d.statut !== "annule" && (!atelierId || d.atelier_id === atelierId)),
+  );
+}
+
+/**
+ * Profils par atelier : pour chaque situation, nombre de personnes et part des personnes
+ * de la colonne (une personne peut cocher plusieurs situations, le total dépasse 100 %).
+ */
+export function profilsParAtelier(
+  inscriptions: readonly InscriptionAdmin[],
+  situations: readonly { valeur: string }[],
+) {
+  const colonnes = [
+    { id: "tous", personnes: personnesActives(inscriptions) },
+    ...ATELIERS.map((a) => ({
+      id: a.id as string,
+      personnes: personnesActives(inscriptions, a.id),
+    })),
+  ];
+  return {
+    effectifs: colonnes.map((c) => ({ id: c.id, n: c.personnes.length })),
+    lignes: situations
+      .map((s) => ({
+        valeur: s.valeur,
+        colonnes: colonnes.map((c) => {
+          const n = c.personnes.filter((p) => p.situations.includes(s.valeur)).length;
+          return { id: c.id, n, part: part(n, c.personnes.length) };
+        }),
+      }))
+      .filter((l) => l.colonnes[0]!.n > 0)
+      .sort((a, b) => b.colonnes[0]!.n - a.colonnes[0]!.n),
+  };
+}
+
+/** Organismes représentés, regroupés sans tenir compte de la casse ni des espaces. */
+export function organismes(inscriptions: readonly InscriptionAdmin[]) {
+  const groupes = new Map<
+    string,
+    { nom: string; personnes: number; ateliers: Set<string>; situations: Set<string> }
+  >();
+  for (const i of personnesActives(inscriptions)) {
+    const nom = i.structure?.trim();
+    if (!nom) continue;
+    const cle = nom.toLocaleLowerCase("fr").replace(/\s+/g, " ");
+    const g = groupes.get(cle) ?? {
+      nom,
+      personnes: 0,
+      ateliers: new Set<string>(),
+      situations: new Set<string>(),
+    };
+    g.personnes += 1;
+    i.dates.filter((d) => d.statut !== "annule").forEach((d) => g.ateliers.add(d.atelier_id));
+    i.situations.forEach((s) => g.situations.add(s));
+    groupes.set(cle, g);
+  }
+  const total = personnesActives(inscriptions).length;
+  const lignes = [...groupes.values()]
+    .map((g) => ({
+      nom: g.nom,
+      personnes: g.personnes,
+      part: part(g.personnes, total),
+      ateliers: [...g.ateliers].sort(),
+      situations: [...g.situations],
+    }))
+    .sort((a, b) => b.personnes - a.personnes || a.nom.localeCompare(b.nom, "fr"));
+  return {
+    lignes,
+    total,
+    sansStructure: total - lignes.reduce((s, l) => s + l.personnes, 0),
+  };
+}
+
 /** Adresses des personnes inscrites à un atelier, sans annulés ni liste d'attente. */
 export function adressesInscrits(
   inscriptions: readonly InscriptionAdmin[],
