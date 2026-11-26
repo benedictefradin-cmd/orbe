@@ -82,67 +82,58 @@ function Accueil() {
 
             <ol className="sommaire" data-entree="3">
               <li>
-                <span className="sommaire-num" aria-hidden="true">
-                  01
-                  {consultationOuverte && (
-                    <Trait geste="fleche" className="trait-fleche" motion="fleche" />
-                  )}
-                </span>
-                <div>
-                  <h2 className="sommaire-titre">
-                    {consultationOuverte ? (
-                      <Link to="/consultation" className="bouton bouton-plein">
-                        {consultation.titre}
-                        <ArrowRight size={18} aria-hidden="true" />
-                      </Link>
-                    ) : (
-                      consultation.titreClos
-                    )}
-                  </h2>
+                {consultationOuverte && (
+                  <Trait geste="fleche" className="trait-fleche" motion="fleche" />
+                )}
+                <p className="sommaire-etiquette">{consultation.etiquette}</p>
+                <h2 className="sommaire-titre">
                   {consultationOuverte ? (
-                    <CompteurReponses valeur={etat.compteur} className="meta" />
+                    <Link to="/consultation" className="bouton bouton-plein">
+                      {consultation.titre}
+                      <ArrowRight size={18} aria-hidden="true" />
+                    </Link>
                   ) : (
-                    <p className="texte-long mt-2" role="status">
-                      {consultation.close}
-                    </p>
+                    consultation.titreClos
                   )}
-                </div>
+                </h2>
+                {consultationOuverte ? (
+                  <CompteurReponses valeur={etat.compteur} className="meta" />
+                ) : (
+                  <p className="texte-long mt-2" role="status">
+                    {consultation.close}
+                  </p>
+                )}
               </li>
 
               <li>
-                <span className="sommaire-num" aria-hidden="true">
-                  02
-                </span>
-                <div>
-                  <h2 className="sommaire-titre">
-                    {ateliersOuverts ? (
-                      <Link to="/ateliers" className="lien-fort">
-                        {ateliers.titre}
-                      </Link>
-                    ) : (
-                      <span className="inline-flex min-h-11 items-center">
-                        {ateliers.titreClos}
-                      </span>
-                    )}
-                  </h2>
+                <p className="sommaire-etiquette">{ateliers.etiquette}</p>
+                <h2 className="sommaire-titre">
                   {ateliersOuverts ? (
-                    <ul className="meta">
-                      <li>{CRENEAU_1}</li>
-                      <li>{CRENEAU_2}</li>
-                    </ul>
+                    <Link to="/ateliers" className="lien-texte">
+                      {ateliers.titre}
+                      <ArrowRight size={18} aria-hidden="true" />
+                    </Link>
                   ) : (
-                    <p className="meta">{ateliers.clos}</p>
+                    <span className="inline-flex min-h-11 items-center">{ateliers.titreClos}</span>
                   )}
-                </div>
+                </h2>
+                {ateliersOuverts ? (
+                  <ul className="meta">
+                    <li>{CRENEAU_1}</li>
+                    <li>{CRENEAU_2}</li>
+                    {ateliers.places && <li className="sommaire-places">{ateliers.places}</li>}
+                  </ul>
+                ) : (
+                  <p className="meta">{ateliers.clos}</p>
+                )}
               </li>
 
               <li>
-                <span className="sommaire-num" aria-hidden="true">
-                  03
-                </span>
+                <p className="sommaire-etiquette">{contexte.etiquette}</p>
                 <h2 className="sommaire-titre">
                   <Link to="/contexte" className="lien-texte">
                     {contexte.titre}
+                    <ArrowRight size={18} aria-hidden="true" />
                   </Link>
                 </h2>
               </li>

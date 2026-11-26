@@ -6,6 +6,7 @@
  */
 import {
   ATELIERS,
+  CAPACITE_PAR_ATELIER,
   CONTACT_URL,
   DEBAT,
   DERNIER_JOUR_INSCRIPTION,
@@ -98,32 +99,40 @@ export const CRENEAU_2 = formaterCreneau(a2.debut, a2.fin);
 /* ───────────── Accueil, courte, trois entrées ───────────── */
 
 export const ACCUEIL = {
-  surtitre: "Présidentielle 2027",
-  titre: "Construisons ensemble ce qui protègera nos enfants demain.",
+  surtitre: "Protection de l'enfance · Présidentielle 2027",
+  /** L'accroche : ce que la personne y gagne (du pouvoir, en peu de temps). */
+  titre: `${DUREE_CONSULTATION_MINUTES} minutes pour peser sur la présidentielle.`,
   /** Passages du titre mis en valeur par un soulignement. */
-  titreSouligne: ["ensemble"],
+  titreSouligne: ["peser"],
   /** N'est plus affichée (retrait par le prompt 4). Clé gardée. */
   accroche: "Votre avis compte.",
-  intro:
-    "Choisissez vos 5 priorités parmi 24 mesures. La synthèse sera remise aux candidates et candidats à la présidentielle en février 2027.",
-  appel: `Anonyme (environ ${DUREE_CONSULTATION_MINUTES} minutes). Deux ateliers en visio prolongent l'échange en décembre.`,
-  cloture: `Ouvert jusqu'au ${DATE_LIMITE_INSCRIPTION}.`,
+  intro: `Choisissez vos 5 priorités parmi 24 mesures pour protéger les enfants des violences sexuelles. Un débat confrontera les candidates et candidats à vos demandes en ${DEBAT}. À elles et eux de répondre.`,
+  appel:
+    "Un laboratoire d'idées s'allie à une association pour vous donner la parole. Nous ne restons pas à nous indigner. Nous agissons avec vous.",
+  cloture: `Consultation et ateliers ouverts jusqu'au ${DATE_LIMITE_INSCRIPTION}.`,
   restant: (jours: number) =>
     jours > 1 ? `Encore ${jours} jours` : jours === 1 ? "Dernier jour" : "",
   entrees: {
     contexte: {
-      titre: "Où en est la loi",
+      etiquette: "Contexte",
+      titre: "Où en est la loi ?",
     },
     consultation: {
-      titre: "Je choisis mes 5 priorités",
+      etiquette: `Anonyme (environ ${DUREE_CONSULTATION_MINUTES} minutes)`,
+      titre: "Je participe à la consultation citoyenne",
       titreClos: "La consultation citoyenne",
       close:
         "La consultation est close. Merci à toutes les personnes qui ont répondu. La synthèse sera remise en février 2027.",
     },
     ateliers: {
+      etiquette: "Ateliers de réflexion/construction",
       titre: "Je rejoins un atelier",
       titreClos: "Les ateliers",
       clos: "Inscriptions closes",
+      places:
+        typeof CAPACITE_PAR_ATELIER === "number"
+          ? `Seulement ${CAPACITE_PAR_ATELIER} places par atelier.`
+          : "",
     },
   },
 };
@@ -204,7 +213,7 @@ export const CONTEXTE = {
       "Vous classez 5 mesures parmi 24, issues de la CIIVISE, des associations et du débat parlementaire. Vous pouvez proposer ce qui manque.",
       `Anonyme (environ ${DUREE_CONSULTATION_MINUTES} minutes). Ouvert jusqu'au ${DATE_FIN_CONSULTATION}.`,
     ],
-    bouton: "Je choisis mes 5 priorités",
+    bouton: "Je participe à la consultation citoyenne",
   },
   pourquoiAteliers: {
     titre: "Pourquoi des ateliers de réflexion",
@@ -416,7 +425,7 @@ export const ATELIERS_PAGE = {
   ],
   ouvertes: `Inscriptions ouvertes jusqu'au ${DATE_LIMITE_INSCRIPTION}.`,
   closes: "Les inscriptions aux ateliers sont closes. Merci pour votre intérêt.",
-  boutonConsultation: "Je choisis mes 5 priorités",
+  boutonConsultation: "Je participe à la consultation citoyenne",
   placesRestantes: (n: number) => (n === 1 ? "1 place restante" : `${n} places restantes`),
   complet: "Complet (liste d'attente)",
   concerne:
@@ -476,7 +485,7 @@ export const METHODE = {
       textes: [
         `Chaque personne classe ${NOMBRE_MESURES_A_CLASSER} mesures. Une mesure classée en première position reçoit 5 points. La deuxième reçoit 4 points et ainsi de suite jusqu'à la cinquième (1 point). Les points de toutes les réponses sont additionnés (méthode de Borda).`,
         "Pour chaque mesure, nous indiquons aussi la part des personnes qui l'ont retenue dans leurs 5 priorités.",
-        "Vous pouvez signaler jusqu'à 3 mesures que vous ne soutenez pas. Le score net d'une mesure est le nombre de personnes qui l'ont retenue moins le nombre de personnes qui ne la soutiennent pas. Cette question a été ajoutée en cours de consultation. Le score net ne porte que sur les réponses qui l'ont vue.",
+        "Vous pouvez signaler jusqu'à 3 mesures que vous ne soutenez pas. Cette question a été ajoutée après l'ouverture de la consultation. Les premières réponses ne la contiennent donc pas. Pour chaque mesure, nous calculons un score net sur les seules réponses qui la contiennent. C'est le nombre de personnes qui ont retenu la mesure moins le nombre de personnes qui ne la soutiennent pas.",
         "Deux mesures à égalité de points partagent le même rang. Aucune n'est avantagée.",
       ],
     },

@@ -16,7 +16,7 @@ test.describe("accueil", () => {
   test("trois entrées qui mènent chacune à sa page", async ({ page }) => {
     for (const [nom, chemin] of [
       ["Où en est la loi", "/contexte"],
-      ["Je choisis mes 5 priorités", "/consultation"],
+      ["Je participe à la consultation citoyenne", "/consultation"],
       ["Je rejoins un atelier", "/ateliers"],
     ] as const) {
       await page.goto("/");
@@ -128,7 +128,7 @@ test.describe("navigation au clavier", () => {
     await page.goto("/");
     await page.keyboard.press("Tab");
     await expect(page.getByRole("link", { name: "Aller au contenu" })).toBeFocused();
-    const cta = page.getByRole("link", { name: "Je choisis mes 5 priorités" });
+    const cta = page.getByRole("link", { name: "Je participe à la consultation citoyenne" });
     await tabJusqua(page, cta);
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/\/consultation$/);
@@ -249,7 +249,9 @@ test.describe("dates simulées", () => {
       page.getByText("Les inscriptions aux ateliers sont closes. Merci pour votre intérêt."),
     ).toBeVisible();
     // La consultation ferme le même jour que les inscriptions.
-    await expect(page.getByRole("link", { name: "Je choisis mes 5 priorités" })).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: "Je participe à la consultation citoyenne" }),
+    ).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Je m'inscris" })).toHaveCount(0);
     await page.goto("http://localhost:3201/");
     await expect(page.getByRole("link", { name: "Je rejoins un atelier" })).toHaveCount(0);
@@ -303,7 +305,9 @@ test.describe("dates simulées", () => {
         .first(),
     ).toBeVisible();
     await page.goto("http://localhost:3202/");
-    await expect(page.getByRole("link", { name: "Je choisis mes 5 priorités" })).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: "Je participe à la consultation citoyenne" }),
+    ).toHaveCount(0);
     await expect(
       page
         .getByText(

@@ -158,14 +158,14 @@ export function BesoinDeParler({ id }: { id: string }) {
     <section id={id} className="aide-bande" aria-labelledby={titre}>
       <div className="conteneur aide-bande-grille">
         <div>
-          <h2 id={titre} className="titre-section">
+          <h2 id={titre} className="aide-titre">
             {AIDE.titre}
           </h2>
-          <p className="texte-long mt-3">{AIDE.intro}</p>
+          <p className="aide-intro">{AIDE.intro}</p>
         </div>
         <ul className="numeros">
           {AIDE.numeros.map((n) => (
-            <li key={n.numero} className={n.numero === URGENCE ? "numero-urgence" : undefined}>
+            <li key={n.numero}>
               <a
                 href={appeler(n.numero)}
                 className="numero-appel"
@@ -175,7 +175,7 @@ export function BesoinDeParler({ id }: { id: string }) {
               </a>
               <span>
                 <span className="numero-nom">{n.nom}</span>
-                <span className={n.numero === URGENCE ? "text-texte-2" : undefined}>{n.texte}</span>
+                {n.texte}
               </span>
             </li>
           ))}
@@ -189,7 +189,7 @@ export function BesoinDeParler({ id }: { id: string }) {
 export function AideCourte({ className = "" }: { className?: string }) {
   return (
     <div className={`aide-courte ${className}`}>
-      <p className="font-titre font-semibold text-navy">{AIDE.titre}</p>
+      <p className="aide-titre">{AIDE.titre}</p>
       <ul>
         {AIDE.numeros
           .filter((n) => n.numero !== URGENCE)
