@@ -49,27 +49,14 @@ const ciivise = source("ciivise");
 const fai = source("fai");
 const an = source("an");
 
-/** « 26 et 28 », « 1, 4 à 6, 11 et 17 » : trois numéros qui se suivent ou plus deviennent un intervalle. */
-export function formaterNumeros(numeros: readonly number[]): string {
-  const tries = [...numeros].sort((a, b) => a - b);
-  const blocs: string[] = [];
-  for (let i = 0; i < tries.length;) {
-    let j = i;
-    while (j + 1 < tries.length && tries[j + 1] === tries[j]! + 1) j++;
-    if (j - i >= 2) blocs.push(`${tries[i]} à ${tries[j]}`);
-    else for (let k = i; k <= j; k++) blocs.push(String(tries[k]));
-    i = j + 1;
-  }
-  return blocs.length > 1
-    ? `${blocs.slice(0, -1).join(", ")} et ${blocs.at(-1)}`
-    : (blocs[0] ?? "");
-}
-
-/** « Préconisations 26 et 28 du rapport de la CIIVISE (novembre 2023) » */
+/**
+ * « Préconisations du rapport de la CIIVISE (novembre 2023) ». Les numéros restent dans
+ * les données pour la traçabilité, mais ne sont pas affichés.
+ */
 export function formaterSource(s: Source): string {
   const o = ORGANISMES[s.organisme];
   const pluriel = s.numeros.length > 1;
-  return `${pluriel ? o.plusieurs : o.un} ${formaterNumeros(s.numeros)} ${s.libelle}`;
+  return `${pluriel ? o.plusieurs : o.un} ${s.libelle}`;
 }
 
 export const MESURES: readonly Mesure[] = [

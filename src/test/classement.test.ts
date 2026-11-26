@@ -3,7 +3,6 @@ import {
   AXES,
   agregerClassement,
   estPermutationDesMesures,
-  formaterNumeros,
   formaterSource,
   melanger,
   MESURE_IDS,
@@ -32,21 +31,19 @@ describe("classement agrégé", () => {
     expect(m).toHaveLength(24);
     expect(new Set(m.map((x) => x.id)).size).toBe(24);
   });
-  it("écrit les sources en toutes lettres", () => {
-    expect(formaterNumeros([28, 26])).toBe("26 et 28");
-    expect(formaterNumeros([1, 4, 5, 6, 11, 17])).toBe("1, 4 à 6, 11 et 17");
-    expect(formaterNumeros([61, 62, 63, 82])).toBe("61 à 63 et 82");
+  it("écrit les sources en toutes lettres, sans numéro", () => {
     expect(formaterSource({ organisme: "ciivise", numeros: [26, 28], libelle: "x" })).toBe(
-      "Préconisations 26 et 28 x",
+      "Préconisations x",
     );
+    expect(formaterSource({ organisme: "fai", numeros: [12], libelle: "x" })).toBe("Proposition x");
     const m01 = MESURES[0]!;
     expect(m01.sources.map(formaterSource)).toEqual([
-      "Proposition 1 de Face à l'inceste",
-      "Préconisation 20 du rapport de la CIIVISE (novembre 2023)",
-      "Proposition 6 de la Commission de l'Assemblée nationale",
+      "Proposition de Face à l'inceste",
+      "Préconisation du rapport de la CIIVISE (novembre 2023)",
+      "Proposition de la Commission de l'Assemblée nationale",
     ]);
     const tout = MESURES.flatMap((m) => m.sources.map(formaterSource)).join(" ");
-    expect(tout).not.toMatch(/\bFAI\b|Commission AN/);
+    expect(tout).not.toMatch(/\bFAI\b|Commission AN|(Proposition|Préconisation)s? \d/);
   });
   it("garde les identifiants m01 à m24 et aucun détail non validé", () => {
     expect(MESURE_IDS).toEqual(
